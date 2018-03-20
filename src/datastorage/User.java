@@ -1,28 +1,48 @@
 package datastorage;
 
 import java.util.Scanner;
+
+import exceptions.IllegalEmailException;
 import exceptions.IllegalNameException;
-import exceptions.PasswordException;
+import exceptions.IllegalUserArgumentException;
 
 public class User {
 
 	private static final int MIN_PASSWORD_SIZE = 6;
-	
+
 	private final String userName;
 	private String password;
-	private String email;
+	private final String email;
 	private Channel channel;
 	private boolean isOnline;
 
-	public User(String userName) throws IllegalNameException {
+	public User(String userName, String password, String email) throws IllegalNameException, IllegalEmailException {
 		if (!checkForUserName(userName)) {
 			throw new IllegalNameException();
 		}
 		this.userName = userName;
-		this.channel = new Channel();
+
+		if (!checkForEmail(email)) {
+			throw new IllegalEmailException();
+		}
+		this.email = email;
+		
+		setPassword(password);
+
+		try {
+			this.channel = new Channel(this);
+		} catch (IllegalUserArgumentException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	private boolean checkForUserName(String userName) {
+
+		return false;
+	}
+	
+	private boolean checkForEmail(String email) {
 
 		return false;
 	}
@@ -30,14 +50,9 @@ public class User {
 	public void setPassword(String password) {
 		while (true) {
 			if (password == null || password.length() < MIN_PASSWORD_SIZE) {
-				try {
-					throw new PasswordException();
-				} catch (PasswordException e) {
-					System.out.println("Invalid password!!\n Please enter new password");
-					password = new Scanner(System.in).next();
-					// e.printStackTrace();
-					continue;
-				}
+				System.out.println("Invalid password!!\n Please enter new password");
+				password = new Scanner(System.in).next();
+				continue;
 			}
 			break;
 		}
@@ -47,13 +62,8 @@ public class User {
 	public String getEmail() {
 		return email;
 	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
+	
 	public String getUserName() {
-
 		return userName;
 	}
 

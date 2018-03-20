@@ -1,7 +1,7 @@
 package datastorage;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import exceptions.IllegalChannelArgumentException;
@@ -12,7 +12,7 @@ public class Comment {
 	private static final int DEFAULT_LIKES_TO_COMMENTS = 0;
 	
 	private final Channel channel;
-	private Date publicationDate;
+	private LocalDateTime publicationDate;
 	private long likes;
 	private long dislikes;
 	private List<Comment> responses;
@@ -31,7 +31,7 @@ public class Comment {
 			throw new IllegalCommentContentException();
 		}
 		
-		this.publicationDate = new Date();
+		this.publicationDate = LocalDateTime.now();
 		this.likes = DEFAULT_LIKES_TO_COMMENTS;
 		this.dislikes = DEFAULT_DISLIKES_TO_COMMENTS;
 		
