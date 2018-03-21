@@ -25,18 +25,17 @@ public class UserController {
 			System.out.println("PLEASE ENTER OTHER USERNAME!");
 			throw new IllegalNameException();
 		}
-		User user = new User(username);
+		
 		System.out.println("Enter password");
 		password=sc.next().trim().toLowerCase();
-		user.setPassword(password);
 		System.out.println("Enter email");
 		email=sc.next().trim(); 
-		user.setEmail(email);
+		User user= new User(username, password, email);
 		users.put(username, user);
 	    Menu.loginMenu();
 		
 		
-		}catch(IllegalNameException e){
+		}catch(IllegalNameException |IllegalEmailException e){
 			register();
 		}
 
