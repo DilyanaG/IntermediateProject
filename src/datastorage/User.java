@@ -1,8 +1,9 @@
 package datastorage;
 
-import java.util.Scanner;
-import exceptions.IllegalNameException;
-import exceptions.PasswordException;
+import java.util.*;
+import controllers.*;
+import exceptions.*;
+
 
 public class User {
 
@@ -15,29 +16,26 @@ public class User {
 	private boolean isOnline;
 
 	public User(String userName) throws IllegalNameException {
-		if (!checkForUserName(userName)) {
+		if (userName==null||userName.length()<4) {
 			throw new IllegalNameException();
 		}
 		this.userName = userName;
-		this.channel = new Channel();
+		try {
+			this.channel = new Channel(this);
+		} catch (IllegalUserArgumentException e) {
+			e.printStackTrace();
+		}
 	}
 
-	private boolean checkForUserName(String userName) {
-
-		return false;
-	}
+	
 
 	public void setPassword(String password) {
 		while (true) {
 			if (password == null || password.length() < MIN_PASSWORD_SIZE) {
-				try {
-					throw new PasswordException();
-				} catch (PasswordException e) {
-					System.out.println("Invalid password!!\n Please enter new password");
-					password = new Scanner(System.in).next();
-					// e.printStackTrace();
+				
+					System.out.println("YOUR PASSWORD IS NOT CORRECT!\nPLEASE ENTER NEW PASSWORD:");
+					password = new Scanner(System.in).next().trim();
 					continue;
-				}
 			}
 			break;
 		}
