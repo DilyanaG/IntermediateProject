@@ -157,8 +157,8 @@ public class UserController {
 
 	}
 	public void printUsers() {
-		for (Map.Entry<String, User> entry : users.entrySet()) {
-			System.out.println(entry.getValue());
+		for (String entry : users.keySet()) {
+			System.out.println(entry.keySet());
 		}
 	}
 
