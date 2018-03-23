@@ -1,6 +1,6 @@
 package demo;
 
-public class Demonstration {
+public class Demo {
 
 	public static void main(String[] args) {
 		

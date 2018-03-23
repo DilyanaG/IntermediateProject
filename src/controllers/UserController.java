@@ -12,16 +12,16 @@ public class UserController {
    
 	
 	
-  public static void register(){
+  public void register(){
 	  
   }
-  public static void login(User user){
+  public void login(User user){
 	  
   }
-  public static void logout(User user){
+  public void logout(User user){
 	  
   }
-  public static void deleteUser(User user){
+  public void deleteUser(User user){
 	  
   }
 }
