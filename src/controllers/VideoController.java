@@ -1,7 +1,7 @@
 package controllers;
 
-import datastorage.Comment;
-import datastorage.User;
+import dataclasses.Comment;
+import dataclasses.User;
 
 public class VideoController {
 

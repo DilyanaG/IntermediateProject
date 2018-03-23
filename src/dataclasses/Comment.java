@@ -1,4 +1,4 @@
-package datastorage;
+package dataclasses;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
