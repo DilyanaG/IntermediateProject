@@ -1,8 +1,8 @@
 package controllers;
 
-import datastorage.Channel;
-import datastorage.User;
-import datastorage.Video;
+import dataclasses.Channel;
+import dataclasses.User;
+import dataclasses.Video;
 
 public class ChannelController {
 

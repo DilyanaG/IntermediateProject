@@ -1,4 +1,4 @@
-package datastorage;
+package dataclasses;
 
 import java.util.Set;
 import java.util.TreeSet;
