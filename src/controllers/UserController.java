@@ -150,6 +150,9 @@ public class UserController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		if(map==null){
+			map=new TreeMap<>();
+		}
 		return map;
 
 	}
