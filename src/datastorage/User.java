@@ -1,10 +1,9 @@
 package datastorage;
 
+import java.util.*;
+import controllers.*;
+import exceptions.*;
 import java.util.Scanner;
-
-import exceptions.IllegalEmailException;
-import exceptions.IllegalNameException;
-import exceptions.IllegalUserArgumentException;
 
 public class User {
 
@@ -15,6 +14,8 @@ public class User {
 	private final String email;
 	private Channel channel;
 	private boolean isOnline;
+
+
 
 	public User(String userName, String password, String email) throws IllegalNameException, IllegalEmailException {
 		if (!checkForUserName(userName)) {
@@ -28,13 +29,12 @@ public class User {
 		this.email = email;
 		
 		setPassword(password);
-
-		try {
+   	  try {
 			this.channel = new Channel(this);
 		} catch (IllegalUserArgumentException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private boolean checkForUserName(String userName) {
@@ -49,10 +49,10 @@ public class User {
 
 	public void setPassword(String password) {
 		while (true) {
-			if (password == null || password.length() < MIN_PASSWORD_SIZE) {
-				System.out.println("Invalid password!!\n Please enter new password");
-				password = new Scanner(System.in).next();
-				continue;
+			if (password == null || password.length() < MIN_PASSWORD_SIZE) {			
+					System.out.println("YOUR PASSWORD IS NOT CORRECT!\nPLEASE ENTER NEW PASSWORD:");
+					password = new Scanner(System.in).next().trim();
+					continue;
 			}
 			break;
 		}
@@ -73,6 +73,10 @@ public class User {
 
 	public void setOnline(boolean isOnline) {
 		this.isOnline = isOnline;
+	}
+	public void setEmail(String email2) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
