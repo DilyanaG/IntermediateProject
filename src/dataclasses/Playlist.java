@@ -1,6 +1,7 @@
 package dataclasses;
 
 import java.time.LocalDateTime;
+
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -27,4 +28,5 @@ public class Playlist {
 	public LocalDateTime getLastVideoUploaded(){
 		return this.lastVideoUploaded;
 	}
+
 }
