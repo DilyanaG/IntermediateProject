@@ -1,28 +1,28 @@
 package exceptions;
 
-public class PasswordException extends Exception {
+public class IllegalPasswordException extends Exception {
 
-	public PasswordException() {
+	public IllegalPasswordException() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public PasswordException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+	public IllegalPasswordException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 		// TODO Auto-generated constructor stub
 	}
 
-	public PasswordException(String message, Throwable cause) {
+	public IllegalPasswordException(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public PasswordException(String message) {
+	public IllegalPasswordException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public PasswordException(Throwable cause) {
+	public IllegalPasswordException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}

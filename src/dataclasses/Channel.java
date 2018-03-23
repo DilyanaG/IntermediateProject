@@ -3,6 +3,9 @@ package dataclasses;
 import java.util.Set;
 import java.util.TreeSet;
 
+import comparators.ChannelByUserNameComparator;
+import comparators.PlaylistByLastVideoUploadComparator;
+import comparators.VideoByUploadDateAscendingComparator;
 import exceptions.IllegalUserArgumentException;
 
 public class Channel {
@@ -10,7 +13,7 @@ public class Channel {
 	
 	private final User user;
 	private Set<Video> videoclips;
-	private Set<Set<Video>> playlists;
+	private Set<Playlist> playlists;
 	private Set<Channel> channels;
 	private long followers;
 	
@@ -21,14 +24,13 @@ public class Channel {
 			throw new IllegalUserArgumentException();
 		}
 		
-		this.videoclips = new TreeSet<Video>();
-		this.playlists = new TreeSet<Set<Video>>();
-		
-		for (Set<Video> playlist : playlists) {
-			playlist = new TreeSet<Video>();
-		}
-		
-		this.channels = new TreeSet<Channel>();
+		this.videoclips = new TreeSet<Video>(new VideoByUploadDateAscendingComparator());
+		this.playlists = new TreeSet<Playlist>(new PlaylistByLastVideoUploadComparator());
+		this.channels = new TreeSet<Channel>(new ChannelByUserNameComparator());
 		this.followers = DEFAULT_FOLLOWERS;
+	}
+	
+	public User getUser(){
+		return this.user;
 	}
 }
