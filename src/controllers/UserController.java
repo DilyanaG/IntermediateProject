@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -157,8 +158,8 @@ public class UserController {
 
 	}
 	public void printUsers() {
-		for (String entry : users.keySet()) {
-			System.out.println(entry.keySet());
+		for (Entry<String, User> entry : users.entrySet()) {
+			System.out.println((entry).getKey());
 		}
 	}
 
