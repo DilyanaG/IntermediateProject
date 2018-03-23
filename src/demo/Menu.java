@@ -2,11 +2,26 @@ package demo;
 
 import java.util.Scanner;
 
-import controllers.*;
-import exceptions.*;
+import controllers.ChannelController;
+import controllers.UserController;
+import exceptions.IllegalUserArgumentException;
+import exceptions.UserNotFoundException;
 
 public class Menu {
-	static void mainMenu() {
+private static Menu menu=null;
+	private Menu() {
+		
+	}
+	public static Menu getInstance(){
+		if(menu==null){
+			menu=new Menu();
+		}
+		return menu;
+	}
+	
+	private static UserController userController=UserController.getUserControllerInstance();
+public  void mainMenu() {
+		
 
 		System.out.println("**************YOUTUBE*********************");
 		System.out.println("*login                                   *");
@@ -26,7 +41,12 @@ public class Menu {
 				break;
 			}
 			case "register": {
-				UserController.register();
+				try {
+					userController.register();
+				} catch (IllegalUserArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				isChoice = false;
 				break;
 			}
@@ -34,12 +54,14 @@ public class Menu {
 				isChoice = false;
 				break;
 			}
-			case "exit": {
+			case "exit":System.exit(0);
+			case "printusers": {
+				userController.printUsers();
 				isChoice = false;
 				break;
 			}
-			case "printusers": {
-				UserController.printUsers();
+			case "printchannels": {
+			//	ChannelController.getInstance().printChannels();
 				isChoice = false;
 				break;
 			}
@@ -54,7 +76,8 @@ public class Menu {
 
 	}
 
-	public static void loginMenu() {
+
+	public  void loginMenu() {
 		System.out.println(".........LOGIN..........");
 		String username;
 		while (true) {
@@ -62,14 +85,22 @@ public class Menu {
 			System.out.println("Enter your username:");
 			username = new Scanner(System.in).next().trim();
 			if (username.toLowerCase().equals("back")) {
-				mainMenu();
+				try {
+					mainMenu();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				return;
 			}
 			try {
-				UserController.login(username);
+				userController.login(username);
 			} catch (UserNotFoundException e) {
 				System.out.println("USER WITH USERNAME '" + username + "' NOT EXISTS!");
 				loginMenu();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 		}

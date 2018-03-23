@@ -79,4 +79,9 @@ public class User {
 		
 	}
 
+	public void setChannel(Object channel2) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
