@@ -35,4 +35,9 @@ public class ChannelController {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public void addNewVideoToChannel(Channel channel, Video video) {
+		// TODO Auto-generated method stub
+		
+	}
 }

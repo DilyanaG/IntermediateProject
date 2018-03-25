@@ -34,7 +34,7 @@ public class UserController {
 
 	}
 
-	public static UserController getUserControllerInstance() {
+	public static UserController getInstance() {
 		if (userController == null) {
 			userController = new UserController();
 
@@ -42,8 +42,8 @@ public class UserController {
 		return userController;
 
 	}
-
-	public void register() throws IllegalUserArgumentException {
+// change method signature 
+	public void register(User user2) throws IllegalUserArgumentException {
 		String username;
 		String password;
 		String email;
@@ -95,16 +95,11 @@ public class UserController {
 
 	}
 
-	public void login(String username) throws Exception{
-		if (!checkForUser(username)) {
-			throw new UserNotFoundException();
-		}
-		System.out.println("check for login method in usercontrolller");
-		User user=users.get(username);
-	    user.setChannel(channelController.getChannel(user));
-		user.setOnline(true);
-		
-		// TODO ...
+	public void login(String username, String password){
+//		if (!checkForUser(username)) {
+//			throw new UserNotFoundException();
+//		}
+//		// TODO ...
 	}
 
 	public static void logout(User user) {
