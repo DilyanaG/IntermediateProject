@@ -1,109 +1,211 @@
 package demo;
 
-import java.util.Scanner;
-
-import controllers.ChannelController;
-import controllers.UserController;
-import exceptions.IllegalUserArgumentException;
-import exceptions.UserNotFoundException;
+import java.util.*;
+import dataclasses.*;
+import exceptions.*;
+import parsers.*;
 
 public class Menu {
-private static Menu menu=null;
+
+	private static Menu menu = null;
+	private UserParser userParser = UserParser.getInstance();
+	private ChannelParser channelParser=ChannelParser.getInstance();
+
 	private Menu() {
-		
-	}
-	public static Menu getInstance(){
-		if(menu==null){
-			menu=new Menu();
-		}
-		return menu;
-	}
-	
-	private static UserController userController=UserController.getUserControllerInstance();
-public  void mainMenu() {
-		
 
-		System.out.println("**************YOUTUBE*********************");
-		System.out.println("*login                                   *");
-		System.out.println("*register                                *");
-		System.out.println("*search                                  *");
-		System.out.println("*exit                                    *");
-		System.out.println("******************************************");
+	}
 
+	public void mainMenu() {
+
+		System.out.println(" ________________YOUTUBE__________________");
+		System.out.println("|>Login                                   |");
+		System.out.println("|>SignUp                                  |");
+		System.out.println("|>Search                                  |");
+		System.out.println("|>Exit                                    |");
+		System.out.println("|_________________________________________|");
 		System.out.println("Enter command:");
-		String choice = new Scanner(System.in).next();
-		boolean isChoice = true;
-		while (isChoice)
+		String choice =getStringFromKeyboard();
+
+		while (true)
 			switch (choice.toLowerCase()) {
 			case "login": {
-				loginMenu();
-				isChoice = false;
+				this.loginMenu();
 				break;
 			}
-			case "register": {
-				try {
-					userController.register();
-				} catch (IllegalUserArgumentException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				isChoice = false;
+			case "signup": {
+				this.SignUpMenu();
 				break;
 			}
 			case "search": {
-				isChoice = false;
+				this.searchMenu();
 				break;
 			}
-			case "exit":System.exit(0);
-			case "printusers": {
-				userController.printUsers();
-				isChoice = false;
+			case "exit": {
 				break;
 			}
-			case "printchannels": {
-			//	ChannelController.getInstance().printChannels();
-				isChoice = false;
-				break;
-			}
+
 			default: {
-				System.out.println("WRONG COMMAND!! TRY AGAIN!");
-				System.out.println("exit -end the program");
+				System.out.println("WRONG COMMAND!!! TRY AGAIN!");
+				System.out.println("Exit ->end the program!");
 				System.out.println("Enter command:");
-				choice = new Scanner(System.in).next();
+				choice =getStringFromKeyboard();
 			}
 
 			}
 
 	}
 
-
-	public  void loginMenu() {
-		System.out.println(".........LOGIN..........");
-		String username;
-		while (true) {
-			System.out.println("back  -return to main menu");
-			System.out.println("Enter your username:");
-			username = new Scanner(System.in).next().trim();
-			if (username.toLowerCase().equals("back")) {
-				try {
-					mainMenu();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return;
+	private void SignUpMenu() {
+		System.out.println(" ______________SIGN UP______________");
+		System.out.println("|Enter username:");
+		String username = getStringFromKeyboard();
+		System.out.println("|Enter pasword");
+		String password =getStringFromKeyboard();
+		System.out.println("|Enter email");
+		String email =getStringFromKeyboard();
+		try {
+			userParser.register(username, password, email);
+		} catch (IllegalNameException | IllegalEmailException | IllegalPasswordException
+				| IllegalUserArgumentException e) {
+			if (checkForYesOrNo(true)) {
+				this.SignUpMenu();
+			} else {
+				this.mainMenu();
 			}
-			try {
-				userController.login(username);
-			} catch (UserNotFoundException e) {
-				System.out.println("USER WITH USERNAME '" + username + "' NOT EXISTS!");
-				loginMenu();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		}
+	}
 
+	private void loginMenu() {
+		System.out.println(" _____________LOGIN______________");
+		System.out.println("|Enter your username:");
+		String username =getStringFromKeyboard();
+		System.out.println("|Enter your password:");
+		String password = getStringFromKeyboard();
+		try {
+			this.userParser.login(username, password);
+		} catch (InvalidDataException e) {
+			if (checkForYesOrNo(true)) {
+				this.loginMenu();
+			} else {
+				this.mainMenu();
+			}
 		}
 
+	}
+
+	private void searchMenu() {
+		// TODO
+	}
+
+	private void channelMenu(Channel channel, boolean isLogin) {
+		System.out.println(" __________CHANNEL '" + channel.getUser().getUserName().toUpperCase() + "_______'");
+		System.out.println("|>Search");
+		if(isLogin){
+			System.out.println("|>AddVideo");
+		}
+		System.out.println("|>Videos");
+		System.out.println("|>Playlist");
+		System.out.println("|>Followed");
+		if(isLogin){
+			System.out.println("|>Settings");
+			System.out.println("|>Logout");
+		}
+		System.out.println("|>EXIT");
+		while (true) {
+			System.out.println("Enter command:");
+			String command = getStringFromKeyboard();
+			switch (command) {
+			case "search": {
+				
+				break;
+			}
+			case "addvideo": {
+				this.addVideoMenu(channel);
+				break;
+			}
+			case "videos": {
+				//TODO
+                //this.channelVideosMenu();			   
+				break;
+			}
+			case "playlist": {
+				break;
+			}
+			case "followed": {
+				break;
+			}
+			case "settings": {
+				//TODO
+				//this.settingsMenu();
+				break;
+			}
+			case "logout": {
+				break;
+			}
+			case "exit": {
+				break;
+			}
+
+			default: {
+				System.out.println("WRONG COMMAND!!! TRY AGAIN!");
+				System.out.println("Exit ->end the program!");
+			}
+			}
+		}
+	}
+
+	private void addVideoMenu(Channel channel) {
+		System.out.println("ADD_NEW_VIDEO");
+		System.out.println("Enter video title:");
+		String title=getStringFromKeyboard();
+		System.out.println("Enter video url:");
+		String url=getStringFromKeyboard();
+		System.out.println("Do you want to add description[yes/no]:");
+		String discription="";
+		if(checkForYesOrNo(false)){
+			discription=getStringFromKeyboard();
+		}
+		try {
+			channelParser.addNewVideoToChannel(channel,url,title,discription);
+		} catch (IllegalURLException | IllegalChannelArgumentException | IllegalVideoTitleException
+				| IllegalVideoDescriptionException e) {
+			if(checkForYesOrNo(true)){
+				addVideoMenu(channel);
+			}else{
+				this.channelMenu(channel, true);
+			}
+		}
+		
+	}		
+			
+   private String getStringFromKeyboard(){
+	   Scanner scanner=new Scanner(System.in);
+	   return scanner.next().trim().toLowerCase();
+   }
+	private boolean checkForYesOrNo(boolean forData) {
+		if(forData){
+		    System.out.println("INCORRECTLY ENTERED DATA!");
+			System.out.println("DO YOU WANT TRY AGAIN!\nENTER [YES] or [NO]");
+		}
+		while (true) {
+			String choice =getStringFromKeyboard();
+			switch (choice) {
+			case "no":
+				return false;
+			case "yes":
+				return true;
+			default: {
+				System.out.println("INCORRECT INPUT!ENTER AGAIN!");
+				continue;
+			}
+			}
+		}
+	}
+
+	public static Menu getInstance() {
+		if (menu == null) {
+			menu = new Menu();
+		}
+		return menu;
 	}
 }

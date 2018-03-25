@@ -35,7 +35,7 @@ public class User {
 		}else{
 			throw new IllegalPasswordException();
 		}
-		
+
 		this.channel = new Channel(this);
 		this.isOnline = DEFAULT_STATUS;
 	}
