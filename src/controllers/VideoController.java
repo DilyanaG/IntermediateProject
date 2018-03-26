@@ -1,70 +1,48 @@
 package controllers;
 
-import dataclasses.Comment;
-import dataclasses.User;
+import java.util.List;
+
+import dataclasses.Channel;
+import dataclasses.Video;
+import enums.SortVideoBy;
+import exceptions.InvalidDataException;
+import services.VideoServices;
 
 public class VideoController {
 
-	// Comments
-	public void addComment(String comment, User user) {
+	private static VideoController videoController;
+	private final VideoServices videoServices = VideoServices.getInstance();
 
+	private VideoController() {
 	}
 
-	public void removeComment(Comment comment) {
-
+	public static VideoController getInstance() {
+		if (videoController == null) {
+			videoController = new VideoController();
+		}
+		return videoController;
 	}
 
-	public void addLikeToComment(Comment comment) {
-
-	}
-
-	public void removeLikeFromComment(Comment comment) {
-
-	}
-
-	public void addDislikeToComment(Comment comment) {
-
-	}
-
-	public void removeDislikeFromComment(Comment comment) {
-
-	}
-
-	public void addResponseToComment(String comment, User user) {
-
-	}
-
-	public void removeResponseFromComment(Comment comment) {
-
+	//TODO sortBy as a parameter and make the DB sort it with select and orders
+	public List<Video> search(String tags, SortVideoBy sort) throws InvalidDataException {
+		return videoServices.search(tags, sort);
 	}
 	
-	// Video
-	public void addLikeToVideo() {
-
+	//TODO instead of Video -> videoID 
+	public void openVideo(Video video) {
+		videoServices.openVideo(video);
 	}
 
-	public void removeLikeFromVideo() {
-
+	public Channel openAuthorsChannel(Video video) {
+		return videoServices.openAuthorsChannel(video);
 	}
 
-	public void addDislikeToVideo() {
-
+	public void addLikeDislikeToVideo(boolean isLike, Video video) {
+		videoServices.addLikeDislikeToVideo(isLike, video);
 	}
 
-	public void removeDislikeFromVideo() {
-
+	public void removeLikeDislikeFromVideo(boolean isLike,  Video video) {
+		videoServices.removeLikeDislikeFromVideo(isLike, video);
 	}
-
-	// Playlists
-	public void addVideoToPlaylist(String name) {
-
-	}
-
-	public void removeVideoFromPlaylist(String name) {
-
-	}
-
-	public void followChannel() {
-
-	}
+	
 }

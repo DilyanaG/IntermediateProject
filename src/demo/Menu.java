@@ -1,15 +1,25 @@
 package demo;
 
-import java.util.*;
-import dataclasses.*;
-import exceptions.*;
-import parsers.*;
+import java.util.Scanner;
+
+import dataclasses.Channel;
+import exceptions.IllegalChannelArgumentException;
+import exceptions.IllegalEmailException;
+import exceptions.IllegalNameException;
+import exceptions.IllegalPasswordException;
+import exceptions.IllegalURLException;
+import exceptions.IllegalUserArgumentException;
+import exceptions.IllegalVideoDescriptionException;
+import exceptions.IllegalVideoTitleException;
+import exceptions.InvalidDataException;
+import parsers.ChannelParser;
+import parsers.UserParser;
 
 public class Menu {
 
 	private static Menu menu = null;
 	private UserParser userParser = UserParser.getInstance();
-	private ChannelParser channelParser=ChannelParser.getInstance();
+	private ChannelParser channelParser = ChannelParser.getInstance();
 
 	private Menu() {
 
@@ -24,7 +34,7 @@ public class Menu {
 		System.out.println("|>Exit                                    |");
 		System.out.println("|_________________________________________|");
 		System.out.println("Enter command:");
-		String choice =getStringFromKeyboard();
+		String choice = getStringFromKeyboard();
 
 		while (true)
 			switch (choice.toLowerCase()) {
@@ -48,7 +58,7 @@ public class Menu {
 				System.out.println("WRONG COMMAND!!! TRY AGAIN!");
 				System.out.println("Exit ->end the program!");
 				System.out.println("Enter command:");
-				choice =getStringFromKeyboard();
+				choice = getStringFromKeyboard();
 			}
 
 			}
@@ -60,9 +70,9 @@ public class Menu {
 		System.out.println("|Enter username:");
 		String username = getStringFromKeyboard();
 		System.out.println("|Enter pasword");
-		String password =getStringFromKeyboard();
+		String password = getStringFromKeyboard();
 		System.out.println("|Enter email");
-		String email =getStringFromKeyboard();
+		String email = getStringFromKeyboard();
 		try {
 			userParser.register(username, password, email);
 		} catch (IllegalNameException | IllegalEmailException | IllegalPasswordException
@@ -78,7 +88,7 @@ public class Menu {
 	private void loginMenu() {
 		System.out.println(" _____________LOGIN______________");
 		System.out.println("|Enter your username:");
-		String username =getStringFromKeyboard();
+		String username = getStringFromKeyboard();
 		System.out.println("|Enter your password:");
 		String password = getStringFromKeyboard();
 		try {
@@ -94,19 +104,19 @@ public class Menu {
 	}
 
 	private void searchMenu() {
-		// TODO
+		// Rething menu logic into classes of UI and interfaces
 	}
 
 	private void channelMenu(Channel channel, boolean isLogin) {
 		System.out.println(" __________CHANNEL '" + channel.getUser().getUserName().toUpperCase() + "_______'");
 		System.out.println("|>Search");
-		if(isLogin){
+		if (isLogin) {
 			System.out.println("|>AddVideo");
 		}
 		System.out.println("|>Videos");
 		System.out.println("|>Playlist");
 		System.out.println("|>Followed");
-		if(isLogin){
+		if (isLogin) {
 			System.out.println("|>Settings");
 			System.out.println("|>Logout");
 		}
@@ -116,7 +126,7 @@ public class Menu {
 			String command = getStringFromKeyboard();
 			switch (command) {
 			case "search": {
-				
+
 				break;
 			}
 			case "addvideo": {
@@ -124,8 +134,8 @@ public class Menu {
 				break;
 			}
 			case "videos": {
-				//TODO
-                //this.channelVideosMenu();			   
+				// TODO
+				// this.channelVideosMenu();
 				break;
 			}
 			case "playlist": {
@@ -135,8 +145,8 @@ public class Menu {
 				break;
 			}
 			case "settings": {
-				//TODO
-				//this.settingsMenu();
+				// TODO
+				// this.settingsMenu();
 				break;
 			}
 			case "logout": {
@@ -157,38 +167,40 @@ public class Menu {
 	private void addVideoMenu(Channel channel) {
 		System.out.println("ADD_NEW_VIDEO");
 		System.out.println("Enter video title:");
-		String title=getStringFromKeyboard();
+		String title = getStringFromKeyboard();
 		System.out.println("Enter video url:");
-		String url=getStringFromKeyboard();
+		String url = getStringFromKeyboard();
 		System.out.println("Do you want to add description[yes/no]:");
-		String discription="";
-		if(checkForYesOrNo(false)){
-			discription=getStringFromKeyboard();
+		String discription = "";
+		if (checkForYesOrNo(false)) {
+			discription = getStringFromKeyboard();
 		}
 		try {
-			channelParser.addNewVideoToChannel(channel,url,title,discription);
+			//TODO This should be the VideoParser
+			channelParser.addNewVideoToChannel(channel, url, title, discription);
 		} catch (IllegalURLException | IllegalChannelArgumentException | IllegalVideoTitleException
 				| IllegalVideoDescriptionException e) {
-			if(checkForYesOrNo(true)){
+			if (checkForYesOrNo(true)) {
 				addVideoMenu(channel);
-			}else{
+			} else {
 				this.channelMenu(channel, true);
 			}
 		}
-		
-	}		
-			
-   private String getStringFromKeyboard(){
-	   Scanner scanner=new Scanner(System.in);
-	   return scanner.next().trim().toLowerCase();
-   }
+
+	}
+
+	private String getStringFromKeyboard() {
+		Scanner scanner = new Scanner(System.in);
+		return scanner.next().trim().toLowerCase();
+	}
+
 	private boolean checkForYesOrNo(boolean forData) {
-		if(forData){
-		    System.out.println("INCORRECTLY ENTERED DATA!");
+		if (forData) {
+			System.out.println("INCORRECTLY ENTERED DATA!");
 			System.out.println("DO YOU WANT TRY AGAIN!\nENTER [YES] or [NO]");
 		}
 		while (true) {
-			String choice =getStringFromKeyboard();
+			String choice = getStringFromKeyboard();
 			switch (choice) {
 			case "no":
 				return false;
