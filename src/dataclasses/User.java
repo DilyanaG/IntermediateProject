@@ -12,7 +12,7 @@ public class User {
 	private final String userName;
 	private String password;
 	private final String email;
-	private Channel channel;
+	transient private Channel channel;
 	private boolean isOnline;
 
 	public User(String userName, String password, String email) 
@@ -42,5 +42,11 @@ public class User {
 
 	public String getUserName() {
 		return userName;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public String getEmail() {
+		return email;
 	}
 }

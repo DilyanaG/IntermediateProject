@@ -16,8 +16,10 @@ private static PlaylistParser playlistParser;
 		return playlistParser;
 	}
 	
+	
 	public Playlist parse(String name) throws IllegalChannelArgumentException{
 		Playlist playlist = new Playlist(name);
+		
 		return playlist;
 	}
 }
