@@ -2,6 +2,8 @@ package parsers;
 
 import dataclasses.Channel;
 import dataclasses.Comment;
+import exceptions.IllegalChannelArgumentException;
+import exceptions.IllegalCommentContentException;
 
 public class CommentParser {
 private static CommentParser commentParser;
@@ -20,7 +22,13 @@ private final ChannelParser channelParser = ChannelParser.getInstance();
 	
 	public Comment parse(String channelName, String content){
 		Channel channel = channelParser.parse(channelName);
-		Comment comment = new Comment(channel, content);
+		Comment comment=null;
+		try {
+			comment = new Comment(channel, content);
+		} catch (IllegalChannelArgumentException | IllegalCommentContentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return comment;
 	}
 }

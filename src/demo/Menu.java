@@ -14,15 +14,20 @@ import exceptions.IllegalVideoTitleException;
 import exceptions.InvalidDataException;
 import parsers.ChannelParser;
 import parsers.UserParser;
+import parsers.VideoParser;
 
 public class Menu {
 
-	private static Menu menu = null;
-	private UserParser userParser = UserParser.getInstance();
-	private ChannelParser channelParser = ChannelParser.getInstance();
+	private static Menu menu;
+	
+	private UserParser userParser;
+	private ChannelParser channelParser;
+	private VideoParser videoParser;
 
 	private Menu() {
-
+		userParser = UserParser.getInstance();
+		channelParser = ChannelParser.getInstance();
+		videoParser = VideoParser.getInstance();
 	}
 
 	public void mainMenu() {
@@ -65,7 +70,7 @@ public class Menu {
 
 	}
 
-	private void SignUpMenu() {
+	public void SignUpMenu() {
 		System.out.println(" ______________SIGN UP______________");
 		System.out.println("|Enter username:");
 		String username = getStringFromKeyboard();
@@ -73,33 +78,32 @@ public class Menu {
 		String password = getStringFromKeyboard();
 		System.out.println("|Enter email");
 		String email = getStringFromKeyboard();
-		try {
-			userParser.register(username, password, email);
-		} catch (IllegalNameException | IllegalEmailException | IllegalPasswordException
-				| IllegalUserArgumentException e) {
-			if (checkForYesOrNo(true)) {
-				this.SignUpMenu();
-			} else {
-				this.mainMenu();
-			}
-		}
+
+//		if (!userParser.register(username, password, email)) {
+//
+//			if (checkForYesOrNo(true)) {
+//				this.SignUpMenu();
+//			} else {
+//				this.mainMenu();
+//			}
+//		}
 	}
 
-	private void loginMenu() {
+	public void loginMenu() {
 		System.out.println(" _____________LOGIN______________");
 		System.out.println("|Enter your username:");
 		String username = getStringFromKeyboard();
 		System.out.println("|Enter your password:");
 		String password = getStringFromKeyboard();
-		try {
-			this.userParser.login(username, password);
-		} catch (InvalidDataException e) {
-			if (checkForYesOrNo(true)) {
-				this.loginMenu();
-			} else {
-				this.mainMenu();
-			}
-		}
+//		try {
+//			this.userParser.login(username, password);
+//		} catch (InvalidDataException e) {
+//			if (checkForYesOrNo(true)) {
+//				this.loginMenu();
+//			} else {
+//				this.mainMenu();
+//			}
+//		}
 
 	}
 
@@ -165,7 +169,7 @@ public class Menu {
 	}
 
 	private void addVideoMenu(Channel channel) {
-		System.out.println("ADD_NEW_VIDEO");
+		System.out.println("------ADD_NEW_VIDEO------");
 		System.out.println("Enter video title:");
 		String title = getStringFromKeyboard();
 		System.out.println("Enter video url:");
@@ -175,18 +179,14 @@ public class Menu {
 		if (checkForYesOrNo(false)) {
 			discription = getStringFromKeyboard();
 		}
-		try {
-			//TODO This should be the VideoParser
-			channelParser.addNewVideoToChannel(channel, url, title, discription);
-		} catch (IllegalURLException | IllegalChannelArgumentException | IllegalVideoTitleException
-				| IllegalVideoDescriptionException e) {
+		// TODO This should be the VideoParser
+		if (!videoParser.parse(url, channel.getUser().getUserName(), title, discription)) {
 			if (checkForYesOrNo(true)) {
 				addVideoMenu(channel);
 			} else {
 				this.channelMenu(channel, true);
 			}
 		}
-
 	}
 
 	private String getStringFromKeyboard() {

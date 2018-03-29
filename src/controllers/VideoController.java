@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import dataclasses.Channel;
 import dataclasses.Video;
@@ -43,6 +44,11 @@ public class VideoController {
 
 	public void removeLikeDislikeFromVideo(boolean isLike,  Video video) {
 		videoServices.removeLikeDislikeFromVideo(isLike, video);
+	}
+
+	public Map<Integer, Video> giveVideosToChannel(Channel channel) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
