@@ -9,7 +9,7 @@ public class User {
 
 	private static final boolean DEFAULT_STATUS = false;
 
-	private final String userName;
+	private final String username;
 	private String password;
 	private final String email;
 	transient private Channel channel;
@@ -19,7 +19,7 @@ public class User {
 		throws IllegalNameException, IllegalEmailException, 
 		IllegalPasswordException, IllegalUserArgumentException {
 		if (userName != null) {
-			this.userName = userName;
+			this.username = userName;
 		}else{
 			throw new IllegalNameException();
 		}
@@ -41,7 +41,7 @@ public class User {
 	}
 
 	public String getUserName() {
-		return userName;
+		return username;
 	}
 	public String getPassword() {
 		return password;

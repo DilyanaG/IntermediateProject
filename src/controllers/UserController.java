@@ -1,12 +1,14 @@
 package controllers;
 
-import java.io.*;
-import java.util.*;
 import dataclasses.User;
-import exceptions.*;
-import parsers.*;
-import services.*;
-import ui.*;
+import exceptions.IllegalEmailException;
+import exceptions.IllegalNameException;
+import exceptions.IllegalPasswordException;
+import exceptions.IllegalUserArgumentException;
+import exceptions.InvalidDataException;
+import exceptions.UserNotFoundException;
+import parsers.UserParser;
+import services.UserServices;
 
 
 public class UserController {
@@ -22,7 +24,7 @@ public class UserController {
 		
 	}
   
-	
+	// if logged in successful -> HomeMenu, else -> Default Menu
 	public boolean login(String username, String password) {
 		addFields();
             try {

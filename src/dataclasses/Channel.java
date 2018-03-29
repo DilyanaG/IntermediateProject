@@ -12,7 +12,8 @@ public class Channel {
 	private static final int DEFAULT_FOLLOWERS = 0;
 	
 	private final User user;
-	private Set<Video> videoclips;
+	private Set<Video> uploadedVideos;
+	private Set<Video> likedVideos;
 	private Set<Playlist> playlists;
 	private Set<Channel> channels;
 	private long followers;
@@ -24,7 +25,8 @@ public class Channel {
 			throw new IllegalUserArgumentException();
 		}
 		
-		this.videoclips = new TreeSet<Video>(new VideoByUploadDateAscendingComparator());
+		this.uploadedVideos = new TreeSet<Video>(new VideoByUploadDateAscendingComparator());
+		this.likedVideos = new TreeSet<Video>(new VideoByUploadDateAscendingComparator());
 		this.playlists = new TreeSet<Playlist>(new PlaylistByLastVideoUploadComparator());
 		this.channels = new TreeSet<Channel>(new ChannelByUserNameComparator());
 		this.followers = DEFAULT_FOLLOWERS;
