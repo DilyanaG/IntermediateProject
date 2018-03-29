@@ -1,11 +1,17 @@
 package repositories;
 
-import java.io.*;
-import java.util.*;
-import com.google.gson.*;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Map;
+import java.util.TreeMap;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-import controllers.UserController;
 import dataclasses.User;
 import exceptions.IllegalNameException;
 import exceptions.InvalidDataException;
@@ -51,12 +57,14 @@ public class UserRepository {
 
 	}
 	private void writeUsersToJSONFile(Map<String, User> users) {
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		
 		String json = gson.toJson(users);
 		// System.out.println(json);
 		try (FileWriter writer = new FileWriter(USER_JSON_FILE)) {
 
 			gson.toJson(users, writer);
+			
 
 		} catch (IOException e) {
 			e.printStackTrace();

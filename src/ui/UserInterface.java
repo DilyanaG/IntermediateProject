@@ -1,8 +1,13 @@
 package ui;
 
+import java.util.Map;
 import java.util.Scanner;
-import controllers.*;
-import dataclasses.*;
+
+import controllers.ChannelController;
+import controllers.UserController;
+import controllers.VideoController;
+import dataclasses.Channel;
+import dataclasses.Video;
 
 public class UserInterface {
 
@@ -36,18 +41,19 @@ public class UserInterface {
 			switch (choice.toLowerCase()) {
 			case "login": {
 				this.loginMenu();
-				break;
+				return;
 			}
 			case "signup": {
 				this.SignUpMenu();
-				break;
+				return;
 			}
 			case "search": {
 				this.searchMenu();
-				break;
+				return;
 			}
 			case "exit": {
-				break;
+				//TODO
+				return;
 			}
 
 			default: {
@@ -104,12 +110,11 @@ public class UserInterface {
 		// Rething menu logic into classes of UI and interfaces
 	}
 
-	public void channelMenu(User user) {
-		System.out.println(" __________CHANNEL '" + user.getUserName().toUpperCase() + "'_______");
+	public void channelMenu(Channel channel) {
+		System.out.println(" __________CHANNEL '" + channel.getUser().getUserName().toUpperCase() + "'_______");
 		channelPrintBar();
-		
 		System.out.println("|>EXIT");
-		enterCommand();
+		enterCommand(channel);
 	}
 
 	protected void channelPrintBar() {
@@ -119,30 +124,30 @@ public class UserInterface {
 		System.out.println("|>Followed");
 	}
 
-	protected void enterCommand() {
+	protected void enterCommand(Channel channel) {
 		while(true){ 
 			System.out.println("Enter command:");
 			String command = getStringFromKeyboard();
-			if(giveCommandsFromChannel(command)){
+			if(giveCommandsFromChannel(command,channel)){
 				break;
 			}
 			}
 	}
 
-	protected boolean giveCommandsFromChannel(String command) {
+	protected boolean giveCommandsFromChannel(String command,Channel channel) {
 
 		switch (command) {
 		case "search": {
-
+         
 			return true;
 		}
 		
 		case "videos": {
-			// TODO
-			// this.channelVideosMenu();
+			this.channelVideosMenu(channel);
 			return true;
 		}
 		case "playlist": {
+			
 			return true;
 		}
 		case "followed": {
@@ -162,6 +167,29 @@ public class UserInterface {
 		}
 	}
 
+	private void channelVideosMenu(Channel channel) {
+		System.out.println("--------'"+channel.getUser().getUserName()+"' UPLOAD VIDEOS-----------");
+		Map<Integer,Video> videos = videoController.giveVideosToChannel(channel);
+		if(videos!=null&&!videos.isEmpty()){
+		for(Map.Entry<Integer,Video> entry : videos.entrySet()){
+			System.out.println(entry.getKey()+" : "+entry.getValue().getTitle());
+		}
+		System.out.println("Enter video id to open video: ");
+		//TO DO validate
+		int id=new Scanner(System.in).nextInt();
+		this.videoMenu(videos.get(id));
+		
+		}else{
+			System.out.println("CHANNEL DON'T HAVE A UPLOAD VIDEOS!");
+		}
+	}
+
+	private void videoMenu(Video video) {
+		 System.out.println("---------------------------");
+		 System.out.println("title: "+video.getTitle());
+         System.out.println("");		
+	}
+
 	private void addVideoMenu(Channel channel) {
 		System.out.println("------ADD_NEW_VIDEO------");
 		System.out.println("Enter video title:");
@@ -174,7 +202,7 @@ public class UserInterface {
 			discription = getStringFromKeyboard();
 		}
 		// TODO This should be the VideoParser
-		// if (!videoParser.parse(url, channel.getUser().getUserName(), title,
+		// if (!.parse(url, channel.getUser().getUserName(), title,
 		// discription)) {
 		// if (checkForYesOrNo(true)) {
 		// addVideoMenu(channel);

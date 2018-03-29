@@ -15,8 +15,8 @@ public class UserController {
 
 	private UserServices userService ;
 	private UserParser userParser;
-    private UserInterface onlineUser;
-    private UserInterface offlineUser;
+   
+    private ChannelController channelController;
 
 	private UserController() {
 		
@@ -28,12 +28,12 @@ public class UserController {
             try {
             	
 				User user =this.userService.login(username,password);
-				this.onlineUser.channelMenu(user);
+				channelController.showChannel(user,true);
 				return true;
 			} catch (IllegalPasswordException | IllegalNameException 
 					 | UserNotFoundException e) {
 			
-			  System.out.println(e.getMessage());	
+			   System.out.println(e.getMessage());	
 				return false;
 			}
 	}
@@ -54,7 +54,7 @@ public class UserController {
 	}
 
 	public static void logout(User user) {
-
+       
 	}
 
 	public static void deleteUser(User user) {
@@ -71,8 +71,9 @@ public class UserController {
 	  private void addFields(){
 	    	this.userService = UserServices.getInstance();
 	    	this. userParser = UserParser.getInstance();
-	        this. onlineUser =OnlineUserInterface.getInstance();
-	        this.offlineUser=OfflineUserInterface.getInstance();
+//	        this. onlineUser =OnlineUserInterface.getInstance();
+//	        this.offlineUser=OfflineUserInterface.getInstance();
+	        this.channelController = ChannelController.getInstance();
 	    }
 
 }

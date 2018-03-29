@@ -68,8 +68,13 @@ public class Video {
 		}
 	}
 
+	public String getTitle() {
+		return title;
+	}
 	public LocalDateTime getUploadDate() {
 		return uploadDate;
 	}
+
+
 
 }

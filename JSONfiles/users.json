@@ -1,98 +1,110 @@
 {
-	"alex": {
-		"userName": "alex",
-		"password": "123456",
-		"email": "alex@abv.bg",
-		"isOnline": false
-	},
-	"gosho": {
-		"userName": "gosho",
-		"password": "123456",
-		"email": "gosho@abv.bg",
-		"isOnline": false
-	},
-	"goso": {
-		"userName": "goso",
-		"password": "qwertyy",
-		"email": "goso@abv.bg",
-		"isOnline": false
-	},
-	"bobi": {
-		"userName": "bobi",
-		"password": "qwerty",
-		"email": "bobi@abv.bg",
-		"isOnline": false
-	},
-	"boqn": {
-		"userName": "boqn",
-		"password": "123456",
-		"email": "boqn@abv.bg",
-		"isOnline": false
-	},
-	"ivan": {
-		"userName": "ivan",
-		"password": "qwerttyu",
-		"email": "ivan@gmail.com",
-		"isOnline": false
-	},
-	"ivancho": {
-		"userName": "ivancho",
-		"password": "112345678",
-		"email": "234567",
-		"isOnline": false
-	},
-	"petko": {
-		"userName": "petko",
-		"password": "qwertyuil",
-		"email": "asdfghj",
-		"isOnline": false
-	},
-	"ivelin": {
-		"userName": "ivelin",
-		"password": "qwertyui",
-		"email": "ivelin@abv.bg",
-		"isOnline": false
-	},
-	"marinela": {
-		"userName": "marinela",
-		"password": "qwerty",
-		"email": "marinela@abv.bg",
-		"isOnline": false
-	},
-	"asdfghj": {
-		"userName": "asdfghj",
-		"password": "asdfghjk",
-		"email": "asdfgjk",
-		"isOnline": false
-	},
-	"toni": {
-		"userName": "toni",
-		"password": "toni12345",
-		"email": "toni@abv.bg",
-		"isOnline": false
-	},
-	"aerozola": {
-		"userName": "aerozola",
-		"password": "aerozola1224",
-		"email": "aerozola@abv.bg",
-		"isOnline": false
-	},
-	"alexxx": {
-		"userName": "alexxx",
-		"password": "alex1234",
-		"email": "alexxx@abv.bg",
-		"isOnline": false
-	},
-	"nikkiii": {
-		"userName": "nikkiii",
-		"password": "nikkii123445",
-		"email": "niki@abv.bg",
-		"isOnline": false
-	},
-	"nikiiiiii": {
-		"userName": "nikiiiiii",
-		"password": "asdfg",
-		"email": "niki@abb.bg",
-		"isOnline": false
-	}
+  "alex": {
+    "userName": "alex",
+    "password": "123456",
+    "email": "alex@abv.bg",
+    "isOnline": false
+  },
+  "gosho": {
+    "userName": "gosho",
+    "password": "123456",
+    "email": "gosho@abv.bg",
+    "isOnline": false
+  },
+  "goso": {
+    "userName": "goso",
+    "password": "qwertyy",
+    "email": "goso@abv.bg",
+    "isOnline": false
+  },
+  "bobi": {
+    "userName": "bobi",
+    "password": "qwerty",
+    "email": "bobi@abv.bg",
+    "isOnline": false
+  },
+  "boqn": {
+    "userName": "boqn",
+    "password": "123456",
+    "email": "boqn@abv.bg",
+    "isOnline": false
+  },
+  "ivan": {
+    "userName": "ivan",
+    "password": "qwerttyu",
+    "email": "ivan@gmail.com",
+    "isOnline": false
+  },
+  "ivancho": {
+    "userName": "ivancho",
+    "password": "112345678",
+    "email": "234567",
+    "isOnline": false
+  },
+  "petko": {
+    "userName": "petko",
+    "password": "qwertyuil",
+    "email": "asdfghj",
+    "isOnline": false
+  },
+  "ivelin": {
+    "userName": "ivelin",
+    "password": "qwertyui",
+    "email": "ivelin@abv.bg",
+    "isOnline": false
+  },
+  "marinela": {
+    "userName": "marinela",
+    "password": "qwerty",
+    "email": "marinela@abv.bg",
+    "isOnline": false
+  },
+  "asdfghj": {
+    "userName": "asdfghj",
+    "password": "asdfghjk",
+    "email": "asdfgjk",
+    "isOnline": false
+  },
+  "toni": {
+    "userName": "toni",
+    "password": "toni12345",
+    "email": "toni@abv.bg",
+    "isOnline": false
+  },
+  "aerozola": {
+    "userName": "aerozola",
+    "password": "aerozola1224",
+    "email": "aerozola@abv.bg",
+    "isOnline": false
+  },
+  "alexxx": {
+    "userName": "alexxx",
+    "password": "alex1234",
+    "email": "alexxx@abv.bg",
+    "isOnline": false
+  },
+  "nikkiii": {
+    "userName": "nikkiii",
+    "password": "nikkii123445",
+    "email": "niki@abv.bg",
+    "isOnline": false
+  },
+  "nikiiiiii": {
+    "userName": "nikiiiiii",
+    "password": "asdfg",
+    "email": "niki@abb.bg",
+    "isOnline": false
+  },
+  "krasii": {
+    "userName": "krasii",
+    "password": "123456",
+    "email": "krasi@abv.bg",
+    "isOnline": false
+  },
+  "alexandurrrrrrrr": {
+    "userName": "alexandurrrrrrrr",
+    "password": "123456",
+    "email": "alexandyr@abv.bg",
+    "isOnline": false
+  }
 }

@@ -1,5 +1,7 @@
 package ui;
 
+import dataclasses.Channel;
+
 public class OnlineUserInterface extends UserInterface {
 
 	public static OnlineUserInterface onlineUserInteface;
@@ -9,7 +11,7 @@ public class OnlineUserInterface extends UserInterface {
 	}
 
 	@Override
-	protected void enterCommand() {
+	protected void enterCommand(Channel channel) {
 		while (true) {
 			System.out.println("Enter command:");
 			String command = getStringFromKeyboard();
@@ -26,7 +28,7 @@ public class OnlineUserInterface extends UserInterface {
 				return;
 			}
 			default: {
-				if (super.giveCommandsFromChannel(command)) {
+				if (super.giveCommandsFromChannel(command,channel)) {
 					 return;
 				}
 			}
