@@ -1,32 +1,60 @@
 package dataclasses;
 
-import java.time.LocalDateTime;
 
+import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
-import exceptions.IllegalChannelArgumentException;
-
-
 public class Playlist {
+	private int playlistId;
 	private String name;
 	private Set<Video> videos;
-	private LocalDateTime lastVideoUploaded;
-	private final LocalDateTime creationDateTime; //TODO WHEN ADDING VIDEO UPDATE
-	
-	public Playlist(String name) throws IllegalChannelArgumentException {
-		if(name != null){
-			this.name = name;
-		}else{
-			throw new IllegalChannelArgumentException();
-		}
-		
+	private Date lastVideoUploaded;
+	private Date creationDateTime; // TODO WHEN ADDING VIDEO UPDATE
+
+	public Playlist(String name) {
+		this.name = name;
 		this.videos = new TreeSet<Video>();
-		this.creationDateTime = LocalDateTime.now();
+		this.creationDateTime = new Date();
 	}
-	
-	public LocalDateTime getLastVideoUploaded(){
-		return this.lastVideoUploaded;
+
+	public Playlist(int playlistId, String name, Date lastVideoUploaded, Date creationDateTime) {
+		this(name);
+		this.lastVideoUploaded = lastVideoUploaded;
+		this.creationDateTime = creationDateTime;
+		this.playlistId = playlistId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Set<Video> getVideos() {
+		return videos;
+	}
+
+	public void setVideos(Set<Video> videos) {
+		this.videos = videos;
+	}
+
+	public Date getLastVideoUploaded() {
+		return lastVideoUploaded;
+	}
+
+	public void setLastVideoUploaded(Date lastVideoUploaded) {
+		this.lastVideoUploaded = lastVideoUploaded;
+	}
+
+	public Date getCreationDateTime() {
+		return creationDateTime;
+	}
+
+	public void setCreationDateTime(Date creationDateTime) {
+		this.creationDateTime = creationDateTime;
 	}
 
 }

@@ -1,52 +1,47 @@
 package dataclasses;
 
-import exceptions.IllegalEmailException;
-import exceptions.IllegalNameException;
-import exceptions.IllegalPasswordException;
-import exceptions.IllegalUserArgumentException;
-
 public class User {
-
-	private static final boolean DEFAULT_STATUS = false;
-
-	private final String username;
+	
+	private int userId;
+	private final String userName;
 	private String password;
 	private final String email;
-	transient private Channel channel;
-	private boolean isOnline;
 
-	public User(String userName, String password, String email) 
-		throws IllegalNameException, IllegalEmailException, 
-		IllegalPasswordException, IllegalUserArgumentException {
-		if (userName != null) {
-			this.username = userName;
-		}else{
-			throw new IllegalNameException();
-		}
-
-		if (email != null) {
-			this.email = email;
-		}else{
-			throw new IllegalEmailException();
-		}
-		
-		if (password != null) {
-			this.password = password;
-		}else{
-			throw new IllegalPasswordException();
-		}
-
-		this.channel = new Channel(this);
-		this.isOnline = DEFAULT_STATUS;
+	public User(int id, String userName, String password, String email){
+		this(userName, password, email);
+		setUserId(id);
 	}
 
-	public String getUserName() {
-		return username;
+	public User(String userName, String password, String email) {
+
+		this.userName = userName;
+		this.email = email;
+		this.password = password;
 	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
 	public String getPassword() {
 		return password;
 	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
 	public String getEmail() {
 		return email;
 	}
 }
+
+

@@ -1,5 +1,7 @@
 package controllers;
 
+import java.sql.SQLException;
+
 import dataclasses.User;
 import exceptions.IllegalEmailException;
 import exceptions.IllegalNameException;
@@ -33,7 +35,7 @@ public class UserController {
 				channelController.showChannel(user,true);
 				return true;
 			} catch (IllegalPasswordException | IllegalNameException 
-					 | UserNotFoundException e) {
+					 | UserNotFoundException | SQLException e) {
 			
 			   System.out.println(e.getMessage());	
 				return false;

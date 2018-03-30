@@ -34,15 +34,7 @@ public class VideoParser {
 	
 	public boolean parse(String url, String channelName, String title, String description) {
 		Channel channel = channelParser.parse(channelName);
-		Video video;
-		try {
-			video = new Video(url, channel, title, description);
-		} catch (IllegalURLException | IllegalChannelArgumentException | IllegalVideoTitleException
-				| IllegalVideoDescriptionException e) {
-			return false;
-			//e.printStackTrace();
-		}
-       
-		return true;
+		Video video = new Video(url, channel, title, description);
+	   return true;
 	}
 }

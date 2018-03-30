@@ -20,7 +20,7 @@ public class ChannelController {
 	 private ChannelService channelService;
 	
 	 private void getFields(){
-		 onlineUser = OnlineUserInterface.getInstance();
+		//onlineUser = OnlineUserInterface.getInstance();
 		 channelService = ChannelService.getInstance();
 		 offlineUser = OfflineUserInterface.getInstance();
 		 
@@ -39,11 +39,11 @@ public class ChannelController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(isOnline){
-			onlineUser.channelMenu(channel);
-			return;
-		}
-		offlineUser.channelMenu(channel);
+//		if(isOnline){
+//			onlineUser.channelMenu(channel);
+//			return;
+//		}
+//		offlineUser.channelMenu(channel);
 	}
 	
 	public void makePlaylist(String name) {

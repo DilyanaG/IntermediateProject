@@ -1,15 +1,12 @@
 package dataclasses;
 
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import exceptions.IllegalChannelArgumentException;
-import exceptions.IllegalURLException;
-import exceptions.IllegalVideoDescriptionException;
-import exceptions.IllegalVideoTitleException;
 
 public class Video {
 
@@ -17,64 +14,130 @@ public class Video {
 	private static final int DEFAULT_DISLIKES_TO_VIDEO = 0;
 	private static final int DEFAULT_LIKES_TO_VIDEO = 0;
 	private static final int DEFAULT_VIEWS_TO_VIDEO = 0;
-
+    
+	private int videoId;
 	private final String url;
 	private final Channel channel;
 	private String title;
 	private String description;
-	private LocalDateTime uploadDate;
+	private Date uploadDate;
 	private Set<String> tags;
 	private List<Comment> comments;
 	private int countOfLikes;
 	private int countOfDislikes;
 	private int views;
 
-	public Video(String url, Channel channel, String title) throws IllegalURLException, IllegalChannelArgumentException, IllegalVideoTitleException {
-		if (url != null){
-			this.url = url;
-		}else{
-			throw new IllegalURLException();
-		}
+	public Video(int videoId, String url, 
+				Channel channel, String title, String description, 
+					Date uploadDate,
+							int countOfLikes, int countOfDislikes, int views) {
+		this(url,channel,title,description);
+		this.uploadDate=uploadDate;
+		this.countOfLikes=countOfDislikes;
+		this.countOfDislikes = countOfDislikes;
+		this.views = views;
 		
-		if (channel != null){
-			this.channel = channel;
-		}else{
-			throw new IllegalChannelArgumentException();
-		}
+	}
+	public Video(String url, Channel channel, String title, String description)  {
+		this(url, channel, title);
+		this.description = description;
 		
-		if (title != null){
-			this.title = title;
-		}else{
-			throw new IllegalVideoTitleException();
-		}
-		
+	}
+	public Video(String url, Channel channel, String title) {
+
+		this.url = url;
+		this.channel = channel;
+		this.title = title;
 		this.description = DEFAULT_DESCRIPTION;
-		this.uploadDate = LocalDateTime.now();
+		this.uploadDate = new Date();
 		this.tags = new TreeSet<String>();
 		this.comments = new ArrayList<Comment>();
-
 		this.countOfLikes = DEFAULT_LIKES_TO_VIDEO;
 		this.countOfDislikes = DEFAULT_DISLIKES_TO_VIDEO;
 		this.views = DEFAULT_VIEWS_TO_VIDEO;
 	}
+	
 
-	public Video(String url, Channel channel, String title, String description) throws IllegalURLException, IllegalChannelArgumentException, IllegalVideoTitleException, IllegalVideoDescriptionException {
-		this(url, channel, title);
-
-		if (description != null){
-			this.description = description;
-		}else{
-			throw new IllegalVideoDescriptionException();
-		}
+	
+	public int getVideoId() {
+		return videoId;
+	}
+	public void setVideoId(int videoId) {
+		this.videoId = videoId;
 	}
 
 	public String getTitle() {
 		return title;
 	}
-	public LocalDateTime getUploadDate() {
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Date getUploadDate() {
 		return uploadDate;
 	}
 
+	public void setUploadDate(Date uploadDate) {
+		this.uploadDate = uploadDate;
+	}
 
+	public Set<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(Set<String> tags) {
+		this.tags = tags;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
+	public int getCountOfLikes() {
+		return countOfLikes;
+	}
+
+	public void setCountOfLikes(int countOfLikes) {
+		this.countOfLikes = countOfLikes;
+	}
+
+	public int getCountOfDislikes() {
+		return countOfDislikes;
+	}
+
+	public void setCountOfDislikes(int countOfDislikes) {
+		this.countOfDislikes = countOfDislikes;
+	}
+
+	public int getViews() {
+		return views;
+	}
+
+	public void setViews(int views) {
+		this.views = views;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public Channel getChannel() {
+		return channel;
+	}
+
+	
 
 }

@@ -5,7 +5,7 @@ import ui.UserInterface;
 public class Demo {
 
 	public static void main(String[] args) {
-		new UserInterface().mainMenu();
+		//new UserInterface().mainMenu();
 	}
 
 }

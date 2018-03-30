@@ -1,5 +1,6 @@
 package services;
 
+import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,8 +29,7 @@ public class UserServices {
 	}
 	
 	
-	
-	public void register(User user)
+	public boolean register(User user)
 			throws IllegalPasswordException, IllegalEmailException,
 				IllegalNameException, InvalidDataException {
 		if(user==null)
@@ -39,21 +39,35 @@ public class UserServices {
 			throw new IllegalPasswordException();
 		if(!this.checkForPattern(user.getEmail()))
 			throw new IllegalEmailException();
-		if(this.userRepository.checkForUser(user.getUserName()))
+		try {
+		if(this.checkForUser(user.getUserName()))
 			throw new IllegalNameException();
 		//add new user in BD/FILE
-		this.userRepository.addNewUser(user);
+          this.userRepository.addNewUserToDB(user);
+			return true;
+		} catch (SQLException e) {
+			e.getMessage();
+			return false;
+		}
 		
 	} 
 	
 
+	private boolean checkForUser(String userName) throws SQLException {
+		
+		return userRepository.getAllUsers().containsKey(userName);
+	}
+
+
 	public User login(String username, String password) 
 			  throws IllegalPasswordException, IllegalNameException,
-			          UserNotFoundException {
+			          UserNotFoundException, SQLException {
 		if(username==null)
 			throw new IllegalNameException("INCORRECT NAME!");
 		if(password==null)
 			throw new IllegalPasswordException("INCORRECT PASSWORD!");
+		if(!checkForUser(username))
+			throw  new UserNotFoundException();
 		User user = userRepository.getUserByUserName(username);
 		if(!user.getPassword().equals(password)){
 			throw new IllegalPasswordException("INCORRECT PASSWORD!");
