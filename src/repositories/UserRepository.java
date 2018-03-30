@@ -1,9 +1,6 @@
 package repositories;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,14 +10,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-
 import java.sql.*;
-
 import java.util.*;
 import java.util.Set;
 import dataclasses.User;
@@ -39,17 +33,19 @@ public class UserRepository {
 			"UPDATE users SET user_password = ? WHERE user_name = ?;";
 	
 
-	// FOR JSON
-	private static final String USER_JSON_FILE = ".//JSONfiles//users.json";
-	private Map<String, User> users;
+//    FOR JSON
+//	private static final String USER_JSON_FILE = ".//JSONfiles//users.json";
+//	private Map<String, User> users;
 	private static UserRepository userRepository;
      
 	//connection to DB 
-	private Connection connection = DBManager.getInstance().getConnection();
+	private Connection connection;
     
 	private UserRepository() {
-		users = new HashMap<String, User>();
-		users = getUsersFromJSONFILE();
+		connection = DBManager.getInstance().getConnection();
+//		for JSON
+//		users = new HashMap<String, User>();
+//		users = getUsersFromJSONFILE();
 	}
 	
 	public static UserRepository getInstance() {
@@ -74,9 +70,6 @@ public class UserRepository {
 		}
 		usersRS.close();
         // System.out.println("Users loaded successfully");
-//		if(users==null){
-//			users=Collections.EMPTY_MAP;
-//		}
         return Collections.unmodifiableMap(users);
 	}
 
@@ -103,57 +96,57 @@ public class UserRepository {
 
 	
 	
+//using JSON
 	
-	// using JSON
-	public boolean checkForUser(String username) {
-		if (this.users == null) {
-			this.users = new TreeMap<>();
-		}
-		return users.containsKey(username);
-	}
-
-	private static Map<String, User> getUsersFromJSONFILE() {
-		Gson gson = new Gson();
-		Map<String, User> map = null;
-		try (Reader reader = new FileReader(USER_JSON_FILE)) {
-			JsonElement json = gson.fromJson(reader, JsonElement.class);
-			String jsonInString = gson.toJson(json);
-
-			// System.out.println(jsonInString);
-			map = gson.fromJson(jsonInString, new TypeToken<Map<String, User>>() {
-			}.getType());
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		if (map == null) {
-			map = new TreeMap<>();
-		}
-		return map;
-
-	}
-
-	private void writeUsersToJSONFile(Map<String, User> users) {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-		String json = gson.toJson(users);
-		// System.out.println(json);
-		try (FileWriter writer = new FileWriter(USER_JSON_FILE)) {
-
-			gson.toJson(users, writer);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void addNewUserToJSON(User user) throws InvalidDataException {
-		if (user == null)
-			throw new InvalidDataException();
-		users.put(user.getUserName(), user);
-		// updete to json files with users
-		this.writeUsersToJSONFile(users);
-
-	}
+//	public boolean checkForUser(String username) {
+//		if (this.users == null) {
+//			this.users = new TreeMap<>();
+//		}
+//		return users.containsKey(username);
+//	}
+//
+//	private static Map<String, User> getUsersFromJSONFILE() {
+//		Gson gson = new Gson();
+//		Map<String, User> map = null;
+//		try (Reader reader = new FileReader(USER_JSON_FILE)) {
+//			JsonElement json = gson.fromJson(reader, JsonElement.class);
+//			String jsonInString = gson.toJson(json);
+//
+//			// System.out.println(jsonInString);
+//			map = gson.fromJson(jsonInString, new TypeToken<Map<String, User>>() {
+//			}.getType());
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		if (map == null) {
+//			map = new TreeMap<>();
+//		}
+//		return map;
+//
+//	}
+//
+//	private void writeUsersToJSONFile(Map<String, User> users) {
+//		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//
+//		String json = gson.toJson(users);
+//		// System.out.println(json);
+//		try (FileWriter writer = new FileWriter(USER_JSON_FILE)) {
+//
+//			gson.toJson(users, writer);
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	public void addNewUserToJSON(User user) throws InvalidDataException {
+//		if (user == null)
+//			throw new InvalidDataException();
+//		users.put(user.getUserName(), user);
+//		// updete to json files with users
+//		this.writeUsersToJSONFile(users);
+//
+//	}
 
 }

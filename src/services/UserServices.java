@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import dataclasses.User;
 import exceptions.IllegalEmailException;
+import exceptions.IllegalInputException;
 import exceptions.IllegalNameException;
 import exceptions.IllegalPasswordException;
 import exceptions.InvalidDataException;
@@ -30,18 +31,17 @@ public class UserServices {
 	
 	
 	public boolean register(User user)
-			throws IllegalPasswordException, IllegalEmailException,
-				IllegalNameException, InvalidDataException {
-		if(user==null)
-			 throw new InvalidDataException();
+			throws  IllegalInputException {
+		if(user.getUserName()==null||user.getUserName().length()<4)
+			throw new IllegalInputException("INCORRECT NAME!");
 		//check for valid user registration data 
 		if(!this.checkForPassword(user))
-			throw new IllegalPasswordException();
+			throw new IllegalInputException("PASSWORD IS NOT CORRECT!");
 		if(!this.checkForPattern(user.getEmail()))
-			throw new IllegalEmailException();
+			throw new IllegalInputException("EMAIL IS NOT CORRECT!");
 		try {
 		if(this.checkForUser(user.getUserName()))
-			throw new IllegalNameException();
+			throw new IllegalInputException("USERNAME IS NOT CORRECT");
 		//add new user in BD/FILE
           this.userRepository.addNewUserToDB(user);
 			return true;
@@ -53,30 +53,37 @@ public class UserServices {
 	} 
 	
 
-	private boolean checkForUser(String userName) throws SQLException {
-		
-		return userRepository.getAllUsers().containsKey(userName);
-	}
-
+	
 
 	public User login(String username, String password) 
-			  throws IllegalPasswordException, IllegalNameException,
-			          UserNotFoundException, SQLException {
-		if(username==null)
-			throw new IllegalNameException("INCORRECT NAME!");
+			  throws IllegalInputException {
+		if(username==null||username.length()<4)
+			throw new IllegalInputException("INCORRECT NAME!");
 		if(password==null)
-			throw new IllegalPasswordException("INCORRECT PASSWORD!");
-		if(!checkForUser(username))
-			throw  new UserNotFoundException();
-		User user = userRepository.getUserByUserName(username);
-		if(!user.getPassword().equals(password)){
-			throw new IllegalPasswordException("INCORRECT PASSWORD!");
+			throw new IllegalInputException("INCORRECT PASSWORD!");
+		User user=null;
+		try {
+			if(!checkForUser(username)){
+				throw  new IllegalInputException("USER WITH THIS USERNAME DOES NOT EXIST!");
+			}
+			
+			user = userRepository.getUserByUserName(username);
+			if(!user.getPassword().equals(password)){
+				throw new IllegalInputException("INCORRECT PASSWORD!");
+			}
+			ChannelService.getInstance().setOnlineChannel(user);
+		} catch (SQLException e) {
+			  e.getMessage();
+			  throw new IllegalInputException("PROBLEM WITH CONNECTION!");
 		}
-		return user;	
+	    return user;	
 		
 	}
 	
-	
+	private boolean checkForUser(String username) throws SQLException {
+		return userRepository.getAllUsers().containsKey(username);
+	}
+
 	
 	private boolean checkForPassword(User user){
 		if(user.getPassword().length()<MIN_PASSWORD_SIZE){

@@ -31,15 +31,13 @@ public class ChannelRepository {
 			"SELECT channel_id,user_name FROM channels JOIN users ON user.user_id=channel.user_id;";
 	private static final String SELECT_CHANNEL_BY_USER_ID =
 			"SELECT channel_id FROM channels WHERE user_id = ?";
+	private static final String INSERT_FOLLOWER = 
+			"INSERT INTO channels_folowed_channels (folower_channel_id, folowed_channel_id) VALUES (?,?);";
 	
 
-	// json
-	private static final String CHANNELS_JSON_FILE = ".//JSONfiles//channels.json";
-	
-
-
-	
-	private Map<String, Channel> channels;
+//   json
+//	private static final String CHANNELS_JSON_FILE = ".//JSONfiles//channels.json";
+//    private Map<String, Channel> channels;
 
 	private static ChannelRepository instance;
 	private Connection connection;
@@ -60,6 +58,7 @@ public class ChannelRepository {
 	public void addNewChannelToDB(User user) throws SQLException {
 		PreparedStatement st = connection.prepareStatement(INSERT_INTO_CHANNELS);
 		st.setInt(1, user.getUserId());
+		st.executeUpdate();
 		st.close();
 		//TODO call channeldao for insert new channel in channel table 
 
@@ -104,55 +103,60 @@ public class ChannelRepository {
 	   return 0;
    }
 
-	// JSON
-	private Map<String, Channel> getChannelsFromJSONFILE() {
-		Gson gson = new Gson();
-		Map<String, Channel> map = null;
-		try (Reader reader = new FileReader(CHANNELS_JSON_FILE)) {
-			JsonElement json = gson.fromJson(reader, JsonElement.class);
-			String jsonInString = gson.toJson(json);
+public void followToChannel(Channel followerChannel, Channel folowedChannel) {
+	 
+	
+}
 
-			// System.out.println(jsonInString);
-			map = gson.fromJson(jsonInString, new TypeToken<Map<String, Channel>>() {
-			}.getType());
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		if (map == null) {
-			map = new TreeMap<>();
-		}
-		return map;
-
-	}
-
-	private void writeUsersToJSONFile(Map<String, Channel> channels) {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-		String json = gson.toJson(channels);
-		// System.out.println(json);
-		try (FileWriter writer = new FileWriter(CHANNELS_JSON_FILE)) {
-
-			gson.toJson(channels, writer);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public Channel getChannelToUser(User user) throws IllegalUserArgumentException {
-		this.channels = this.getChannelsFromJSONFILE();
-		if (channels == null) {
-			channels = new HashMap<>();
-		}
-		if (!channels.containsKey(user.getUserName())) {
-			Channel channel = new Channel(user);
-			channels.put(user.getUserName(), channel);
-			this.writeUsersToJSONFile(channels);
-		}
-		return this.channels.get(user.getUserName());
-
-	}
+//	JSON
+//	private Map<String, Channel> getChannelsFromJSONFILE() {
+//		Gson gson = new Gson();
+//		Map<String, Channel> map = null;
+//		try (Reader reader = new FileReader(CHANNELS_JSON_FILE)) {
+//			JsonElement json = gson.fromJson(reader, JsonElement.class);
+//			String jsonInString = gson.toJson(json);
+//
+//			// System.out.println(jsonInString);
+//			map = gson.fromJson(jsonInString, new TypeToken<Map<String, Channel>>() {
+//			}.getType());
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		if (map == null) {
+//			map = new TreeMap<>();
+//		}
+//		return map;
+//
+//	}
+//
+//	private void writeUsersToJSONFile(Map<String, Channel> channels) {
+//		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//
+//		String json = gson.toJson(channels);
+//		// System.out.println(json);
+//		try (FileWriter writer = new FileWriter(CHANNELS_JSON_FILE)) {
+//
+//			gson.toJson(channels, writer);
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	public Channel getChannelToUser(User user) throws IllegalUserArgumentException {
+//		this.channels = this.getChannelsFromJSONFILE();
+//		if (channels == null) {
+//			channels = new HashMap<>();
+//		}
+//		if (!channels.containsKey(user.getUserName())) {
+//			Channel channel = new Channel(user);
+//			channels.put(user.getUserName(), channel);
+//			this.writeUsersToJSONFile(channels);
+//		}
+//		return this.channels.get(user.getUserName());
+//
+//	}
 
 	
 }

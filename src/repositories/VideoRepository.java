@@ -17,6 +17,8 @@ import dataclasses.Playlist;
 import dataclasses.User;
 import dataclasses.Video;
 
+//data na kacvane , vieew >, likes 
+
 public class VideoRepository {
 	private static final String SELECT_ALL_VIDEOS_BY_CHANNEL_ID =
 			"SELECT video_id, url, title, date,discription,  views, likes, dislikes,  FROM videos WHERE channel_id = ?";
@@ -73,7 +75,7 @@ public class VideoRepository {
 		return Collections.EMPTY_SET;
 	}
 
-	public static Set<Video> getAllVideosForPlaylist(Playlist playlist) {
+	public  Set<Video> getAllVideosForPlaylist(Playlist playlist) {
 		//write select for this
 		// TODO Auto-generated method stub
 		return Collections.EMPTY_SET;

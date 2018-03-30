@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import dataclasses.User;
 import exceptions.IllegalEmailException;
+import exceptions.IllegalInputException;
 import exceptions.IllegalNameException;
 import exceptions.IllegalPasswordException;
 import exceptions.IllegalUserArgumentException;
@@ -29,17 +30,20 @@ public class UserController {
 	// if logged in successful -> HomeMenu, else -> Default Menu
 	public boolean login(String username, String password) {
 		addFields();
-            try {
-            	
-				User user =this.userService.login(username,password);
-				channelController.showChannel(user,true);
+           
+            	User user;
+				try {
+					user = this.userService.login(username,password);
+					//channelController.sa;
+				} catch (IllegalInputException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				;
 				return true;
-			} catch (IllegalPasswordException | IllegalNameException 
-					 | UserNotFoundException | SQLException e) {
 			
-			   System.out.println(e.getMessage());	
-				return false;
-			}
+				
+			
 	}
 
 
