@@ -2,22 +2,22 @@ package menus;
 
 import java.util.Map;
 
-import controllers.UserController;
+import controllers.ChannelController;
 import controllers.VideoController;
 import exceptions.IllegalInputException;
-import parsers.UserParser;
+import parsers.VideoParser;
 
-public class DefaultMenu extends Menu {
+public class SearchMenu extends Menu{
 
-	private UserParser parser = UserParser.getInstance();
-	private UserController controller = UserController.getInstance();
-	private VideoController videoParser = VideoController.getInstance();
+	private VideoParser videoParser = VideoParser.getInstance();
+	private VideoController videoController = VideoController.getInstance();
+	private ChannelController channelController = ChannelController.getInstance();
 	
 	@Override
 	protected String specialPresent() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append(">Login -username=username_here -password=password_here\n");
-		builder.append(">Register -username=username_here -password=password_here -email=email_here\n");
+		builder.append(">OpenVideo -title=title_here\n");
+		builder.append(">Homepage\n");
 		return builder.toString();
 	}
 
@@ -33,15 +33,14 @@ public class DefaultMenu extends Menu {
 			// Menu searchMenu = VideoController.search(...);
 			// return searchMenu;
 			break;
-		case "login":
-			// final User user = UserParser.parse(argsMap);
-			// Menu userMenu = UserController.login(user.getUsername(), user.getPassword());
-			// return userMenu;
+		case "openvideo":
+			// final Video video = VideoParser.parse(argsMap);
+			// Menu videoMenu = VideoController.openVideo(video.getTitle());
+			// return videoMenu;
 			break;
-		case "register":
-			// final User user = UserParser.parse(argsMap);
-			// Menu userMenu = UserController.register(user.getUsername(), user.getPassword(), user.getEmail());
-			// return userMenu;
+		case "homepage":
+			// Menu homeMenu = ChannelController.homeMenu();
+			// return homeMenu;
 			break;
 		case "exit":
 			// Menu exitMenu = null;

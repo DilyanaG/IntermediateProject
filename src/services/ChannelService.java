@@ -1,19 +1,12 @@
 package services;
 
+
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import dataclasses.Channel;
-import dataclasses.User;
-import dataclasses.Video;
+import java.util.*;
+import dataclasses.*;
 import exceptions.*;
-import repositories.ChannelRepository;
-import repositories.VideoRepository;
-
+import enums.SortVideoBy;
+import repositories.*;
 public class ChannelService {
 
 	private static ChannelService channelService;
@@ -67,4 +60,10 @@ public class ChannelService {
 		this.channel = channelRepository.getChannelByUserName(user.getUserName());
 
 	}
+
+public List<Video> search(String tags, SortVideoBy sort) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
 }

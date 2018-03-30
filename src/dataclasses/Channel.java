@@ -11,7 +11,6 @@ import comparators.VideoByUploadDateAscendingComparator;
 public class Channel {
 	private static final int DEFAULT_FOLLOWERS = 0;
 
-	private final User user;
 	private int channelId;
 	private Set<Video> videoclips;
 	private Set<Playlist> playlists;
@@ -19,13 +18,12 @@ public class Channel {
 	private long followers;
 
 	
-	public Channel(int id,User user){
-		this(user);
-		setChannelId(id);
+	public Channel(int channelId){
+		this();
+		setChannelId(channelId);
 	}
 	
-	public Channel(User user) {
-        this.user = user;
+	public Channel() {
 		this.videoclips = new TreeSet<Video>(new VideoByUploadDateAscendingComparator());
 		this.playlists = new TreeSet<Playlist>(new PlaylistByLastVideoUploadComparator());
 		this.channels = new TreeSet<Channel>(new ChannelByUserNameComparator());
@@ -62,14 +60,6 @@ public class Channel {
 
 	public void setFollowers(long followers) {
 		this.followers = followers;
-	}
-
-	public static int getDefaultFollowers() {
-		return DEFAULT_FOLLOWERS;
-	}
-
-	public User getUser() {
-		return user;
 	}
 
 	public int getChannelId() {
