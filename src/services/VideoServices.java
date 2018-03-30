@@ -65,5 +65,10 @@ public class VideoServices {
 		
 	}
 
+	public void removeVideo(Video video) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

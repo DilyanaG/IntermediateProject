@@ -7,30 +7,30 @@ import java.util.TreeSet;
 
 public class Playlist {
 	private int playlistId;
-	private String name;
+	private String playlistName;
 	private Set<Video> videos;
 	private Date lastVideoUploaded;
 	private Date creationDateTime; // TODO WHEN ADDING VIDEO UPDATE
 
-	public Playlist(String name) {
-		this.name = name;
+	public Playlist(String playlistName) {
+		this.playlistName = playlistName;
 		this.videos = new TreeSet<Video>();
 		this.creationDateTime = new Date();
 	}
 
-	public Playlist(int playlistId, String name, Date lastVideoUploaded, Date creationDateTime) {
-		this(name);
+	public Playlist(int playlistId, String playlistName, Date lastVideoUploaded, Date creationDateTime) {
+		this(playlistName);
 		this.lastVideoUploaded = lastVideoUploaded;
 		this.creationDateTime = creationDateTime;
 		this.playlistId = playlistId;
 	}
 
-	public String getName() {
-		return name;
+	public String getPlaylistName() {
+		return playlistName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setName(String playlistName) {
+		this.playlistName = playlistName;
 	}
 
 	public Set<Video> getVideos() {

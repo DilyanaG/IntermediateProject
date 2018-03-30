@@ -24,36 +24,44 @@ public class HomeMenu extends Menu {
 
 	@Override
 	public Menu process(String input) throws IllegalInputException {
-		final String command = input.split(" ")[0];// read first word from input
+		final String command = input.split(" ")[0].toLowerCase();// read first word from input
 		final String args = input.substring(command.length()); // remove command
 
 		final Map<String, String> argsMap = parseToMap(args);
 
 		switch (command) {
-		case "AddVideo":
+		case "search":
+			// Menu searchMenu = VideoController.search(...);
+			// return searchMenu;
+			break;
+		case "addvideo":
 			// final Video video = VideoParser.parse(argsMap);
 			// Menu homeMenu = ChannelController.addVideo(video.getTitle(), video.getURL(), video.getDescription());
 			// return homeMenu;
 			break;
-		case "MyVideos":
-			// Menu myVideos = ChannelController.myVideos();
-			// return myVideos;
+		case "myvideos":
+			// Menu myVideosMenu = ChannelController.myVideos();
+			// return myVideosMenu;
 			break;
-		case "MyPlaylists":
-			// Menu myPlaylists = ChannelController.myPlaylists();
-			// return myPlaylists;
+		case "myplaylists":
+			// Menu myPlaylistsMenu = ChannelController.myPlaylists();
+			// return myPlaylistsMenu;
 			break;
-		case "MyChannels":
-			// Menu myChannels = ChannelController.myChannels();
-			// return myChannels;
+		case "mychannels":
+			// Menu myChannelsMenu = ChannelController.myChannels();
+			// return myChannelsMenu;
 			break;
-		case "Settings":
-			// Menu settings = ChannelController.settings();
-			// return settings;
+		case "settings":
+			// Menu settingsMenu = ChannelController.settings();
+			// return settingsMenu;
 			break;
-		case "Logout":
-			// Menu logout = ChannelController.logout();
-			// return logout;
+		case "logout":
+			// Menu defaultMenu = ChannelController.logout();
+			// return defaultMenu;
+			break;
+		case "exit":
+			// Menu exitMenu = null;
+			// return exitMenu;
 			break;
 		
 		default:

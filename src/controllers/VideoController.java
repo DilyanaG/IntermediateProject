@@ -33,6 +33,10 @@ public class VideoController {
 	public void openVideo(Video video) {
 		videoServices.openVideo(video);
 	}
+	
+	public void removeVideo(Video video) {
+		videoServices.removeVideo(video);
+	}
 
 	public Channel openAuthorsChannel(Video video) {
 		return videoServices.openAuthorsChannel(video);

@@ -1,10 +1,12 @@
 package services;
 
+import java.util.List;
 import java.util.Map;
 
 import dataclasses.Channel;
 import dataclasses.User;
 import dataclasses.Video;
+import enums.SortVideoBy;
 import exceptions.IllegalUserArgumentException;
 import repositories.ChannelRepository;
 
@@ -34,4 +36,9 @@ public class ChannelService {
 	   }
 	   return channelService;
    }
+
+public List<Video> search(String tags, SortVideoBy sort) {
+	// TODO Auto-generated method stub
+	return null;
+}
 }
