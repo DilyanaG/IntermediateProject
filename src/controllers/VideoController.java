@@ -7,6 +7,8 @@ import dataclasses.Channel;
 import dataclasses.Video;
 import enums.SortVideoBy;
 import exceptions.InvalidDataException;
+import menus.Menu;
+import menus.SearchMenu;
 import services.VideoServices;
 
 public class VideoController {
@@ -23,10 +25,19 @@ public class VideoController {
 		}
 		return videoController;
 	}
-
+     
+      
 	//TODO sortBy as a parameter and make the DB sort it with select and orders
-	public List<Video> search(String tags, SortVideoBy sort) throws InvalidDataException {
-		return videoServices.search(tags, sort);
+	public Menu search(String tags, SortVideoBy sort) {
+	  try {
+		List<Video>	videos = videoServices.search(tags, sort);
+	} catch (InvalidDataException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	  //TO DO 
+	 // how to print videos to console
+		return null;
 	}
 	
 	//TODO instead of Video -> videoID 

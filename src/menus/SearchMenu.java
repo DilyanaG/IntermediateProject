@@ -30,7 +30,7 @@ public class SearchMenu extends Menu{
 
 		switch (command) {
 		case "search":
-			// Menu searchMenu = VideoController.search(...);
+			// Menu searchMenu = VideoController.search(argsMap);
 			// return searchMenu;
 			break;
 		case "openvideo":

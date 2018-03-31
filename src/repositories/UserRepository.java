@@ -62,11 +62,11 @@ public class UserRepository {
 		// get all users
 		while (usersRS.next()) {
 			User user = new User(usersRS.getInt("user_id"),
-								 usersRS.getString("username"), 
+								 usersRS.getString("user_name"), 
 								 usersRS.getString("email"),
 								 usersRS.getString("password"));
 			//put users to map -key is usarname, value User object
-			users.put(usersRS.getString("username"), user);
+			users.put(usersRS.getString("user_name"), user);
 		}
 		usersRS.close();
         // System.out.println("Users loaded successfully");
@@ -92,10 +92,16 @@ public class UserRepository {
 		return this.getAllUsers().get(username);
 		
 	}
-	
-
-	
-	
+	//TODO
+    public void getUserById(int userId){
+    	
+    }
+	public void updatePassword(User user,String newPassword){
+		
+	}
+     public void deleteUser(User user){
+    	 
+     }
 //using JSON
 	
 //	public boolean checkForUser(String username) {

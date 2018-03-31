@@ -47,7 +47,7 @@ public class PlaylistDAO {
 				                         rezultSet.getString("name"),
 				                         rezultSet.getDate("last_video_add_date"),
 				                         rezultSet.getDate("create_date"));
-		    playlist.setVideos(VideoRepository.getInstance().getAllVideosForPlaylist(playlist));
+		 //   playlist.setVideos(VideoRepository.getInstance().getAllVideosForPlaylist(playlist));
 			playlists.add(playlist);
 	
 		}
@@ -57,6 +57,22 @@ public class PlaylistDAO {
 
         return Collections.unmodifiableSet(playlists);
 	}
-
+    //TODO
+	public void updataLastVideoAddDate(Playlist playlist){
+		
+	}
+	public void deletePlaylist(Playlist playlist){
+		
+	}
+	public void renamePlaylistName(Playlist playlist,String newName){
+		
+	}
+	public void getSortedPlaylistForChannelByLastVideoAddedDate(Channel channel){
+		
+	}
+	public void getAllPlaylists(){
+		
+	}
+	
 
 }

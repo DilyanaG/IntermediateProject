@@ -20,6 +20,7 @@ public class UserInterface {
 			runApplication();
 			System.out.println("Good buy");
 		} catch (Throwable t) {
+			t.printStackTrace();
 			Logger.getGlobal().severe(t.getMessage() + " " + t.getStackTrace());
 			System.out.println("Internal server error! Application will terminate. Sorry :(");
 		} finally {

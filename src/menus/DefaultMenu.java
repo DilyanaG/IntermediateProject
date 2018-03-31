@@ -4,6 +4,7 @@ import java.util.Map;
 
 import controllers.UserController;
 import controllers.VideoController;
+import enums.SortVideoBy;
 import exceptions.IllegalInputException;
 import parsers.UserParser;
 
@@ -30,7 +31,7 @@ public class DefaultMenu extends Menu {
 
 		switch (command) {
 		case "search":
-			// Menu searchMenu = VideoController.search(...);
+			//Menu searchMenu = VideoController.search(argsMap.get("tag"),SortVideoBy.resolve(argsMap));
 			// return searchMenu;
 			break;
 		case "login":
@@ -39,14 +40,14 @@ public class DefaultMenu extends Menu {
 			// return userMenu;
 			break;
 		case "register":
-			// final User user = UserParser.parse(argsMap);
+			// final User user = UserParser.parse(argsMap); ?//maybe parametar user for controllere regiter
 			// Menu userMenu = UserController.register(user.getUsername(), user.getPassword(), user.getEmail());
 			// return userMenu;
 			break;
 		case "exit":
-			// Menu exitMenu = null;
-			// return exitMenu;
-			break;
+			Menu exitMenu = null;
+		    return exitMenu;
+
 
 		default:
 			// throw new IllegalInputException();

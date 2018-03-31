@@ -10,6 +10,7 @@ public class Comment {
 	
 	private int commentId;
 	private  Channel channel;
+	private Video video;
 	private String content;
 	private Date publicationDate;
 	private int likes;
@@ -33,7 +34,12 @@ public class Comment {
 		this.dislikes = DEFAULT_DISLIKES_TO_COMMENTS;
 		this.responses = new ArrayList<Comment>();
 	}
-
+    public void setVideo(Video video) {
+	this.video = video;
+    }
+   public Video getVideo() {
+	return video;
+     }
 	public int getCommentId() {
 		return commentId;
 	}
