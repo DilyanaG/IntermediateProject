@@ -5,19 +5,20 @@ public class Channel {
 	private static final int DEFAULT_FOLLOWERS = 0;
 
 	private int channelId;
-	private final User user;//Channel has a user because the link is lost
+	private final User user;//TODO Channel has a user because the link is lost
 	
-	//maybe the channel does not have such a field because
+	//TODO 
+	/*maybe the channel does not have such a field because
 	   //it is extracted for a certain situation by those responsible for its DAO 
 	//in the DB schema channel have a channel id and user id
 	//not have a videos
-	//videos keep channel_id
+	videos keep channel_id
 	
 //	private Set<Video> videoclips;
 //	private Set<Playlist> playlists;
 //	private Set<Channel> channels;
 //	private long followers;
-//   
+  */
 
 	
 	public Channel(int channelId,User user){

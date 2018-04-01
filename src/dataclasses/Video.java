@@ -1,9 +1,7 @@
 package dataclasses;
 
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -26,6 +24,7 @@ public class Video {
 	private int countOfDislikes;
 	private int views;
 
+//	TODO remove this?
 	public Video(int videoId, String url, 
 				Channel channel, String title, String description, 
 					Date uploadDate,

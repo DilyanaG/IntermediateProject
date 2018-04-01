@@ -20,7 +20,7 @@ private static CommentParser commentParser;
 	
 	public Comment parse(Map<String, String> argsMap){
 		final String content = argsMap.get("content");
-		
+		//TODO make parser
 		return new Comment(null, content);
 	}
 }

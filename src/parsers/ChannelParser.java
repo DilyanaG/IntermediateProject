@@ -18,7 +18,8 @@ public class ChannelParser {
 	}
 
 	public Channel parse(Map<String, String> argsMap) {
+		return null;
 
-		return new Channel();
+	//TODO makeParser;
 	}
 }
