@@ -4,8 +4,12 @@ import java.util.Map;
 
 import controllers.UserController;
 import controllers.VideoController;
+<<<<<<< HEAD
 import dataclasses.User;
 import enums.SortSearchBy;
+=======
+import enums.SortVideoBy;
+>>>>>>> 51c885e98ce8098db7b4c43aa448418131f80173
 import exceptions.IllegalInputException;
 import parsers.GenericParser;
 import parsers.UserParser;
@@ -51,8 +55,8 @@ public class DefaultMenu extends Menu {
 			return userMenu;
 		case "exit":
 			Menu exitMenu = null;
-			return exitMenu;
-			
+		    return exitMenu;
+
 		default:
 			// this new IllegalInputException();
 			break;

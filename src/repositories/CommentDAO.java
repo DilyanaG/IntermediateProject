@@ -59,10 +59,37 @@ public class CommentDAO {
 
 	        return Collections.unmodifiableList(comments);
 	}
-
+//TODO
 	private List<Comment> getResponsesForComment(Comment comment) {
 		//TO DO select
 		return Collections.EMPTY_LIST;
+	}
+	public void addNewCommentForVideo(Video video,Channel Channel){
+		
+	}
+	public void likeComment(Comment comment){
+		
+	}
+	public void dislikeCommment(Comment commment){
+		
+	}
+	public void responseComment(Comment toResponse,Comment responser,Video video,Channel channel){
+		
+	}
+	public void deleteComment(Comment comment){
+		
+	}
+	public void updateToCommentContent(Comment comment, String newContent){
+		
+	}
+	public void getAllComments(){
+		
+	}
+	public void voidGetAllCommentsForChannel(Channel channel){
+		
+	}
+	public void deleteAllCommentsForVideo(Video video){
+		
 	}
 
 }

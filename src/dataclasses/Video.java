@@ -22,7 +22,6 @@ public class Video {
 	private String description;
 	private Date uploadDate;
 	private Set<String> tags;
-	private List<Comment> comments;
 	private int countOfLikes;
 	private int countOfDislikes;
 	private int views;
@@ -51,7 +50,6 @@ public class Video {
 		this.description = DEFAULT_DESCRIPTION;
 		this.uploadDate = new Date();
 		this.tags = new TreeSet<String>();
-		this.comments = new ArrayList<Comment>();
 		this.countOfLikes = DEFAULT_LIKES_TO_VIDEO;
 		this.countOfDislikes = DEFAULT_DISLIKES_TO_VIDEO;
 		this.views = DEFAULT_VIEWS_TO_VIDEO;
@@ -97,15 +95,7 @@ public class Video {
 	public void setTags(Set<String> tags) {
 		this.tags = tags;
 	}
-
-	public List<Comment> getComments() {
-		return comments;
-	}
-
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
-	}
-
+	
 	public int getCountOfLikes() {
 		return countOfLikes;
 	}

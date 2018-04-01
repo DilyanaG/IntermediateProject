@@ -8,13 +8,13 @@ import java.util.TreeSet;
 public class Playlist {
 	private int playlistId;
 	private String playlistName;
-	private Set<Video> videos;
+//	private Set<Video> videos;
 	private Date lastVideoUploaded;
 	private Date creationDateTime; // TODO WHEN ADDING VIDEO UPDATE
 
 	public Playlist(String playlistName) {
 		this.playlistName = playlistName;
-		this.videos = new TreeSet<Video>();
+	//	this.videos = new TreeSet<Video>();
 		this.creationDateTime = new Date();
 	}
 
@@ -33,13 +33,13 @@ public class Playlist {
 		this.playlistName = playlistName;
 	}
 
-	public Set<Video> getVideos() {
-		return videos;
-	}
-
-	public void setVideos(Set<Video> videos) {
-		this.videos = videos;
-	}
+//	public Set<Video> getVideos() {
+//		return videos;
+//	}
+//
+//	public void setVideos(Set<Video> videos) {
+//		this.videos = videos;
+//	}
 
 	public Date getLastVideoUploaded() {
 		return lastVideoUploaded;

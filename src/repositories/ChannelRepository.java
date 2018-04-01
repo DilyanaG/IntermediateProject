@@ -1,45 +1,48 @@
 package repositories;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
 
 import dataclasses.Channel;
 import dataclasses.User;
-import exceptions.IllegalUserArgumentException;
+import exceptions.InvalidDataException;
 
 public class ChannelRepository {
 	//for DB
-	private static final String INSERT_INTO_CHANNELS =
+	//selects
+	private static final String ALL_CHANNELS = 
+			"SELECT channel_id,user_name FROM channels JOIN users ON users.user_id=channels.user_id;";
+	private static final String BY_USERNAME = 
+			"SELECT c.channel_id, u.user_name FROM channels c JOIN users u ON u.user_id=c.user_id WHERE u.user_name = ?;";
+    private static final String BY_CHANNEL_ID =
+			"SELECT c.channel_id, u.user_name FROM channels c JOIN users u ON u.user_id=c.user_id WHERE c.channel_id = ?;";
+    private static final String COUNT_OF_FOLLOWERS =
+      "SELECT COUNT(follower_channel_id) FROM channels_followed_channels WHERE followed_channel_id = ?;";
+    private static final String FOLLOWED_CHANNELS = 
+			"SELECT u.user_name,f.channel_id FROM users u JOIN channels f ON f.user_id=u.user_id"+
+                 " JOIN channels_followed_channels t ON f.channel_id = followed_channel_id WHERE follower_channel_id = ?;";
+   //inserts 
+    private static final String INSERT_INTO_CHANNELS =
 			"INSERT INTO users (user_id) VALUES (?);";
-	private static final String SELECT_ALL_CHANNELS = 
-			"SELECT channel_id,user_name FROM channels JOIN users ON user.user_id=channel.user_id;";
-	private static final String SELECT_CHANNEL_BY_USER_ID =
-			"SELECT channel_id FROM channels WHERE user_id = ?";
+    private static final String FOLLOW_CHANNEL = 
+			"INSERT INTO channels_followed_channels (follower_channel_id, followed_channel_id) VALUES (?,?);";
 	
-
-	// json
-	private static final String CHANNELS_JSON_FILE = ".//JSONfiles//channels.json";
 	
-
-
+	//updates
 	
-	private Map<String, Channel> channels;
+    //delete
+
+//   json
+//	private static final String CHANNELS_JSON_FILE = ".//JSONfiles//channels.json";
+//    private Map<String, Channel> channels;
 
 	private static ChannelRepository instance;
 	private Connection connection;
@@ -60,99 +63,166 @@ public class ChannelRepository {
 	public void addNewChannelToDB(User user) throws SQLException {
 		PreparedStatement st = connection.prepareStatement(INSERT_INTO_CHANNELS);
 		st.setInt(1, user.getUserId());
+		st.executeUpdate();
 		st.close();
-		//TODO call channeldao for insert new channel in channel table 
-
 	}
 	
-	public Map<String, Channel> getAllChannels() throws SQLException {
+	public Map<String, Channel> getAllChannels() throws SQLException, InvalidDataException {
         Map<String, Channel> channels = new HashMap<String, Channel>();
-		PreparedStatement channelSt = connection.prepareStatement(SELECT_ALL_CHANNELS);
+		PreparedStatement channelSt = connection.prepareStatement(ALL_CHANNELS);
 		ResultSet channelRS = channelSt.executeQuery();
 		// get all channles
-		while (channelRS.next()) {
-			User user = UserRepository.getInstance().getUserByUserName(channelRS.getString("user_name"));
-			Channel channel = new Channel(channelRS.getInt("channel_id"),user);
-			channel.setVideoclips(VideoRepository.getInstance().getVideosForChannel(channel));
-			channel.setPlaylists(PlaylistDAO.getInstance().getPlaylistForChannel(channel));
-			channel.setChannels(this.getFollowedChannels(channel));
-			channel.setFollowers(this.getFolowersCountForChannel(channel));
-			//put channels to map -key is usarname, value Channel object
-			channels.put(user.getUserName(), channel);
-		}
+		for(Channel channel : createChannelsFromRezultSet(channelRS)){
+			channels.put(channel.getUser().getUserName(),channel);
+		};
 		channelRS.close();
 		channelSt.close();
         // System.out.println("Users loaded successfully");
 
         return Collections.unmodifiableMap(channels);
 	}
+
+	private List<Channel> createChannelsFromRezultSet(ResultSet channelRS) throws SQLException, InvalidDataException {
+		List<Channel> allChannels = new ArrayList<Channel>();
+		while (channelRS.next()) {
+			User user = UserRepository.getInstance().getUserByUserName(channelRS.getString("user_name"));
+			Channel channel = new Channel(channelRS.getInt("channel_id"),user);
+//			channel.setVideoclips(VideoRepository.getInstance().getVideosForChannel(channel));
+//			channel.setPlaylists(PlaylistDAO.getInstance().getPlaylistForChannel(channel));
+//			channel.setChannels(this.getFollowedChannels(channel));
+//			channel.setFollowers(this.getFolowersCountForChannel(channel));
+//			//put channels to map -key is usarname, value Channel object
+			allChannels.add(channel);
+		}
+		
+		return allChannels;
+	}
 	
-	public Channel getChannelById() {
-		// TODO Auto-generated method stub
-		return null;
+	public Channel getChannelById(int id) throws SQLException, InvalidDataException {
+		PreparedStatement channelSt = connection.prepareStatement(BY_CHANNEL_ID);
+		channelSt.setInt(1,id);
+		ResultSet channelRS = channelSt.executeQuery();
+		List<Channel> list = createChannelsFromRezultSet(channelRS);
+		channelRS.close();
+		channelSt.close();
+		if(list.isEmpty()){
+			throw new InvalidDataException("CHANNEL WITH THIS ID NOT FOUND");
+		}
+		return list.get(0);
 	}
 	
-	public Channel getChannelByUserName(String username) throws SQLException  {
-	      return this.getAllChannels().get(username);
-	}
-	private Set<Channel> getFollowedChannels(Channel channel){
-		//TO DO Write selection for this
-		return Collections.EMPTY_SET;
-	}
-   public long getFolowersCountForChannel(Channel channel){
-	   //to do write select for this
-	   return 0;
-   }
-
-	// JSON
-	private Map<String, Channel> getChannelsFromJSONFILE() {
-		Gson gson = new Gson();
-		Map<String, Channel> map = null;
-		try (Reader reader = new FileReader(CHANNELS_JSON_FILE)) {
-			JsonElement json = gson.fromJson(reader, JsonElement.class);
-			String jsonInString = gson.toJson(json);
-
-			// System.out.println(jsonInString);
-			map = gson.fromJson(jsonInString, new TypeToken<Map<String, Channel>>() {
-			}.getType());
-
-		} catch (IOException e) {
-			e.printStackTrace();
+	public Channel getChannelByUserName(String username) throws SQLException, InvalidDataException  {
+		PreparedStatement channelSt = connection.prepareStatement(BY_USERNAME);
+		channelSt.setString(1,username);
+		ResultSet channelRS = channelSt.executeQuery();
+		List<Channel> list = createChannelsFromRezultSet(channelRS);
+		channelRS.close();
+		channelSt.close();
+		if(list.isEmpty()){
+			throw new InvalidDataException("CHANNEL WITH THIS USERNAME NOT FOUND!");
 		}
-		if (map == null) {
-			map = new TreeMap<>();
-		}
-		return map;
-
+		return list.get(0);
 	}
-
-	private void writeUsersToJSONFile(Map<String, Channel> channels) {
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-		String json = gson.toJson(channels);
-		// System.out.println(json);
-		try (FileWriter writer = new FileWriter(CHANNELS_JSON_FILE)) {
-
-			gson.toJson(channels, writer);
-
-		} catch (IOException e) {
-			e.printStackTrace();
+	
+    public int getFolowersCountForChannel(Channel channel) throws SQLException{
+		     PreparedStatement channelSt = connection.prepareStatement(COUNT_OF_FOLLOWERS);
+             channelSt.setInt(1, channel.getChannelId());
+             ResultSet channelRS = channelSt.executeQuery();
+			int count=0;
+			while(channelRS.next()){
+				count=channelRS.getInt(1);
+			}
+			channelRS.close();
+			channelSt.close();
+		   return count;
+	   }
+	
+	private List<Channel> getFollowedChannels(Channel channel) throws InvalidDataException, SQLException{
+		PreparedStatement channelSt = connection.prepareStatement(FOLLOWED_CHANNELS);
+		channelSt.setInt(1,channel.getChannelId());
+		ResultSet channelRS = channelSt.executeQuery();
+		List<Channel> list = createChannelsFromRezultSet(channelRS);
+		channelRS.close();
+		channelSt.close();
+		if(list.isEmpty()){
+			throw new InvalidDataException("CHANNEL WITH THIS USERNAME NOT FOUND!");
 		}
+		return list;
 	}
-
-	public Channel getChannelToUser(User user) throws IllegalUserArgumentException {
-		this.channels = this.getChannelsFromJSONFILE();
-		if (channels == null) {
-			channels = new HashMap<>();
+  
+	public void  followChannel(Channel followerChannel, Channel folowedChannel) throws SQLException, InvalidDataException {
+		if(followerChannel.getChannelId()==folowedChannel.getChannelId()){
+			throw new InvalidDataException("YOU CAN NOT FOLLOW OWN CHANNEL!");
 		}
-		if (!channels.containsKey(user.getUserName())) {
-			Channel channel = new Channel(user);
-			channels.put(user.getUserName(), channel);
-			this.writeUsersToJSONFile(channels);
-		}
-		return this.channels.get(user.getUserName());
-
+	    PreparedStatement st = connection.prepareStatement(FOLLOW_CHANNEL);
+		st.setInt(1, followerChannel.getChannelId());
+		st.setInt(2, folowedChannel.getChannelId());
+		st.executeUpdate();
+		st.close();
+	
+}
+  //TO DO 
+	public void unfollowChannel(Channel followerChannel, Channel folowedChannel){
+		
 	}
+	public void deleteChannel(Channel channel){
+		
+	}
+	
+	public static void main(String[] args) throws SQLException, InvalidDataException {
+	User user = new User("ha", "hu", "hi");
+	getInstance().followChannel(new Channel(5, user),new Channel(3, user));
+}
+
+//	JSON
+//	private Map<String, Channel> getChannelsFromJSONFILE() {
+//		Gson gson = new Gson();
+//		Map<String, Channel> map = null;
+//		try (Reader reader = new FileReader(CHANNELS_JSON_FILE)) {
+//			JsonElement json = gson.fromJson(reader, JsonElement.class);
+//			String jsonInString = gson.toJson(json);
+//
+//			// System.out.println(jsonInString);
+//			map = gson.fromJson(jsonInString, new TypeToken<Map<String, Channel>>() {
+//			}.getType());
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		if (map == null) {
+//			map = new TreeMap<>();
+//		}
+//		return map;
+//
+//	}
+//
+//	private void writeUsersToJSONFile(Map<String, Channel> channels) {
+//		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//
+//		String json = gson.toJson(channels);
+//		// System.out.println(json);
+//		try (FileWriter writer = new FileWriter(CHANNELS_JSON_FILE)) {
+//
+//			gson.toJson(channels, writer);
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	public Channel getChannelToUser(User user) throws IllegalUserArgumentException {
+//		this.channels = this.getChannelsFromJSONFILE();
+//		if (channels == null) {
+//			channels = new HashMap<>();
+//		}
+//		if (!channels.containsKey(user.getUserName())) {
+//			Channel channel = new Channel(user);
+//			channels.put(user.getUserName(), channel);
+//			this.writeUsersToJSONFile(channels);
+//		}
+//		return this.channels.get(user.getUserName());
+//
+//	}
 
 	
 }

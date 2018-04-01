@@ -3,11 +3,21 @@ package controllers;
 import java.sql.SQLException;
 
 import dataclasses.User;
+<<<<<<< HEAD
 import exceptions.IllegalInputException;
 import menus.DefaultMenu;
 import menus.HomeMenu;
 import menus.Menu;
 import menus.SettingsMenu;
+=======
+import exceptions.IllegalEmailException;
+import exceptions.IllegalInputException;
+import exceptions.IllegalNameException;
+import exceptions.IllegalPasswordException;
+import exceptions.IllegalUserArgumentException;
+import exceptions.InvalidDataException;
+import exceptions.UserNotFoundException;
+>>>>>>> 51c885e98ce8098db7b4c43aa448418131f80173
 import parsers.UserParser;
 import services.UserServices;
 
@@ -31,10 +41,12 @@ public class UserController {
 		return userController;
 	}
 	
+	//TODO if logged in successful -> HomeMenu, else -> Default Menu
 	public Menu login(String username, String password) {
 		addFields(); //TODO what is this?
 		try {
 			userService.login(username, password);
+			//TODO channelController.sa; - what is this?
 			return new HomeMenu();
 		} catch (IllegalInputException e) {
 			System.out.println(e.getMessage()); //TODO This should be handles by the UI
