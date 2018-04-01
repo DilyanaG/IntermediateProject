@@ -1,13 +1,11 @@
 package parsers;
 
-import dataclasses.Channel;
+import java.util.Map;
+
 import dataclasses.Comment;
-import exceptions.IllegalChannelArgumentException;
-import exceptions.IllegalCommentContentException;
 
 public class CommentParser {
 private static CommentParser commentParser;
-private final ChannelParser channelParser = ChannelParser.getInstance();
 
 	
 	private CommentParser(){
@@ -20,9 +18,9 @@ private final ChannelParser channelParser = ChannelParser.getInstance();
 		return commentParser;
 	}
 	
-	public Comment parse(String channelName, String content){
-		Channel channel = channelParser.parse(channelName);
-		Comment comment=comment = new Comment(channel, content);
-       return comment;
+	public Comment parse(Map<String, String> argsMap){
+		final String content = argsMap.get("content");
+		
+		return new Comment(null, content);
 	}
 }

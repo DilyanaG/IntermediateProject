@@ -4,14 +4,19 @@ import java.util.Map;
 
 import controllers.UserController;
 import controllers.VideoController;
+import dataclasses.User;
+import enums.SortSearchBy;
 import exceptions.IllegalInputException;
+import parsers.GenericParser;
 import parsers.UserParser;
 
 public class DefaultMenu extends Menu {
 
-	private UserParser parser = UserParser.getInstance();
-	private UserController controller = UserController.getInstance();
-	private VideoController videoParser = VideoController.getInstance();
+	private UserParser userParser = UserParser.getInstance();
+	private GenericParser genericParser = GenericParser.getInstance();
+	
+	private UserController userController = UserController.getInstance();
+	private VideoController videoController = VideoController.getInstance();
 	
 	@Override
 	protected String specialPresent() {
@@ -23,33 +28,33 @@ public class DefaultMenu extends Menu {
 
 	@Override
 	public Menu process(String input) throws IllegalInputException {
-		final String command = input.split(" ")[0].toLowerCase();// read first word from input
+		final String command = input.split(" ")[0].toLowerCase(); // read first word from input
 		final String args = input.substring(command.length()); // remove command
 
-		final Map<String, String> argsMap = parseToMap(args);
+		final Map<String, String> argsMap = parseToMap(args); // make pairs of parameter and value
+		
+		final User user = userParser.parse(argsMap);
+		Menu userMenu = null;
 
 		switch (command) {
 		case "search":
-			// Menu searchMenu = VideoController.search(...);
-			// return searchMenu;
-			break;
+			final SortSearchBy sortBy = SortSearchBy.resolve(argsMap);
+			final String key = "tags";
+			final String tags = genericParser.parseToString(argsMap, key);
+			Menu searchMenu = videoController.search(tags, sortBy); 
+			return searchMenu;
 		case "login":
-			// final User user = UserParser.parse(argsMap);
-			// Menu userMenu = UserController.login(user.getUsername(), user.getPassword());
-			// return userMenu;
-			break;
+			userMenu = userController.login(user.getUserName(), user.getPassword());
+			return userMenu;
 		case "register":
-			// final User user = UserParser.parse(argsMap);
-			// Menu userMenu = UserController.register(user.getUsername(), user.getPassword(), user.getEmail());
-			// return userMenu;
-			break;
+			userMenu = userController.register(user.getUserName(), user.getPassword(), user.getEmail());
+			return userMenu;
 		case "exit":
-			// Menu exitMenu = null;
-			// return exitMenu;
-			break;
-
+			Menu exitMenu = null;
+			return exitMenu;
+			
 		default:
-			// throw new IllegalInputException();
+			// this new IllegalInputException();
 			break;
 		}
 

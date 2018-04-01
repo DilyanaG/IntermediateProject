@@ -5,8 +5,17 @@ import java.util.Map;
 
 import dataclasses.Channel;
 import dataclasses.Video;
+import enums.SortSearchBy;
 import enums.SortVideoBy;
+import exceptions.IllegalInputException;
 import exceptions.InvalidDataException;
+import menus.ChannelMenu;
+import menus.CommentMenu;
+import menus.DefaultMenu;
+import menus.Menu;
+import menus.MyVideosMenu;
+import menus.SearchMenu;
+import menus.VideoMenu;
 import services.VideoServices;
 
 public class VideoController {
@@ -24,35 +33,66 @@ public class VideoController {
 		return videoController;
 	}
 
-	//TODO sortBy as a parameter and make the DB sort it with select and orders
-	public List<Video> search(String tags, SortVideoBy sort) throws InvalidDataException {
-		return videoServices.search(tags, sort);
+	// sortBy tells the DB by what to sort it with select and order_by
+	public Menu search(String tags, SortSearchBy sort){
+			videoServices.search(tags, sort);
+			return new SearchMenu();
 	}
 	
-	//TODO instead of Video -> videoID 
-	public void openVideo(Video video) {
-		videoServices.openVideo(video);
+	// TODO if(super.getUser() == null) return visitorChannelMenu;
+		public Menu sortVideos(SortVideoBy sortVideoBy) {
+			videoServices.sortVideos(sortVideoBy);
+			return new MyVideosMenu();
+		}
+		
+	//TODO if(super.getUser() == null) return visitorVideoMenu;
+	public Menu openVideo(String string) {
+		videoServices.openVideo(string);
+		return new VideoMenu();
 	}
 	
-	public void removeVideo(Video video) {
-		videoServices.removeVideo(video);
+	public Menu removeVideo(String title) {
+		videoServices.removeVideo(title);
+		return new MyVideosMenu();
 	}
 
-	public Channel openAuthorsChannel(Video video) {
-		return videoServices.openAuthorsChannel(video);
+	// TODO if(super.getUser() == null) return visitorChannelMenu;
+	public Menu openAuthorsChannel(String title) {
+		videoServices.openAuthorsChannel(title);
+		return new ChannelMenu();
 	}
 
-	public void addLikeDislikeToVideo(boolean isLike, Video video) {
-		videoServices.addLikeDislikeToVideo(isLike, video);
+	public Menu addLikeDislikeToVideo(boolean isLike, String title) {
+		videoServices.addLikeDislikeToVideo(isLike, title);
+		return new VideoMenu();
 	}
 
-	public void removeLikeDislikeFromVideo(boolean isLike,  Video video) {
-		videoServices.removeLikeDislikeFromVideo(isLike, video);
+	public Menu removeLikeDislikeFromVideo(boolean isLike,  String title) {
+		videoServices.removeLikeDislikeFromVideo(isLike, title);
+		return new VideoMenu();
 	}
 
+	public Menu addVideoToPlaylist(String title, String playlistName) {
+		videoServices.addVideoToPlaylist(title, playlistName);
+		return new VideoMenu();
+	}
+	
+	// TODO if(super.getUser() == null) return visitorCommentMenu;
+	public Menu showVideoComments(String title) {
+		videoServices.showVideoComments(title);
+		return new CommentMenu();
+	}
+
+	
+	///////////////////////
+	
+	// Why do we need this?
 	public Map<Integer, Video> giveVideosToChannel(Channel channel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
+
 	
 }

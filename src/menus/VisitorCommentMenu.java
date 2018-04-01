@@ -3,25 +3,23 @@ package menus;
 import java.util.Map;
 
 import controllers.ChannelController;
+import controllers.CommentController;
 import controllers.VideoController;
-import dataclasses.Video;
 import enums.SortSearchBy;
 import exceptions.IllegalInputException;
 import parsers.GenericParser;
-import parsers.VideoParser;
 
-public class SearchMenu extends Menu{
-
-	private GenericParser genericParser = GenericParser.getInstance();
-	private VideoParser videoParser = VideoParser.getInstance();
-	
-	private VideoController videoController = VideoController.getInstance();
+public class VisitorCommentMenu extends Menu{
 	private ChannelController channelController = ChannelController.getInstance();
+	private VideoController videoController = VideoController.getInstance();
+	private CommentController commentController = CommentController.getInstance();
 	
+	private GenericParser genericParser = GenericParser.getInstance();
+
 	@Override
 	protected String specialPresent() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append(">OpenVideo -title=title_here\n");
+		builder.append(">OpenAuthorsChannel -commentid=comment_id_here\n");
 		builder.append(">Homepage\n");
 		return builder.toString();
 	}
@@ -33,6 +31,10 @@ public class SearchMenu extends Menu{
 
 		final Map<String, String> argsMap = parseToMap(args);
 
+		final String keyCommentID = "commentid";
+		final Integer commentid = genericParser.parseToInteger(argsMap, keyCommentID);
+
+		
 		switch (command) {
 		case "search":
 			final SortSearchBy sortBy = SortSearchBy.resolve(argsMap);
@@ -40,17 +42,16 @@ public class SearchMenu extends Menu{
 			final String tags = genericParser.parseToString(argsMap, key);
 			Menu searchMenu = videoController.search(tags, sortBy); 
 			return searchMenu;
-		case "openvideo":
-			final Video video = videoParser.parse(argsMap);
-			Menu videoMenu = videoController.openVideo(video.getTitle());
-			return videoMenu;
+		case "openauthorschannel":
+			Menu visitorChannelMenu = commentController.openAuthorsChannel(commentid);
+			return visitorChannelMenu;
 		case "homepage":
-			Menu homeMenu = channelController.homepage();
-			return homeMenu;
+			Menu defaultMenu = channelController.homepage();
+			return defaultMenu;
 		case "exit":
 			Menu exitMenu = null;
 			return exitMenu;
-
+		
 		default:
 			//TODO throw new IllegalInputException();
 			break;
@@ -58,5 +59,4 @@ public class SearchMenu extends Menu{
 
 		return null;
 	}
-
 }

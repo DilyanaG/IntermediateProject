@@ -1,7 +1,8 @@
 package parsers;
 
+import java.util.Map;
+
 import dataclasses.Playlist;
-import exceptions.IllegalChannelArgumentException;
 
 public class PlaylistParser {
 private static PlaylistParser playlistParser;
@@ -17,9 +18,9 @@ private static PlaylistParser playlistParser;
 	}
 	
 	
-	public Playlist parse(String name) throws IllegalChannelArgumentException{
-		Playlist playlist = new Playlist(name);
+	public Playlist parse(Map<String, String> argsMap){
+		final String playlistName = argsMap.get("playlistname");
 		
-		return playlist;
+		return new Playlist(playlistName);
 	}
 }

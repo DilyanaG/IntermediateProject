@@ -3,12 +3,23 @@ package menus;
 import java.util.Map;
 
 import controllers.ChannelController;
+import controllers.UserController;
+import controllers.VideoController;
+import dataclasses.Video;
+import enums.SortSearchBy;
 import exceptions.IllegalInputException;
+import parsers.GenericParser;
+import parsers.VideoParser;
 
 public class HomeMenu extends Menu {
 
+	private GenericParser genericParser = GenericParser.getInstance();
+	private VideoParser videoParser = VideoParser.getInstance();
+	
+	private UserController userController = UserController.getInstance();
 	private ChannelController channelController = ChannelController.getInstance();
-
+	private VideoController videoController = VideoController.getInstance();
+	
 	@Override
 	protected String specialPresent() {
 		final StringBuilder builder = new StringBuilder();
@@ -28,44 +39,41 @@ public class HomeMenu extends Menu {
 		final String args = input.substring(command.length()); // remove command
 
 		final Map<String, String> argsMap = parseToMap(args);
-
+		
+		final String username = null; //TODO where to get the current user`s username?
+		
 		switch (command) {
 		case "search":
-			// Menu searchMenu = VideoController.search(...);
-			// return searchMenu;
-			break;
+			final SortSearchBy sortBy = SortSearchBy.resolve(argsMap);
+			final String key = "tags";
+			final String tags = genericParser.parseToString(argsMap, key);
+			Menu searchMenu = videoController.search(tags, sortBy); 
+			return searchMenu;
 		case "addvideo":
-			// final Video video = VideoParser.parse(argsMap);
-			// Menu homeMenu = ChannelController.addVideo(video.getTitle(), video.getURL(), video.getDescription());
-			// return homeMenu;
-			break;
+			final Video video = videoParser.parse(argsMap);
+			Menu homeMenu = channelController.addVideo(video.getTitle(), video.getUrl(), video.getDescription());
+			return homeMenu;
 		case "myvideos":
-			// Menu myVideosMenu = ChannelController.myVideos();
-			// return myVideosMenu;
-			break;
+			Menu myVideosMenu = channelController.myVideos();
+			return myVideosMenu;
 		case "myplaylists":
-			// Menu myPlaylistsMenu = ChannelController.myPlaylists();
-			// return myPlaylistsMenu;
-			break;
+			Menu myPlaylistsMenu = channelController.myPlaylists();
+			return myPlaylistsMenu;
 		case "mychannels":
-			// Menu myChannelsMenu = ChannelController.myChannels();
-			// return myChannelsMenu;
-			break;
+			Menu myChannelsMenu = channelController.myChannels();
+			return myChannelsMenu;
 		case "settings":
-			// Menu settingsMenu = ChannelController.settings();
-			// return settingsMenu;
-			break;
+			Menu settingsMenu = channelController.settings();
+			return settingsMenu;
 		case "logout":
-			// Menu defaultMenu = ChannelController.logout();
-			// return defaultMenu;
-			break;
+			Menu defaultMenu = userController.logout(username);
+			return defaultMenu;
 		case "exit":
-			// Menu exitMenu = null;
-			// return exitMenu;
-			break;
+			Menu exitMenu = null;
+			return exitMenu;
 		
 		default:
-			// throw new IllegalInputException();
+			//TODO throw new IllegalInputException();
 			break;
 		}
 
