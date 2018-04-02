@@ -1,24 +1,8 @@
 package controllers;
 
-import java.sql.SQLException;
-
 import dataclasses.User;
-<<<<<<< HEAD
 import exceptions.IllegalInputException;
-import menus.DefaultMenu;
-import menus.HomeMenu;
-import menus.Menu;
-import menus.SettingsMenu;
-=======
-import exceptions.IllegalEmailException;
-import exceptions.IllegalInputException;
-import exceptions.IllegalNameException;
-import exceptions.IllegalPasswordException;
-import exceptions.IllegalUserArgumentException;
-import exceptions.InvalidDataException;
-import exceptions.UserNotFoundException;
->>>>>>> 51c885e98ce8098db7b4c43aa448418131f80173
-import parsers.UserParser;
+import menus.*;
 import services.UserServices;
 
 public class UserController {
@@ -26,11 +10,10 @@ public class UserController {
 	private static UserController userController;
 
 	private UserServices userService;
-	private UserParser userParser;
 
-	private ChannelController channelController;
 
 	private UserController() {
+		this.userService = UserServices.getInstance();
 
 	}
 
@@ -42,27 +25,31 @@ public class UserController {
 	}
 	
 	//TODO if logged in successful -> HomeMenu, else -> Default Menu
-	public Menu login(String username, String password) {
-		addFields(); //TODO what is this?
+	public Menu login(String username, String password)  {
+
 		try {
 			userService.login(username, password);
-			//TODO channelController.sa; - what is this?
 			return new HomeMenu();
 		} catch (IllegalInputException e) {
 			System.out.println(e.getMessage()); //TODO This should be handles by the UI
 			return new DefaultMenu();
 		}
 	}
+     //String username, String password, String email
+	public Menu register(User user) {
 
-	public Menu register(String username, String password, String email) {
-		addFields(); //TODO what is this?
 		try {
-			userService.register(username, password, email);
+			if(!userService.register(user)){
+				throw new IllegalInputException("DATABASE PROBLEM!");
+			}
+			return new DefaultMenu();
+			
 		} catch (IllegalInputException e) {
 			System.out.println(e.getMessage()); //TODO This should be handles by the UI
-		}finally{
 			return new DefaultMenu();
 		}
+			
+		
 	}
 
 	public Menu logout(String username) {
@@ -70,25 +57,15 @@ public class UserController {
 		return new DefaultMenu();
 	}
 
-	public Menu changePassword(String newPassword) {
+	public Menu changePassword(String newPassword) throws IllegalInputException {
 		userService.changePassword(newPassword);
 		return new SettingsMenu();
 	}
 	
-	public Menu deleteAccount(String password) {
+	public Menu deleteAccount(String password) throws IllegalInputException {
 		userService.deleteAccount(password);
 		return new DefaultMenu();
 	}
 	
-	
-	/////////////////
-	
-	//TODO use this method because throw stackoverflow error
-	private void addFields() {
-		this.userService = UserServices.getInstance();
-		this.userParser = UserParser.getInstance();
-		// this. onlineUser =OnlineUserInterface.getInstance();
-		// this.offlineUser=OfflineUserInterface.getInstance();
-		this.channelController = ChannelController.getInstance();
-	}
+
 }

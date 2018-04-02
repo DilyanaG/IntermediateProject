@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import dataclasses.Channel;
+import dataclasses.Playlist;
 import dataclasses.Video;
 import enums.SortSearchBy;
 import enums.SortVideoBy;
 import exceptions.IllegalInputException;
 import exceptions.InvalidDataException;
-<<<<<<< HEAD
 import menus.ChannelMenu;
 import menus.CommentMenu;
 import menus.DefaultMenu;
@@ -17,10 +17,8 @@ import menus.Menu;
 import menus.MyVideosMenu;
 import menus.SearchMenu;
 import menus.VideoMenu;
-=======
 import menus.Menu;
 import menus.SearchMenu;
->>>>>>> 51c885e98ce8098db7b4c43aa448418131f80173
 import services.VideoServices;
 
 public class VideoController {
@@ -38,6 +36,7 @@ public class VideoController {
 		return videoController;
 	}
 
+	
 	// sortBy tells the DB by what to sort it with select and order_by
 	public Menu search(String tags, SortSearchBy sort){
 			videoServices.search(tags, sort);
@@ -92,12 +91,16 @@ public class VideoController {
 	}
 
 	
-	///////////////////////
-	
-	// Why do we need this?
-	public Map<Integer, Video> giveVideosToChannel(Channel channel) {
-		// TODO Auto-generated method stub
-		return null;
+
+//TODO
+	public List<Video> getPlaylistVideos(Playlist playlist) throws IllegalInputException {
+		
+		return videoServices.getPlaylistVideos(playlist);
+	}
+
+	public void deleteVideoFromPlaylist(Playlist currentOppenedPlaylist, String videoTitle) {
+		videoServices.deleteVideoFromPlaylist(currentOppenedPlaylist,videoTitle);
+		
 	}
 
 	

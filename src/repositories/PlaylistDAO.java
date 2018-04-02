@@ -16,6 +16,9 @@ import enums.SortPlaylistBy;
 public class PlaylistDAO {
 	//DB
 	//selects
+	private static final String SELECT_BY_NAME =
+			"SELECT playlist_id,name, create_date,last_video_add_date  FROM playlists WHERE name =?;";
+	
 	private static final String SELECT_ALL_PLAYLIST_BY_CHANNEL_ID =
 			"SELECT playlist_id, name, last_video_add_date, create_date  FROM playlists WHERE channel_id = ?;";
 	private static final String ALL_PLAYLISTS = 
@@ -27,7 +30,7 @@ public class PlaylistDAO {
 			" SELECT playlist_id,name, create_date,last_video_add_date  FROM playlists WHERE channel_id =?;" +
                              "ORDER BY create_date DESC;";
 	private static final String BY_NAME =
-			" SELECT playlist_id,name, create_date,last_video_add_date  FROM playlists WHERE channel_id =?;" +
+			" SELECT playlist_id,name, create_date,last_video_add_date  FROM playlists WHERE channel_id =?" +
                              "ORDER BY name ;";
 	
   //updates
@@ -41,9 +44,10 @@ public class PlaylistDAO {
 	
 	//delete
 	private static final String DELETE_FROM_PLAYLIST_HAS_VIDEOS_TABLE = 
-			"DELETE FROM playlists_has_videos WHERE playlist_id = ?;";
+			"DELETE FROM playlists_has_videos WHERE playlist_id in ( "+
+	                             "SELECT playlist_id FROM playlists WHERE playlist_name = '?';";
 	private static final String DELETE_PLAYLIST =
-			"DELETE FROM playlists WHERE playlist_id = ?;";
+			"DELETE FROM playlists WHERE playlist_name = '?';";
 	
 	
 	private static PlaylistDAO instance;
@@ -61,10 +65,10 @@ public class PlaylistDAO {
 		return instance;
 	}
     
-	public void createNewPlaylist(Playlist playlist,Channel channel) throws SQLException{
+	public void createNewPlaylist(String playlistName,Channel channel) throws SQLException{
 		PreparedStatement st = connection.prepareStatement(CREATE_NEW_PLAYLIST);
 		st.setInt(1, channel.getChannelId());
-		st.setString(2,playlist.getPlaylistName());
+		st.setString(2,playlistName);
 		st.executeUpdate();
 		st.close();
 	}
@@ -103,17 +107,17 @@ public class PlaylistDAO {
 		st.close();
 	}
 
-	public void deletePlaylist(Playlist playlist) throws SQLException{
-		this.deletePlaylistFromTable(playlist.getId());
+	public void deletePlaylist(String playlist_name) throws SQLException{
+		this.deletePlaylistFromTable(playlist_name);
 		PreparedStatement st = connection.prepareStatement(DELETE_PLAYLIST);
-		st.setInt(1, playlist.getId());
+		st.setString(1, playlist_name);
 		st.executeUpdate();
 		st.close();
 	}
 
-	private void deletePlaylistFromTable(int id) throws SQLException {
+	private void deletePlaylistFromTable(String playlist_name) throws SQLException {
 		PreparedStatement st = connection.prepareStatement(DELETE_FROM_PLAYLIST_HAS_VIDEOS_TABLE);
-		st.setInt(1, id);
+		st.setString(1, playlist_name);
 		st.executeUpdate();
 		st.close();
 	}
@@ -126,12 +130,22 @@ public class PlaylistDAO {
 		st.close();
 	}
 	
-	//TODO SortPlaylist By ENUM ?
+	//TODO SortPlaylist   ?
 	
 	public List<Playlist> getSortedPlaylistForChannelBy(Channel channel,SortPlaylistBy sortBy) throws SQLException{
 		
 		String sort ="";
-		//TODO ?
+		switch(sortBy){
+		case NEWEST:{
+			
+		}
+		case OLDEST:{
+			
+		}
+		case VIDEOS: {
+			
+		}
+		}
 		
         
 		List<Playlist> playlists =new  ArrayList<>();
@@ -162,9 +176,24 @@ public class PlaylistDAO {
 	public void deleteChannelPlaylists(Channel channel) throws SQLException {
 	  
 		for(Playlist playlist : this.getPlaylistForChannel(channel)){
-			this.deletePlaylist(playlist);
+			this.deletePlaylist(playlist.getPlaylistName());
 		}
 		
+	}
+
+	public Playlist getPlaylistByName(String playlist_name) throws SQLException {
+		PreparedStatement st = connection.prepareStatement(SELECT_BY_NAME);
+		st.setString(1,playlist_name);
+		ResultSet rezultSet= st.executeQuery();
+		rezultSet.next();
+			
+			
+		Playlist playlist = new Playlist(rezultSet.getInt("playlist_id"), 
+				                         rezultSet.getString("name"),
+				                         rezultSet.getDate("last_video_add_date"),
+				                         rezultSet.getDate("create_date"));
+		
+		return playlist;
 	}
 	
 

@@ -18,15 +18,16 @@ public class Comment {
 	private List<Comment> responses;
 
 	public Comment(int channelId, Video video, Channel channel, String content, Date publicationDate, int likes,int dislikes) {
-		this(channel, content, video);
+		this(channel, content);
 		this.commentId = channelId;
 		this.publicationDate = publicationDate;
 		this.likes = likes;
 		this.dislikes = dislikes;
+		this.video = video;
 
 	}
 
-	public Comment(Channel channel, String content, Video video) {
+	public Comment(Channel channel, String content) {
 		this.channel = channel;
 		this.content = content;
 		this.video = video;

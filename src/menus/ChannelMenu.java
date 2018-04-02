@@ -64,7 +64,7 @@ public class ChannelMenu extends Menu{
 			channelMenu = channelController.followChannel(channelName);
 			return channelMenu;
 		case "showvideos":
-			channelMenu = channelController.showVideos(channelID);
+			channelMenu = channelController.showVideos();
 			return channelMenu;
 		case "sortvideos":
 			final SortVideoBy sortVideoBy = SortVideoBy.resolve(argsMap);
@@ -76,7 +76,7 @@ public class ChannelMenu extends Menu{
 			Menu videoMenu = videoController.openVideo(title);
 			return videoMenu;
 		case "showplaylists":
-			channelMenu = channelController.showPlaylists(channelID);
+			channelMenu = channelController.showPlaylists();
 			return channelMenu;
 		case "sortplaylists":
 			final SortPlaylistBy sortPlaylistBy = SortPlaylistBy.resolve(argsMap);
@@ -87,7 +87,7 @@ public class ChannelMenu extends Menu{
 			Menu playlistMenu = playlistController.openPlaylist(playlist.getPlaylistName());
 			return playlistMenu;
 		case "showchannels":
-			channelMenu = channelController.showChannels(channelID);
+			channelMenu = channelController.showChannels();
 			return channelMenu;
 		case "openchannel":
 			channelMenu = channelController.openChannel(channelName);

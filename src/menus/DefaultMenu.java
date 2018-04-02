@@ -45,9 +45,11 @@ public class DefaultMenu extends Menu {
 			return searchMenu;
 		case "login":
 			userMenu = userController.login(user.getUserName(), user.getPassword());
+			
 			return userMenu;
 		case "register":
-			userMenu = userController.register(user.getUserName(), user.getPassword(), user.getEmail());
+		//	userMenu = userController.register(user.getUserName(), user.getPassword(), user.getEmail());
+			userMenu = userController.register(user);
 			return userMenu;
 		case "exit":
 			Menu exitMenu = null;

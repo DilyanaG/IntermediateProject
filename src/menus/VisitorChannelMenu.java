@@ -16,7 +16,6 @@ import parsers.PlaylistParser;
 public class VisitorChannelMenu extends Menu{
 	private GenericParser genericParser = GenericParser.getInstance();
 	private PlaylistParser playlistParser = PlaylistParser.getInstance();
-	
 	private ChannelController channelController = ChannelController.getInstance();
 	private PlaylistController playlistController = PlaylistController.getInstance();
 	private VideoController videoController = VideoController.getInstance();
@@ -45,7 +44,7 @@ public class VisitorChannelMenu extends Menu{
 		final String keyChannelName = "channelname";
 		final String channelName = genericParser.parseToString(argsMap, keyChannelName);
 
-		final int channelID = 0; //TODO think of a way to get the channelID
+		//final int channelID = 0; //TODO think of a way to get the channelID
 		
 		Menu visitorChannelMenu = null;
 		
@@ -57,7 +56,7 @@ public class VisitorChannelMenu extends Menu{
 			Menu searchMenu = videoController.search(tags, sortBy); 
 			return searchMenu;
 		case "showvideos":
-			visitorChannelMenu = channelController.showVideos(channelID);
+			visitorChannelMenu = channelController.showVideos();
 			return visitorChannelMenu;
 		case "sortvideos":
 			final SortVideoBy sortVideoBy = SortVideoBy.resolve(argsMap);
@@ -69,7 +68,7 @@ public class VisitorChannelMenu extends Menu{
 			Menu VisitorVideoMenu = videoController.openVideo(title);
 			return VisitorVideoMenu;
 		case "showplaylists":
-			visitorChannelMenu = channelController.showPlaylists(channelID);
+			visitorChannelMenu = channelController.showPlaylists();
 			return visitorChannelMenu;
 		case "sortplaylists":
 			final SortPlaylistBy sortPlaylistBy = SortPlaylistBy.resolve(argsMap);
@@ -80,7 +79,7 @@ public class VisitorChannelMenu extends Menu{
 			Menu visitorPlaylistMenu = playlistController.openPlaylist(playlist.getPlaylistName());
 			return visitorPlaylistMenu;
 		case "showchannels":
-			visitorChannelMenu = channelController.showChannels(channelID);
+			visitorChannelMenu = channelController.showChannels();
 			return visitorChannelMenu;
 		case "openchannel":
 			visitorChannelMenu = channelController.openChannel(channelName);

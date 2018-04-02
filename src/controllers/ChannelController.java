@@ -1,8 +1,10 @@
 package controllers;
 
+import java.util.List;
 import java.util.Map;
 
 import dataclasses.Channel;
+import dataclasses.Playlist;
 import dataclasses.User;
 import dataclasses.Video;
 import exceptions.IllegalInputException;
@@ -22,9 +24,6 @@ import ui.UserInterface;
 public class ChannelController {
 
 	static ChannelController channelController;
-
-	private UserInterface onlineUser;
-	private UserInterface offlineUser;
 	private ChannelService channelService;
 
 	private ChannelController() {
@@ -39,18 +38,19 @@ public class ChannelController {
 	}
 
 	// TODO where should addVideo be - VideorController or ChannelController?
-	public Menu addVideo(String title, String url, String description) {
-		try {
-			videoServices.addVideo(title, url, description);
-		} catch (IllegalInputException e) {
-			System.out.println(e.getMessage()); // TODO This should be handles
-												// by the UI
-		} finally {
-			return new HomeMenu();
-		}
-	}
+//	public Menu addVideo(String title, String url, String description) {
+//		try {
+//			
+//		} catch (IllegalInputException e) {
+//			System.out.println(e.getMessage()); // TODO This should be handles
+//												// by the UI
+//		} finally {
+//			return new HomeMenu();
+//		}
+//	}
 
 	public Menu myVideos() {
+		
 		return new MyVideosMenu();
 	}
 
@@ -72,76 +72,51 @@ public class ChannelController {
 	}
 
 	// TODO if(super.getUser() == null) return visitorChannelMenu;
-	public Menu openChannel(String channelName) {
+	public Menu openChannel(String channelName) throws IllegalInputException {
 		channelService.openChannel(channelName);
 		return new ChannelMenu();
 	}
 
-	public Menu followChannel(String channelName) {
+	public Menu followChannel(String channelName) throws IllegalInputException {
 		channelService.followChannel(channelName);
 		return new ChannelMenu();
 	}
 
-	public Menu unfollowChannel(String channelName) {
-		channelService.openChannel(channelName);
+	public Menu unfollowChannel(String channelName) throws IllegalInputException {
+		channelService.unfollowChannel(channelName);
 		return new MyChannelsMenu();
 	}
 
 	// TODO if(super.getUser() == null) return visitorChannelMenu;
-	public Menu showVideos(int channelID) {
-		channelService.showVideos(channelID);
+	public Menu showVideos() throws IllegalInputException {
+		List<Video> channelVideos = channelService.showVideos();
 		return new ChannelMenu();
 	}
 
 	// TODO if(super.getUser() == null) return visitorChannelMenu;
-	public Menu showPlaylists(int channelID) {
-		channelService.showPlaylists(channelID);
+	public Menu showPlaylists() throws IllegalInputException {
+	  List<Playlist> channelPlaylists = channelService.showPlaylists();
 		return new ChannelMenu();
 	}
 
 	// TODO if(super.getUser() == null) return visitorChannelMenu;
-	public Menu showChannels(int channelID) {
-		channelService.showChannels(channelID);
+	public Menu showChannels() throws IllegalInputException {
+		List<Channel> channels = channelService.showChannels();
 		return new ChannelMenu();
 	}
 
-	/////////////////
-	
-	// TODO what is this?
-	private void getFields() {
-		// onlineUser = OnlineUserInterface.getInstance();
-		channelService = ChannelService.getInstance();
-		offlineUser = OfflineUserInterface.getInstance();
-
-	}
-
-	// TODO Why do we need this?
-	public ChannelController getChannel(User user) {
+	public Menu addVideo(Video video) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	// TODO why do we need this?
-	public void showChannel(User user, boolean isOnline) {
-		getFields(); // TODO what is this?
-		Channel channel = null;
-		try {
-			channel = channelService.giveChannelToUser(user);
-		} catch (IllegalUserArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// if(isOnline){
-		// onlineUser.channelMenu(channel);
-		// return;
-		// }
-		// offlineUser.channelMenu(channel);
-	}
+	
 
-	// TODO Why do we need this?
-	public Map<Integer, Video> giveVideosToChannel(Channel channel) {
-		Map<Integer, Video> videos;
-		videos = channelService.giveVideosToChannel(channel);
-		return videos;
-	}
+//	// TODO Why do we need this?
+//	public ChannelController getChannel(User user) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+
+	
 }

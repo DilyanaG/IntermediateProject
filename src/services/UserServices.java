@@ -3,14 +3,8 @@ package services;
 import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import dataclasses.User;
-import exceptions.IllegalEmailException;
 import exceptions.IllegalInputException;
-import exceptions.IllegalNameException;
-import exceptions.IllegalPasswordException;
-import exceptions.InvalidDataException;
-import exceptions.UserNotFoundException;
 import repositories.UserRepository;
 
 public class UserServices {
@@ -25,6 +19,8 @@ public class UserServices {
 	
 	private static UserRepository userRepository;
 	
+	private User onlineUser = null;
+	
 	private UserServices() {
 		userRepository=UserRepository.getInstance();
 	}
@@ -35,7 +31,7 @@ public class UserServices {
 		if(user.getUserName()==null||user.getUserName().length()<4)
 			throw new IllegalInputException("INCORRECT NAME!");
 		//check for valid user registration data 
-		if(!this.checkForPassword(user))
+		if(!this.checkForPassword(user.getPassword()))
 			throw new IllegalInputException("PASSWORD IS NOT CORRECT!");
 		if(!this.checkForPattern(user.getEmail()))
 			throw new IllegalInputException("EMAIL IS NOT CORRECT!");
@@ -71,11 +67,12 @@ public class UserServices {
 			if(!user.getPassword().equals(password)){
 				throw new IllegalInputException("INCORRECT PASSWORD!");
 			}
-			ChannelService.getInstance().setOnlineChannel(user);
 		} catch (SQLException e) {
 			  e.getMessage();
 			  throw new IllegalInputException("PROBLEM WITH CONNECTION!");
 		}
+		this.onlineUser = user;
+		
 	    return user;	
 		
 	}
@@ -85,8 +82,8 @@ public class UserServices {
 	}
 
 	
-	private boolean checkForPassword(User user){
-		if(user.getPassword().length()<MIN_PASSWORD_SIZE){
+	private boolean checkForPassword(String password){
+		if(password==null||password.length()<MIN_PASSWORD_SIZE){
 			return false;
 		}
 		return true;
@@ -114,5 +111,41 @@ public class UserServices {
 		return userServices;
 	}
 
+ public User getOnlineUser() {
+	return onlineUser;
+}
+	public void logout(String username) {
+		this.onlineUser=null;
+	}
+
+
+	public void changePassword(String newPassword) throws IllegalInputException  {
+		if(!checkForPassword(newPassword)){
+			throw new IllegalInputException("NEW PASSWORD IS NOT CORRECT!");
+		}
+		try {
+			userRepository.updatePassword(onlineUser, newPassword);
+		} catch (SQLException e) {
+		   //System.out.println(e.getMessage());
+			throw new IllegalInputException("DATABASE PROBLEM ");
+		}
+		
+	}
+
+
+	public void deleteAccount(String password) throws IllegalInputException {
+		if(!this.onlineUser.getPassword().equals(password)){
+			throw new IllegalInputException("WRONG PASSWORD !");
+		}
+		try {
+			this.userRepository.deleteUser(onlineUser);
+		} catch (SQLException e) {
+			throw new IllegalInputException("DATEBASE PROBLEM!");
+			//System.out.println(e.getMessage());
+		}
+		this.logout(onlineUser.getUserName());
+		
+		}
 	
 }
+

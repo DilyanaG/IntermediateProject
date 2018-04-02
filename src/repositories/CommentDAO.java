@@ -14,6 +14,7 @@ import dataclasses.Channel;
 import dataclasses.Comment;
 import dataclasses.Playlist;
 import dataclasses.Video;
+import exceptions.IllegalInputException;
 import exceptions.InvalidDataException;
 
 public class CommentDAO {
@@ -59,7 +60,7 @@ public class CommentDAO {
 		}
 		return instance;
 	}
-	List<Comment> getCommentsForVideo(Video video) throws SQLException, InvalidDataException {
+	List<Comment> getCommentsForVideo(Video video) throws SQLException, IllegalInputException {
 
 		  List<Comment> comments = new  ArrayList<Comment>();
 			PreparedStatement st = connection.prepareStatement(SELECT_ALL_BY_VIDEO_ID);
@@ -125,7 +126,7 @@ public class CommentDAO {
 		st.executeUpdate();
 		st.close();
 	}
-	public List<Comment> getAllComments() throws SQLException, InvalidDataException{
+	public List<Comment> getAllComments() throws SQLException, IllegalInputException{
 		  List<Comment> comments = new  ArrayList<Comment>();
 				PreparedStatement st = connection.prepareStatement(SELECT_ALL_);
 				ResultSet rezultSet= st.executeQuery();

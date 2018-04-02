@@ -19,6 +19,7 @@ import dataclasses.Playlist;
 import dataclasses.User;
 import dataclasses.Video;
 import enums.SortVideoBy;
+import exceptions.IllegalInputException;
 import exceptions.InvalidDataException;
 
 //data na kacvane , vieew >, likes 
@@ -76,7 +77,7 @@ public class VideoRepository {
 		return instance;
 	}
 	
-	public Set<Video> getVideosForChannelBy(Channel channel) throws SQLException, InvalidDataException {
+	public Set<Video> getVideosForChannelBy(Channel channel) throws SQLException, IllegalInputException {
 		   Set<Video> videos = new HashSet<Video>();
 			PreparedStatement st = connection.prepareStatement(SELECT_ALL_VIDEOS_BY_CHANNEL_ID);
 			st.setInt(1, channel.getChannelId());
@@ -90,7 +91,7 @@ public class VideoRepository {
 	}
 
 	private  List<Video> createVideosFromRezultSet( ResultSet rezultSet)
-			throws SQLException, InvalidDataException {
+			throws SQLException,IllegalInputException {
 		List<Video> videos = new ArrayList<Video>();
 		while (rezultSet.next()) {
 			Channel channel = ChannelRepository.getInstance().getChannelById(rezultSet.getInt("channel_id"));
@@ -115,7 +116,7 @@ public class VideoRepository {
 
 
 
-	public  List<Video> getAllVideosForPlaylist(Playlist playlist) throws SQLException, InvalidDataException {
+	public  List<Video> getAllVideosForPlaylist(Playlist playlist) throws SQLException, IllegalInputException {
 		  List<Video> videos =new ArrayList<Video>();
 			PreparedStatement st = connection.prepareStatement(SELECT_ALL_VIDEOS_BY_CHANNEL_ID);
 			st.setInt(1, playlist.getId());
@@ -218,10 +219,12 @@ public class VideoRepository {
 		st.setInt(2,playlist.getId());
 	    st.executeUpdate();
 	}
+	//TODO
 	public void deleteVideo(Video video){
 		
 	}
-	public void deleteVideoFromPlaylist(Video video,Playlist playlist){
+	//TODO
+	public void deleteVideoFromPlaylist(String videoTitle,Playlist playlist){
 		
 	}
 	//video service convert title and description to set of tags add give here 

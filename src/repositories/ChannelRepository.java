@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import dataclasses.Channel;
 import dataclasses.User;
+import exceptions.IllegalInputException;
 import exceptions.InvalidDataException;
 
 public class ChannelRepository {
@@ -70,7 +71,7 @@ public class ChannelRepository {
 		st.close();
 	}
 	
-	public Map<String, Channel> getAllChannels() throws SQLException, InvalidDataException {
+	public Map<String, Channel> getAllChannels() throws SQLException, IllegalInputException {
         Map<String, Channel> channels = new HashMap<String, Channel>();
 		PreparedStatement channelSt = connection.prepareStatement(ALL_CHANNELS);
 		ResultSet channelRS = channelSt.executeQuery();
@@ -85,7 +86,7 @@ public class ChannelRepository {
         return Collections.unmodifiableMap(channels);
 	}
 
-	private List<Channel> createChannelsFromRezultSet(ResultSet channelRS) throws SQLException, InvalidDataException {
+	private List<Channel> createChannelsFromRezultSet(ResultSet channelRS) throws SQLException, IllegalInputException {
 		List<Channel> allChannels = new ArrayList<Channel>();
 		while (channelRS.next()) {
 			User user = UserRepository.getInstance().getUserByUserName(channelRS.getString("user_name"));
@@ -101,7 +102,7 @@ public class ChannelRepository {
 		return allChannels;
 	}
 	
-	public Channel getChannelById(int id) throws SQLException, InvalidDataException {
+	public Channel getChannelById(int id) throws SQLException, IllegalInputException {
 		PreparedStatement channelSt = connection.prepareStatement(BY_CHANNEL_ID);
 		channelSt.setInt(1,id);
 		ResultSet channelRS = channelSt.executeQuery();
@@ -109,12 +110,12 @@ public class ChannelRepository {
 		channelRS.close();
 		channelSt.close();
 		if(list.isEmpty()){
-			throw new InvalidDataException("CHANNEL WITH THIS ID NOT FOUND");
+			throw new IllegalInputException("CHANNEL WITH THIS ID NOT FOUND");
 		}
 		return list.get(0);
 	}
 	
-	public Channel getChannelByUserName(String username) throws SQLException, InvalidDataException  {
+	public Channel getChannelByUserName(String username) throws SQLException, IllegalInputException  {
 		PreparedStatement channelSt = connection.prepareStatement(BY_USERNAME);
 		channelSt.setString(1,username);
 		ResultSet channelRS = channelSt.executeQuery();
@@ -122,7 +123,7 @@ public class ChannelRepository {
 		channelRS.close();
 		channelSt.close();
 		if(list.isEmpty()){
-			throw new InvalidDataException("CHANNEL WITH THIS USERNAME NOT FOUND!");
+			throw new IllegalInputException("CHANNEL WITH THIS USERNAME NOT FOUND!");
 		}
 		return list.get(0);
 	}
@@ -140,7 +141,7 @@ public class ChannelRepository {
 		   return count;
 	   }
 	
-	private List<Channel> getFollowedChannels(Channel channel) throws InvalidDataException, SQLException{
+	public List<Channel> getFollowedChannels(Channel channel) throws  SQLException, IllegalInputException{
 		PreparedStatement channelSt = connection.prepareStatement(FOLLOWED_CHANNELS);
 		channelSt.setInt(1,channel.getChannelId());
 		ResultSet channelRS = channelSt.executeQuery();
@@ -148,14 +149,14 @@ public class ChannelRepository {
 		channelRS.close();
 		channelSt.close();
 		if(list.isEmpty()){
-			throw new InvalidDataException("CHANNEL WITH THIS USERNAME NOT FOUND!");
+			throw new IllegalInputException("CHANNEL WITH THIS USERNAME NOT FOUND!");
 		}
 		return list;
 	}
   
-	public void  followChannel(Channel followerChannel, Channel folowedChannel) throws SQLException, InvalidDataException {
+	public void  followChannel(Channel followerChannel, Channel folowedChannel) throws SQLException, IllegalInputException {
 		if(followerChannel.getChannelId()==folowedChannel.getChannelId()){
-			throw new InvalidDataException("YOU CAN NOT FOLLOW OWN CHANNEL!");
+			throw new IllegalInputException("YOU CAN NOT FOLLOW OWN CHANNEL!");
 		}
 	    PreparedStatement st = connection.prepareStatement(FOLLOW_CHANNEL);
 		st.setInt(1, followerChannel.getChannelId());
@@ -165,9 +166,9 @@ public class ChannelRepository {
 	
 }
  
-	public void unfollowChannel(Channel followerChannel, Channel folowedChannel) throws SQLException, InvalidDataException{
+	public void unfollowChannel(Channel followerChannel, Channel folowedChannel) throws SQLException, IllegalInputException{
 		if(followerChannel.getChannelId()==folowedChannel.getChannelId()){
-			throw new InvalidDataException("INVALID INPUT");
+			throw new IllegalInputException("INVALID INPUT");
 		}
 	    PreparedStatement st = connection.prepareStatement(UNFOLLOW_CHANNEL);
 		st.setInt(1, followerChannel.getChannelId());
@@ -189,7 +190,7 @@ public class ChannelRepository {
 	}
 
 
-	public void deleteChannelByUsername(String userName) throws SQLException, InvalidDataException {
+	public void deleteChannelByUsername(String userName) throws SQLException, IllegalInputException {
 		Channel channel = this.getChannelByUserName(userName);
 		this.deleteChannel(channel);
 

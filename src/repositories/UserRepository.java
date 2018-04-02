@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import dataclasses.User;
+import exceptions.IllegalInputException;
 import exceptions.InvalidDataException;
 
 public class UserRepository{
@@ -98,14 +99,14 @@ public class UserRepository{
 		ChannelRepository.getInstance().addNewChannelToDB(user);
 	}
 
-	public User getUserByUserName(String username) throws SQLException, InvalidDataException  {
+	public User getUserByUserName(String username) throws SQLException, IllegalInputException  {
 		PreparedStatement userST = connection.prepareStatement(BY_USERNAME);
 		userST.setString(1, username);
 		ResultSet usersRS = userST.executeQuery();
 		List<User> user = new ArrayList<>();
 		user = getUsersFromRezultSet(usersRS);
 		if(user.isEmpty()){
-			throw new InvalidDataException("USER WITH THIS USERNAME NOT FOUND!");
+			throw new IllegalInputException("USER WITH THIS USERNAME NOT FOUND!");
 		}
 		return user.get(0);
 		
@@ -131,7 +132,7 @@ public class UserRepository{
 		st.executeUpdate();
 	}
    
-    public void deleteUser(User user) throws SQLException, InvalidDataException{
+    public void deleteUser(User user) throws SQLException, IllegalInputException{
     	PreparedStatement st = connection.prepareStatement(DELETE_USER);
 		st.setInt(1, user.getUserId());
 		st.executeUpdate(); 

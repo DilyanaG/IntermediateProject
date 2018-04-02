@@ -51,7 +51,7 @@ public class HomeMenu extends Menu {
 			return searchMenu;
 		case "addvideo":
 			final Video video = videoParser.parse(argsMap);
-			Menu homeMenu = channelController.addVideo(video.getTitle(), video.getUrl(), video.getDescription());
+			Menu homeMenu = channelController.addVideo(video);
 			return homeMenu;
 		case "myvideos":
 			Menu myVideosMenu = channelController.myVideos();

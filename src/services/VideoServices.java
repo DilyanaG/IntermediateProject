@@ -1,12 +1,16 @@
 package services;
 
+import java.sql.SQLException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import dataclasses.Channel;
+import dataclasses.Playlist;
 import dataclasses.Video;
 import enums.SortVideoBy;
+import exceptions.IllegalInputException;
 import exceptions.InvalidDataException;
 import repositories.VideoRepository;
 
@@ -41,10 +45,10 @@ public class VideoServices {
 		return false;
 	}
 
-	public Set<Video> search(String tag, SortVideoBy sort) throws InvalidDataException {
-		Set<Video> video = videoRepository.getVideosByTag(tag,sort);
+	public List<Video> search(String tag, SortVideoBy sort) throws InvalidDataException {
+		List<Video> videos = videoRepository.getVideosByTag(tag,sort);
 		
-		return Collections.emptySet();
+		return videos;
 		// TODO Auto-generated method stub
 		
 	}	
@@ -71,6 +75,21 @@ public class VideoServices {
 
 	public void removeVideo(Video video) {
 		// TODO Auto-generated method stub
+		
+	}
+//TODO
+	public List<Video> getPlaylistVideos(Playlist playlist) throws IllegalInputException {
+		List<Video> playlistVideos =null;
+		try {
+			playlistVideos = videoRepository.getAllVideosForPlaylist(playlist);
+		} catch (SQLException e) {
+			throw new IllegalInputException("DATABASE ERROR!");
+		} 
+		return playlistVideos;
+	}
+
+	public void deleteVideoFromPlaylist(Playlist playlist, String videoTitle) {
+		 videoRepository.deleteVideoFromPlaylist(videoTitle, playlist);
 		
 	}
 
