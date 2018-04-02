@@ -8,6 +8,7 @@ import java.util.TreeSet;
 public class Playlist {
 	private int playlistId;
 	private String playlistName;
+	
 //	private Set<Video> videos;
 	private Date lastVideoUploaded;
 	private Date creationDateTime; // TODO WHEN ADDING VIDEO UPDATE
@@ -55,6 +56,10 @@ public class Playlist {
 
 	public void setCreationDateTime(Date creationDateTime) {
 		this.creationDateTime = creationDateTime;
+	}
+
+	public int getId() {
+		return this.playlistId;
 	}
 
 }

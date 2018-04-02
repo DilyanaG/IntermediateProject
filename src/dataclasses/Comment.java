@@ -7,39 +7,43 @@ import java.util.List;
 public class Comment {
 	private static final int DEFAULT_DISLIKES_TO_COMMENTS = 0;
 	private static final int DEFAULT_LIKES_TO_COMMENTS = 0;
-	
+
 	private int commentId;
-	private  Channel channel;
+	private Channel channel;
 	private Video video;
 	private String content;
 	private Date publicationDate;
 	private int likes;
 	private int dislikes;
 	private List<Comment> responses;
-	
-	public Comment(int channelId, Channel channel, String content, Date publicationDate, int likes, int dislikes){
-		this(channel, content);
+
+	public Comment(int channelId, Video video, Channel channel, String content, Date publicationDate, int likes,int dislikes) {
+		this(channel, content, video);
 		this.commentId = channelId;
 		this.publicationDate = publicationDate;
 		this.likes = likes;
 		this.dislikes = dislikes;
-		
+
 	}
 
-	public Comment(Channel channel, String content){
-		this.channel= channel;
-			this.content = content;
-		 this.publicationDate = new Date();
+	public Comment(Channel channel, String content, Video video) {
+		this.channel = channel;
+		this.content = content;
+		this.video = video;
+		this.publicationDate = new Date();
 		this.likes = DEFAULT_LIKES_TO_COMMENTS;
 		this.dislikes = DEFAULT_DISLIKES_TO_COMMENTS;
 		this.responses = new ArrayList<Comment>();
 	}
-    public void setVideo(Video video) {
-	this.video = video;
-    }
-   public Video getVideo() {
-	return video;
-     }
+
+	public void setVideo(Video video) {
+		this.video = video;
+	}
+
+	public Video getVideo() {
+		return video;
+	}
+
 	public int getCommentId() {
 		return commentId;
 	}

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import dataclasses.Channel;
 import dataclasses.User;
 import exceptions.InvalidDataException;
@@ -34,12 +33,16 @@ public class ChannelRepository {
 			"INSERT INTO users (user_id) VALUES (?);";
     private static final String FOLLOW_CHANNEL = 
 			"INSERT INTO channels_followed_channels (follower_channel_id, followed_channel_id) VALUES (?,?);";
-	
-	
-	//updates
-	
+    
     //delete
-
+    private static final String UNFOLLOW_CHANNEL = 
+            "DELETE FROM channels_followed_channels where follower_channel_id = ? and followed_channel_id = ? ;";
+	private static final String DELETE_CHANNEL = 
+                       "DELETE FROM channels WHERE channel_id = ?;";
+	private static final String DELETE_FOLLOWERS = 
+			"DELETE FROM channels_followed_channels where follower_channel_id = ? ";
+	private static final String DELETE_FOLLOWEDS= 
+			"DELETE FROM channels_followed_channels where followed_channel_id = ? ";
 //   json
 //	private static final String CHANNELS_JSON_FILE = ".//JSONfiles//channels.json";
 //    private Map<String, Channel> channels;
@@ -58,8 +61,8 @@ public class ChannelRepository {
 		}
 		return instance;
 	}
-	// DB
-      
+	
+	// DB   
 	public void addNewChannelToDB(User user) throws SQLException {
 		PreparedStatement st = connection.prepareStatement(INSERT_INTO_CHANNELS);
 		st.setInt(1, user.getUserId());
@@ -161,19 +164,43 @@ public class ChannelRepository {
 		st.close();
 	
 }
-  //TO DO 
-	public void unfollowChannel(Channel followerChannel, Channel folowedChannel){
-		
+ 
+	public void unfollowChannel(Channel followerChannel, Channel folowedChannel) throws SQLException, InvalidDataException{
+		if(followerChannel.getChannelId()==folowedChannel.getChannelId()){
+			throw new InvalidDataException("INVALID INPUT");
+		}
+	    PreparedStatement st = connection.prepareStatement(UNFOLLOW_CHANNEL);
+		st.setInt(1, followerChannel.getChannelId());
+		st.setInt(2, folowedChannel.getChannelId());
+		st.executeUpdate();
+		st.close();
 	}
-	public void deleteChannel(Channel channel){
-		
+
+	public void deleteChannel(Channel channel) throws SQLException{
+		this.deleteChannelFromFolowerTable(channel,DELETE_FOLLOWERS );
+		this.deleteChannelFromFolowerTable(channel,DELETE_FOLLOWEDS );
+		CommentDAO.getInstance().deleteChannelComments(channel);
+		VideoRepository.getInstance().deleteChannelVideos(channel);
+		PlaylistDAO.getInstance().deleteChannelPlaylists(channel);
+	    PreparedStatement st = connection.prepareStatement(DELETE_CHANNEL);
+		st.setInt(1, channel.getChannelId());
+		st.executeUpdate();
+		st.close();
+	}
+
+
+	public void deleteChannelByUsername(String userName) throws SQLException, InvalidDataException {
+		Channel channel = this.getChannelByUserName(userName);
+		this.deleteChannel(channel);
+
 	}
 	
-	public static void main(String[] args) throws SQLException, InvalidDataException {
-	User user = new User("ha", "hu", "hi");
-	getInstance().followChannel(new Channel(5, user),new Channel(3, user));
-}
-
+    private void deleteChannelFromFolowerTable(Channel channel,String string) throws SQLException{
+    	 PreparedStatement st = connection.prepareStatement(string);
+ 		st.setInt(1, channel.getChannelId());
+ 		st.executeUpdate();
+ 		st.close();
+    }
 //	JSON
 //	private Map<String, Channel> getChannelsFromJSONFILE() {
 //		Gson gson = new Gson();
