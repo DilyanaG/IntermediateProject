@@ -4,6 +4,9 @@ import java.util.List;
 
 import dataclasses.Comment;
 import dataclasses.Video;
+import menus.ChannelMenu;
+import menus.CommentMenu;
+import menus.Menu;
 import services.CommentService;
 
 public class CommentController {
@@ -20,31 +23,49 @@ public class CommentController {
 		return commentController;
 	}
 
-	public void addComment(Comment comment, Video video) {
-		commentService.addComment(comment, video);
+	public Menu addComment(String commentContent, String title) {
+		commentService.addComment(commentContent, title);
+		return new CommentMenu();
 	}
 
-	public void removeComment(Comment comment, Video video) {
-		commentService.removeComment(comment, video);
+	public Menu removeComment(int commentid, String title) {
+		commentService.removeComment(commentid, title);
+		return new CommentMenu();
+	}
+	
+	public Menu changeComment(int commentid, String commentContent) {
+		commentService.changeComment(commentid, commentContent);
+		return new CommentMenu();
 	}
 
-	public void addLikeDislikeToComment(boolean isLike, Comment comment) {
-		commentService.addLikeDislikeToComment(isLike, comment);
+	public Menu addLikeDislikeToComment(boolean isLike, Integer commentid) {
+		commentService.addLikeDislikeToComment(isLike, commentid);
+		return new CommentMenu();
 	}
 
-	public void removeLikeDislikeFromComment(boolean isLike, Comment comment) {
-		commentService.removeLikeDislikeFromComment(isLike, comment);
+	public Menu removeLikeDislikeFromComment(boolean isLike, Integer commentid) {
+		commentService.removeLikeDislikeFromComment(isLike, commentid);
+		return new CommentMenu();
 	}
 
-	public List<Comment> showVideoComments(Video video) {
-		return commentService.showVideoComments(video);
+	public Menu addResponseToComment(Integer commentid, String string) {
+		commentService.addResponseToComment(commentid, string);
+		return new CommentMenu();	
 	}
 
-	public void addResponseToComment(Comment response, Comment comment) {
-		commentService.addResponseToComment(response, comment);
+	public Menu removeResponseFromComment(int commentid, String title) {
+		commentService.removeResponseFromComment(commentid, title);
+		return new CommentMenu();
 	}
-
-	public void removeResponseFromComment(Comment response, Comment comment) {
-		commentService.removeResponseFromComment(response, comment);
+	
+	public Menu changeResponseToComment(int commentid, String commentContent) {
+		commentService.changeResponseToComment(commentid, commentContent);
+		return new CommentMenu();
+	}
+	
+	// TODO if(super.getUser() == null) return visitorChannelMenu;
+	public Menu openAuthorsChannel(int commentid) {
+		commentService.openAuthorsChannel(commentid);
+		return new ChannelMenu();
 	}
 }

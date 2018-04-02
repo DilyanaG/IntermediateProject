@@ -4,24 +4,21 @@ import java.util.Map;
 
 import controllers.ChannelController;
 import controllers.VideoController;
-import dataclasses.Video;
 import enums.SortSearchBy;
 import exceptions.IllegalInputException;
 import parsers.GenericParser;
-import parsers.VideoParser;
 
-public class SearchMenu extends Menu{
-
-	private GenericParser genericParser = GenericParser.getInstance();
-	private VideoParser videoParser = VideoParser.getInstance();
-	
-	private VideoController videoController = VideoController.getInstance();
+public class VisitorVideoMenu extends Menu{
 	private ChannelController channelController = ChannelController.getInstance();
+	private VideoController videoController = VideoController.getInstance();
 	
+	private GenericParser genericParser = GenericParser.getInstance();
+
 	@Override
 	protected String specialPresent() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append(">OpenVideo -title=title_here\n");
+		builder.append(">OpenAuthorsChannel\n");
+		builder.append(">ShowComments\n");
 		builder.append(">Homepage\n");
 		return builder.toString();
 	}
@@ -29,28 +26,31 @@ public class SearchMenu extends Menu{
 	@Override
 	public Menu process(String input) throws IllegalInputException {
 		final String command = input.split(" ")[0].toLowerCase();// read first word from input
-		final String args = input.substring(command.length()); // remove command
+		 final String args = input.substring(command.length()); // remove command
 
-		final Map<String, String> argsMap = parseToMap(args);
+		 final Map<String, String> argsMap = parseToMap(args);
+		  final String title = null; //TODO think of a way to get the title
 
 		switch (command) {
 		case "search":
 			final SortSearchBy sortBy = SortSearchBy.resolve(argsMap);
-			final String key = "tags";
-			final String tags = genericParser.parseToString(argsMap, key);
+			final String keyTag = "tags";
+			final String tags = genericParser.parseToString(argsMap, keyTag);
 			Menu searchMenu = videoController.search(tags, sortBy); 
 			return searchMenu;
-		case "openvideo":
-			final Video video = videoParser.parse(argsMap);
-			Menu videoMenu = videoController.openVideo(video.getTitle());
-			return videoMenu;
+		case "openauthorschannel":
+			Menu visitorChannelMenu = videoController.openAuthorsChannel(title);
+			return visitorChannelMenu;
+		case "showcomments":
+			Menu visitorCommentMenu = videoController.showVideoComments(title);
+			return visitorCommentMenu;
 		case "homepage":
-			Menu homeMenu = channelController.homepage();
-			return homeMenu;
+			Menu defaultMenu = channelController.homepage();
+			return defaultMenu;
 		case "exit":
 			Menu exitMenu = null;
 			return exitMenu;
-
+		
 		default:
 			//TODO throw new IllegalInputException();
 			break;
@@ -58,5 +58,4 @@ public class SearchMenu extends Menu{
 
 		return null;
 	}
-
 }

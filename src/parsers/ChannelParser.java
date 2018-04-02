@@ -1,29 +1,15 @@
 package parsers;
 
-import controllers.ChannelController;
-import dataclasses.Channel;
-import dataclasses.Video;
-import exceptions.*;
+import java.util.Map;
 
+import dataclasses.Channel;
 
 public class ChannelParser {
 	private static ChannelParser channelParser = null;
-	
-	private ChannelController channelController;
 
 	public ChannelParser() {
-		this.channelController=ChannelController.getInstance();
 	}
 
-
-//	public void addNewVideoToChannel(Channel channel, String url, String title, String discription) 
-//			throws IllegalURLException, IllegalChannelArgumentException,
-//					IllegalVideoTitleException, IllegalVideoDescriptionException {
-//		
-//		Video video = new Video(url, channel, title,discription);
-//		this.channelController.addNewVideoToChannel(channel,video);
-//		
-//	}
 	public static ChannelParser getInstance() {
 		if (channelParser == null) {
 			channelParser = new ChannelParser();
@@ -31,9 +17,9 @@ public class ChannelParser {
 		return channelParser;
 	}
 
-
-	public Channel parse(String channelName) {
-		// TODO Auto-generated method stub
+	public Channel parse(Map<String, String> argsMap) {
 		return null;
+
+	//TODO makeParser;
 	}
 }

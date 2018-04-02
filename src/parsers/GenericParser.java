@@ -22,5 +22,27 @@ public class GenericParser {
 		
 		return null;
 	}
+	
+	public Boolean parseToBoolean(Map<String, String> argsMap, String key) {
+		if (argsMap.containsKey(key)) {
+			if(argsMap.get(key).equals("true")){
+				return true;
+			}
+			
+			if(argsMap.get(key).equals("false")){
+				return false;
+			}
+		}
+		
+		return null;
+	}
+	
+	public Integer parseToInteger(Map<String, String> argsMap, String key) {
+		if (argsMap.containsKey(key)) {
+			//TODO return argsMap.get(key) // toInteger
+		}
+		
+		return null;
+	}
 
 }
