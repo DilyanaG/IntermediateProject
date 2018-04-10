@@ -15,7 +15,7 @@ import dataclasses.User;
 import exceptions.IllegalInputException;
 import exceptions.InvalidDataException;
 
-public class ChannelRepository {
+public class ChannelDAO {
 	//for DB
 	//selects
 	private static final String ALL_CHANNELS = 
@@ -31,7 +31,7 @@ public class ChannelRepository {
                  " JOIN channels_followed_channels t ON f.channel_id = followed_channel_id WHERE follower_channel_id = ?;";
    //inserts 
     private static final String INSERT_INTO_CHANNELS =
-			"INSERT INTO users (user_id) VALUES (?);";
+			"INSERT INTO channels (user_id) VALUES (?);";
     private static final String FOLLOW_CHANNEL = 
 			"INSERT INTO channels_followed_channels (follower_channel_id, followed_channel_id) VALUES (?,?);";
     
@@ -48,17 +48,17 @@ public class ChannelRepository {
 //	private static final String CHANNELS_JSON_FILE = ".//JSONfiles//channels.json";
 //    private Map<String, Channel> channels;
 
-	private static ChannelRepository instance;
+	private static ChannelDAO instance;
 	private Connection connection;
 
-	private ChannelRepository() {
+	private ChannelDAO() {
 		 connection = DBManager.getInstance().getConnection();
 
 	}
 
-	public static ChannelRepository getInstance() {
+	public static ChannelDAO getInstance() {
 		if (instance == null) {
-			instance = new ChannelRepository();
+			instance = new ChannelDAO();
 		}
 		return instance;
 	}
@@ -89,7 +89,7 @@ public class ChannelRepository {
 	private List<Channel> createChannelsFromRezultSet(ResultSet channelRS) throws SQLException, IllegalInputException {
 		List<Channel> allChannels = new ArrayList<Channel>();
 		while (channelRS.next()) {
-			User user = UserRepository.getInstance().getUserByUserName(channelRS.getString("user_name"));
+			User user = UserDAO.getInstance().getUserByUserName(channelRS.getString("user_name"));
 			Channel channel = new Channel(channelRS.getInt("channel_id"),user);
 //			channel.setVideoclips(VideoRepository.getInstance().getVideosForChannel(channel));
 //			channel.setPlaylists(PlaylistDAO.getInstance().getPlaylistForChannel(channel));
@@ -181,7 +181,7 @@ public class ChannelRepository {
 		this.deleteChannelFromFolowerTable(channel,DELETE_FOLLOWERS );
 		this.deleteChannelFromFolowerTable(channel,DELETE_FOLLOWEDS );
 		CommentDAO.getInstance().deleteChannelComments(channel);
-		VideoRepository.getInstance().deleteChannelVideos(channel);
+		VideoDAO.getInstance().deleteChannelVideos(channel);
 		PlaylistDAO.getInstance().deleteChannelPlaylists(channel);
 	    PreparedStatement st = connection.prepareStatement(DELETE_CHANNEL);
 		st.setInt(1, channel.getChannelId());

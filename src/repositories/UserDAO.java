@@ -15,7 +15,7 @@ import dataclasses.User;
 import exceptions.IllegalInputException;
 import exceptions.InvalidDataException;
 
-public class UserRepository{
+public class UserDAO{
 	// DB
 	//selects
 	private static final String BY_USERNAME =
@@ -24,7 +24,7 @@ public class UserRepository{
 			"SELECT user_id, user_name, email, password FROM users;";
 	//insert
 	private static final String INSERT_INTO_USERS =
-			"INSERT INTO users (user_name, password, email) VALUES (?, ?, ?);";
+			"INSERT INTO users (user_name, password, email) VALUES (?,?,?);";
 	private static final String BY_ID = 
 			"SELECT user_id,user_name,email,password FROM users WHERE user_id = ?";
 	//update
@@ -38,26 +38,26 @@ public class UserRepository{
 //    FOR JSON
 //	private static final String USER_JSON_FILE = ".//JSONfiles//users.json";
 //	private Map<String, User> users;
-	private static UserRepository userRepository;
+	private static UserDAO userDAO;
      
 	//connection to DB 
 	private Connection connection;
     
-	private UserRepository() {
+	private UserDAO() {
 		connection = DBManager.getInstance().getConnection();
 //		for JSON
 //		users = new HashMap<String, User>();
 //		users = getUsersFromJSONFILE();
 	}
 	
-	public static UserRepository getInstance() {
-		if (userRepository == null) {
-			userRepository = new UserRepository();
+	public static UserDAO getInstance() {
+		if (userDAO == null) {
+			userDAO = new UserDAO();
 		}
-		return userRepository;
+		return userDAO;
 	}
 
-	public Map<String, User> getAllUsers() throws SQLException {
+	public Map<String, User> getAllUsers() throws SQLException, IllegalInputException {
         Map<String, User> users = new HashMap<String, User>();
 		PreparedStatement userST = connection.prepareStatement(SELECT_ALL_USERS);
 		ResultSet usersRS = userST.executeQuery();
@@ -71,13 +71,18 @@ public class UserRepository{
         return Collections.unmodifiableMap(users);
 	}
 
-	private List <User> getUsersFromRezultSet(ResultSet usersRS) throws SQLException {
+	private List <User> getUsersFromRezultSet(ResultSet usersRS) throws SQLException, IllegalInputException {
 		List<User> users = new ArrayList<>();
 		while (usersRS.next()) {
+			String username = usersRS.getString("user_name");
+			if(username==null){
+				throw new IllegalInputException("USER WITH THIS USER NAME NOT FOUND!");
+			}
 			User user = new User(usersRS.getInt("user_id"),
-								 usersRS.getString("user_name"), 
-								 usersRS.getString("email"),
-								 usersRS.getString("password"));
+								 username,
+								 usersRS.getString("password"),
+								 usersRS.getString("email")
+								 );
 			//put users to map -key is usarname, value User object
 			users.add (user);
 		}
@@ -91,12 +96,16 @@ public class UserRepository{
 		st.setString(2, user.getPassword());
 		st.setString(3, user.getEmail());
 		st.executeUpdate();
-		ResultSet res = st.getGeneratedKeys();
-		res.next();
-		int id = res.getInt(1);
-		res.close();
+		PreparedStatement userST = connection.prepareStatement(BY_USERNAME);
+		userST.setString(1, user.getUserName());
+		ResultSet usersRS = userST.executeQuery();
+		usersRS.next();
+		int id=usersRS.getInt("user_id");
+		//System.out.println(id);
+		user.setUserId(id);
+		userST.close();
 		st.close();
-		ChannelRepository.getInstance().addNewChannelToDB(user);
+		ChannelDAO.getInstance().addNewChannelToDB(user);
 	}
 
 	public User getUserByUserName(String username) throws SQLException, IllegalInputException  {
@@ -112,14 +121,14 @@ public class UserRepository{
 		
 	}
 	//TODO
-    public User getUserById(int userId) throws SQLException, InvalidDataException{
+    public User getUserById(int userId) throws SQLException, IllegalInputException{
     	PreparedStatement userST = connection.prepareStatement(BY_ID);
 		userST.setInt(1, userId);
 		ResultSet usersRS = userST.executeQuery();
 		List<User> user = new ArrayList<>();
 		user = getUsersFromRezultSet(usersRS);
 		if(user.isEmpty()){
-			throw new InvalidDataException("USER WITH THIS ID NOT FOUND!");
+			throw new IllegalInputException("USER WITH THIS ID NOT FOUND!");
 		}
 		return user.get(0);
     	
@@ -136,12 +145,11 @@ public class UserRepository{
     	PreparedStatement st = connection.prepareStatement(DELETE_USER);
 		st.setInt(1, user.getUserId());
 		st.executeUpdate(); 
-		ChannelRepository.getInstance().deleteChannelByUsername(user.getUserName());
+		ChannelDAO.getInstance().deleteChannelByUsername(user.getUserName());
      }
 
     
-//using JSON
-	
+//using JSON	
 //	public boolean checkForUser(String username) {
 //		if (this.users == null) {
 //			this.users = new TreeMap<>();
@@ -156,7 +164,7 @@ public class UserRepository{
 //			JsonElement json = gson.fromJson(reader, JsonElement.class);
 //			String jsonInString = gson.toJson(json);
 //
-//			// System.out.println(jsonInString);
+//			 System.out.println(jsonInString);
 //			map = gson.fromJson(jsonInString, new TypeToken<Map<String, User>>() {
 //			}.getType());
 //

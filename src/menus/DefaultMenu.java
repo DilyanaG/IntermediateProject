@@ -56,11 +56,10 @@ public class DefaultMenu extends Menu {
 		    return exitMenu;
 
 		default:
-			// this new IllegalInputException();
-			break;
+				throw new IllegalInputException("INVALID INPUT !");
+			
 		}
 
-		return null;
 	}
 
 }

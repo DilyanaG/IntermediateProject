@@ -9,9 +9,8 @@ import dataclasses.Playlist;
 import dataclasses.Video;
 import enums.SortPlaylistBy;
 import enums.SortVideoBy;
-import exceptions.IllegalChannelArgumentException;
 import exceptions.IllegalInputException;
-import parsers.PlaylistParser;
+
 import repositories.PlaylistDAO;
 
 public class PlaylistService {
@@ -36,7 +35,7 @@ public class PlaylistService {
 		if(name==null){
 			throw new  IllegalInputException("INVALID NAME FOR PLAYLIST");
 		}
-		Channel channel = ChannelService.getInstance().giveLoginChannel();
+		Channel channel = ChannelService.getInstance().getLoginChannel();
 		try {
 			playlistDAO.createNewPlaylist(name, channel);
 		} catch (SQLException e) {
@@ -57,7 +56,7 @@ public class PlaylistService {
 		
 	}
 	public List<Playlist> sortPlaylists(SortPlaylistBy sortPlaylistBy) throws IllegalInputException {
-		Channel channel = ChannelService.getInstance().giveLoginChannel();
+		Channel channel = ChannelService.getInstance().getLoginChannel();
 		List<Playlist> channelPlaylists;
 		try {
 			channelPlaylists = this.playlistDAO.getSortedPlaylistForChannelBy(channel,sortPlaylistBy);

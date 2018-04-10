@@ -15,11 +15,11 @@ import repositories.*;
 public class ChannelService {
 
 	private static ChannelService channelService;
-	private ChannelRepository channelRepository;
+	private ChannelDAO channelDAO;
 	private Channel loginChannel;
 
 	private ChannelService() {
-		channelRepository = ChannelRepository.getInstance();
+		channelDAO = ChannelDAO.getInstance();
 	}
 	public static ChannelService getInstance() {
 		if (channelService == null) {
@@ -32,7 +32,7 @@ public class ChannelService {
 
 		Channel channel;
 		try {
-			channel = channelRepository.getChannelByUserName(user.getUserName());
+			channel = channelDAO.getChannelByUserName(user.getUserName());
 		} catch (SQLException e) {
 			e.getMessage();
 			throw new IllegalInputException("SORRY!CONNECTION PROBLEM!");
@@ -50,9 +50,9 @@ public class ChannelService {
 public void  followChannel(String channelName) throws IllegalInputException{
 	    if(!checkForLoginChannel()){
 	    	try {
-	    	Channel followedChannel = channelRepository.getChannelByUserName(channelName);
+	    	Channel followedChannel = channelDAO.getChannelByUserName(channelName);
 			
-				channelRepository.followChannel(this.loginChannel, followedChannel);
+				channelDAO.followChannel(this.loginChannel, followedChannel);
 			} catch (SQLException e) {
 				e.getMessage();
 				throw new IllegalInputException("DATABASE ERROR!");
@@ -67,14 +67,14 @@ public void  followChannel(String channelName) throws IllegalInputException{
 //
 //	} 
 	
-	private boolean checkForLoginChannel() throws IllegalInputException{
+	public boolean checkForLoginChannel() throws IllegalInputException{
 		if(this.loginChannel==null){
 			User onlineUser = UserServices.getInstance().getOnlineUser();
 			if(onlineUser==null){
 				return false;
 			}
 			try {
-				this.loginChannel=channelRepository.getChannelByUserName(onlineUser.getUserName());
+				this.loginChannel=channelDAO.getChannelByUserName(onlineUser.getUserName());
 			} catch (SQLException e) {
 				e.getMessage();
 				throw new IllegalInputException("DATABASE ERROR!");
@@ -90,7 +90,7 @@ public List<Video> search(String tags, SortVideoBy sort) {
 }
 public Channel openChannel(String channelName) throws IllegalInputException {
 	try {
-		Channel channel = channelRepository.getChannelByUserName(channelName);
+		Channel channel = channelDAO.getChannelByUserName(channelName);
 	} catch (SQLException e) {
 		throw new IllegalInputException("DATABASE PROBLEM");
 		//e.printStackTrace();
@@ -100,8 +100,8 @@ public Channel openChannel(String channelName) throws IllegalInputException {
 public void unfollowChannel(String channelName) throws IllegalInputException {
 	Channel channel;
 	try {
-		channel = channelRepository.getChannelByUserName(channelName);
-			channelRepository.unfollowChannel(this.loginChannel, channel);
+		channel = channelDAO.getChannelByUserName(channelName);
+			channelDAO.unfollowChannel(this.loginChannel, channel);
 		
 	} catch (SQLException e) {
 		throw new IllegalInputException("DATABASE PROBLEM");
@@ -113,7 +113,7 @@ public void unfollowChannel(String channelName) throws IllegalInputException {
 public List<Video>  showVideos() throws IllegalInputException {
 	List<Video> channelVideos = new ArrayList<>();
 	if(checkForLoginChannel()){
-       channelVideos =VideoController.getInstance().giveVideosToChannel(this.loginChannel);
+       channelVideos =VideoController.getInstance().getVideosToChannel(this.loginChannel);
 	}
 	return channelVideos;
 }
@@ -129,7 +129,7 @@ public List<Channel> showChannels() throws IllegalInputException {
 	if(checkForLoginChannel()){
 		
 		try {
-			channelChannels=this.channelRepository.getFollowedChannels(this.loginChannel);
+			channelChannels=this.channelDAO.getFollowedChannels(this.loginChannel);
 		} catch (SQLException e) {
 			throw new IllegalInputException("DATABASE PROBLEM");
 			//e.printStackTrace();
@@ -137,9 +137,11 @@ public List<Channel> showChannels() throws IllegalInputException {
 	}
 	return channelChannels;
 }
-public Channel giveLoginChannel() {
-	
-	return this.loginChannel ;
+public Channel getLoginChannel() throws IllegalInputException {
+	if(checkForLoginChannel()){
+	   return this.loginChannel ;
+	}
+	return null;
 }
 
 

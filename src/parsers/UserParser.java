@@ -19,6 +19,7 @@ public class UserParser {
 
 	public User parse(Map<String, String> argsMap) {
 		final String userName = argsMap.get("username");
+		//System.out.println(userName);
 		final String password = argsMap.get("password");
 		final String email = argsMap.get("email");
 		

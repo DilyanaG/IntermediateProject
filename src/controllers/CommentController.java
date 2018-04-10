@@ -4,6 +4,7 @@ import java.util.List;
 
 import dataclasses.Comment;
 import dataclasses.Video;
+import exceptions.IllegalInputException;
 import menus.ChannelMenu;
 import menus.CommentMenu;
 import menus.Menu;
@@ -23,8 +24,8 @@ public class CommentController {
 		return commentController;
 	}
 
-	public Menu addComment(String commentContent, String title) {
-		commentService.addComment(commentContent, title);
+	public Menu addComment(String commentContent) throws IllegalInputException    {
+		commentService.addComment(commentContent);
 		return new CommentMenu();
 	}
 
@@ -66,6 +67,11 @@ public class CommentController {
 	// TODO if(super.getUser() == null) return visitorChannelMenu;
 	public Menu openAuthorsChannel(int commentid) {
 		commentService.openAuthorsChannel(commentid);
-		return new ChannelMenu();
+		return new ChannelMenu(null);
+	}
+
+	public List<Comment> getCommentsForVideo(Video video) throws IllegalInputException {
+		List<Comment> comments = commentService.getCommentForVideo(video);
+		return comments;
 	}
 }

@@ -25,29 +25,25 @@ public class UserController {
 	}
 	
 	//TODO if logged in successful -> HomeMenu, else -> Default Menu
-	public Menu login(String username, String password)  {
+	public Menu login(String username, String password) throws IllegalInputException  {
 
-		try {
-			userService.login(username, password);
-			return new HomeMenu();
-		} catch (IllegalInputException e) {
-			System.out.println(e.getMessage()); //TODO This should be handles by the UI
-			return new DefaultMenu();
-		}
+		
+			if(userService.login(username, password))
+			    return new HomeMenu();
+		return new DefaultMenu();
 	}
      //String username, String password, String email
-	public Menu register(User user) {
+	public Menu register(User user) throws IllegalInputException {
 
-		try {
+		
 			if(!userService.register(user)){
-				throw new IllegalInputException("DATABASE PROBLEM!");
-			}
-			return new DefaultMenu();
 			
-		} catch (IllegalInputException e) {
-			System.out.println(e.getMessage()); //TODO This should be handles by the UI
 			return new DefaultMenu();
-		}
+			}
+			System.out.println("Successful registration!");
+			return new HomeMenu();
+			
+		
 			
 		
 	}

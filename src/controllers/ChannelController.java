@@ -1,16 +1,12 @@
 package controllers;
 
 import java.util.List;
-import java.util.Map;
-
 import dataclasses.Channel;
 import dataclasses.Playlist;
 import dataclasses.User;
 import dataclasses.Video;
 import exceptions.IllegalInputException;
-import exceptions.IllegalUserArgumentException;
 import menus.ChannelMenu;
-import menus.DefaultMenu;
 import menus.HomeMenu;
 import menus.Menu;
 import menus.MyChannelsMenu;
@@ -18,13 +14,13 @@ import menus.MyPlaylistsMenu;
 import menus.MyVideosMenu;
 import menus.SettingsMenu;
 import services.ChannelService;
-import ui.OfflineUserInterface;
+import services.UserServices;
 import ui.UserInterface;
 
 public class ChannelController {
 
 	static ChannelController channelController;
-	private ChannelService channelService;
+	private ChannelService channelService= ChannelService.getInstance();
 
 	private ChannelController() {
 
@@ -45,14 +41,16 @@ public class ChannelController {
 //			System.out.println(e.getMessage()); // TODO This should be handles
 //												// by the UI
 //		} finally {
-//			return new HomeMenu();
+//		return new HomeMenu();
 //		}
 //	}
 
-	public Menu myVideos() {
-		
+	public Menu myVideos() throws IllegalInputException {
+		List<Video> videos =  VideoController.getInstance().getVideosToChannel(getLoginChannel());
+		UserInterface.getInstance().printVideos(videos);
 		return new MyVideosMenu();
 	}
+
 
 	public Menu myPlaylists() {
 		return new MyPlaylistsMenu();
@@ -74,12 +72,12 @@ public class ChannelController {
 	// TODO if(super.getUser() == null) return visitorChannelMenu;
 	public Menu openChannel(String channelName) throws IllegalInputException {
 		channelService.openChannel(channelName);
-		return new ChannelMenu();
+		return new ChannelMenu(channelName);
 	}
 
 	public Menu followChannel(String channelName) throws IllegalInputException {
 		channelService.followChannel(channelName);
-		return new ChannelMenu();
+		return new ChannelMenu(this.getLoginChannel().getUser().getUserName());
 	}
 
 	public Menu unfollowChannel(String channelName) throws IllegalInputException {
@@ -90,33 +88,39 @@ public class ChannelController {
 	// TODO if(super.getUser() == null) return visitorChannelMenu;
 	public Menu showVideos() throws IllegalInputException {
 		List<Video> channelVideos = channelService.showVideos();
-		return new ChannelMenu();
+		return new ChannelMenu(this.getLoginChannel().getUser().getUserName());
 	}
 
 	// TODO if(super.getUser() == null) return visitorChannelMenu;
 	public Menu showPlaylists() throws IllegalInputException {
 	  List<Playlist> channelPlaylists = channelService.showPlaylists();
-		return new ChannelMenu();
+		return new ChannelMenu(this.getLoginChannel().getUser().getUserName());
 	}
 
 	// TODO if(super.getUser() == null) return visitorChannelMenu;
 	public Menu showChannels() throws IllegalInputException {
 		List<Channel> channels = channelService.showChannels();
-		return new ChannelMenu();
+		return new ChannelMenu(this.getLoginChannel().getUser().getUserName());
 	}
 
-	public Menu addVideo(Video video) {
-		// TODO Auto-generated method stub
-		return null;
+	public Menu addVideo(Video video) throws IllegalInputException {
+		Channel channel = this.getLoginChannel();
+		VideoController.getInstance().addVideoToChannel(video,channel);
+		System.out.println("YOUR VIDEO ADDED!");
+		return new HomeMenu();
+	}
+	public Channel getLoginChannel() throws IllegalInputException {
+		
+		return channelService.getLoginChannel();
 	}
 
-	
 
-//	// TODO Why do we need this?
-//	public ChannelController getChannel(User user) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	public boolean isLogin() throws IllegalInputException{
+		
+		return this.channelService.checkForLoginChannel();
+	}
+
+
 
 	
 }

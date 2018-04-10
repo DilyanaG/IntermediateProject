@@ -26,6 +26,11 @@ public class MyVideosMenu extends Menu{
 	}
 
 	@Override
+	protected String titlePresent() {
+		
+		return super.titlePresent()+"************Channel Videos********\n";
+	}
+	@Override
 	public Menu process(String input) throws IllegalInputException {
 		final String command = input.split(" ")[0].toLowerCase();// read first word from input
 		final String args = input.substring(command.length()); // remove command
@@ -61,10 +66,10 @@ public class MyVideosMenu extends Menu{
 			return exitMenu;
 		
 		default:
-			//TODO throw new IllegalInputException();
-			break;
+			throw new IllegalInputException("INVALID INPUT !");
+		
 		}
 
-		return null;
+		
 	}
 }

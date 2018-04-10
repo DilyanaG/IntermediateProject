@@ -61,7 +61,7 @@ public class CommentMenu extends Menu {
 			Menu searchMenu = videoController.search(tags, sortBy); 
 			return searchMenu;
 		case "addcomment":
-			commentMenu = commentController.addComment(comment.getContent(), title);
+			commentMenu = commentController.addComment(comment.getContent());
 			return commentMenu;
 		case "removecomment":
 			commentMenu = commentController.removeComment(commentid, title);
@@ -95,10 +95,9 @@ public class CommentMenu extends Menu {
 			return exitMenu;
 		
 		default:
-			//TODO throw new IllegalInputException();
-			break;
+			throw new IllegalInputException("INVALID INPUT !");
+			
 		}
 
-		return null;
 	}
 }

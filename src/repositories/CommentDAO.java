@@ -20,7 +20,7 @@ import exceptions.InvalidDataException;
 public class CommentDAO {
 	//selects
 	private static final String SELECT_ALL_BY_VIDEO_ID =
-			"SELECT comment_id,channel_id, content, date, likes, dislikes,  FROM comments WHERE video_id = ?;";
+			"SELECT comment_id,channel_id, content, date, likes, dislikes FROM comments WHERE video_id = ?;";
 	private static final String SELECT_ALL_BY_CHANNEL_ID = 
 			"SELECT comment_id,video_id, content, date, likes, dislikes,  FROM comments WHERE channel_id = ?;"; 
 	private static final String SELECT_ALL_ = 
@@ -60,7 +60,7 @@ public class CommentDAO {
 		}
 		return instance;
 	}
-	List<Comment> getCommentsForVideo(Video video) throws SQLException, IllegalInputException {
+	public List<Comment> getCommentsForVideo(Video video) throws SQLException, IllegalInputException {
 
 		  List<Comment> comments = new  ArrayList<Comment>();
 			PreparedStatement st = connection.prepareStatement(SELECT_ALL_BY_VIDEO_ID);
@@ -71,7 +71,7 @@ public class CommentDAO {
 				
 				Comment comment = new Comment(rezultSet.getInt("comment_id"),
 						                        video,
-						                       ChannelRepository.getInstance().getChannelById(rezultSet.getInt("channel_id")),
+						                        ChannelDAO.getInstance().getChannelById(rezultSet.getInt("channel_id")),
 												rezultSet.getString("content"),
 												rezultSet.getDate("date"),
 												rezultSet.getInt("likes"),
@@ -90,11 +90,11 @@ public class CommentDAO {
 		//TO DO select
 		return Collections.EMPTY_LIST;
 	}
-	public void addNewCommentForVideo(Video video,Comment comment) throws SQLException{
+	public void addNewCommentForVideo(Video video,Channel channel,String  comment) throws SQLException{
 		PreparedStatement st = connection.prepareStatement(CREATE_NEW_PLAYLIST);
-		st.setInt(1, comment.getChannel().getChannelId());
+		st.setInt(1, channel.getChannelId());
 		st.setInt(2,video.getVideoId());
-		st.setString(3,comment.getContent());
+		st.setString(3,comment);
 		st.setInt(2,0);
 		st.setInt(2,0);
 		st.executeUpdate();
@@ -135,8 +135,8 @@ public class CommentDAO {
 				while (rezultSet.next()) {
 					
 					Comment comment = new Comment(rezultSet.getInt("comment_id"),
-							                        VideoRepository.getInstance().getVideoById(rezultSet.getInt("video_id")),
-							                         ChannelRepository.getInstance().getChannelById(rezultSet.getInt("channel_id")),
+													VideoDAO.getInstance().getVideoById(rezultSet.getInt("video_id")),
+							                        ChannelDAO.getInstance().getChannelById(rezultSet.getInt("channel_id")),
 													rezultSet.getString("content"),
 													rezultSet.getDate("date"),
 													rezultSet.getInt("likes"),
@@ -162,7 +162,7 @@ public class CommentDAO {
 			while (rezultSet.next()) {
 				
 				Comment comment = new Comment(rezultSet.getInt("comment_id"),
-						                        VideoRepository.getInstance().getVideoById(rezultSet.getInt("video_id")),
+						VideoDAO.getInstance().getVideoById(rezultSet.getInt("video_id")),
 						                         channel,
 												rezultSet.getString("content"),
 												rezultSet.getDate("date"),

@@ -71,10 +71,9 @@ public class MyPlaylistsMenu extends Menu {
 			return exitMenu;
 
 		default:
-			//TODO throw new IllegalInputException();
-			break;
+			throw new IllegalInputException("INVALID INPUT !");
+			
 		}
 
-		return null;
 	}
 }

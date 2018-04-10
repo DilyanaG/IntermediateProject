@@ -20,6 +20,16 @@ public class VisitorChannelMenu extends Menu{
 	private PlaylistController playlistController = PlaylistController.getInstance();
 	private VideoController videoController = VideoController.getInstance();
 	
+	private String channelName;
+	public VisitorChannelMenu(String userName) {
+		this.channelName=userName;
+	}
+	
+	@Override
+	protected String titlePresent() {
+		// TODO Auto-generated method stub
+		return super.titlePresent()+"______CHANNEL "+this.channelName+"_______\n";
+	}
 	@Override
 	protected String specialPresent() {
 		final StringBuilder builder = new StringBuilder();
@@ -92,10 +102,9 @@ public class VisitorChannelMenu extends Menu{
 			return exitMenu;
 			
 		default:
-			// throw new IllegalInputException();
-			break;
+	        throw new IllegalInputException("INVALID INPUT !");
+			
 		}
 
-		return null;
 	}
 }

@@ -34,6 +34,7 @@ public class Video {
 		this.countOfLikes=countOfDislikes;
 		this.countOfDislikes = countOfDislikes;
 		this.views = views;
+		this.videoId= videoId;
 		
 	}
 	public Video(String url, Channel channel, String title, String description)  {

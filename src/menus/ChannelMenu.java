@@ -23,6 +23,12 @@ public class ChannelMenu extends Menu{
 	private VideoController videoController = VideoController.getInstance();
 	
 
+	private String channelName;
+
+	public ChannelMenu(String channelName) {
+		this.channelName = channelName;
+	}
+	
 	@Override
 	protected String specialPresent() {
 		final StringBuilder builder = new StringBuilder();
@@ -37,6 +43,12 @@ public class ChannelMenu extends Menu{
 		builder.append(">OpenChannel -channelname=channelname_here\n");
 		builder.append(">Homepage\n");
 		return builder.toString();
+	}
+	
+	@Override
+	protected String titlePresent() {
+		// TODO Auto-generated method stub
+		return super.titlePresent()+"______CHANNEL "+this.channelName+"_______\n";
 	}
 
 	@Override
@@ -100,10 +112,9 @@ public class ChannelMenu extends Menu{
 			return exitMenu;
 		
 		default:
-			//TODO throw new IllegalInputException();
-			break;
+			throw new IllegalInputException("INVALID INPUT !");
+			
 		}
 
-		return null;
 	}
 }

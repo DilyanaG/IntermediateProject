@@ -56,7 +56,7 @@ public class VideoMenu extends Menu{
 			videoMenu = videoController.removeLikeDislikeFromVideo(isLike, title);
 			return videoMenu;
 		case "openauthorschannel":
-			Menu channelMenu = videoController.openAuthorsChannel(title);
+			Menu channelMenu = videoController.openAuthorsChannel();
 			return channelMenu;
 		case "addtoplaylist":
 			final Playlist playlist = playlistParser.parse(argsMap);
@@ -73,10 +73,9 @@ public class VideoMenu extends Menu{
 			return exitMenu;
 		
 		default:
-			//TODO throw new IllegalInputException();
-			break;
+	         throw new IllegalInputException("INVALID INPUT !");
+			
 		}
 
-		return null;
 	}
 }

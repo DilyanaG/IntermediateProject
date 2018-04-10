@@ -1,8 +1,11 @@
 package ui;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
+import dataclasses.Comment;
+import dataclasses.Video;
 import exceptions.IllegalInputException;
 import menus.DefaultMenu;
 import menus.Menu;
@@ -10,7 +13,11 @@ import menus.Menu;
 
 public class UserInterface {
 	
-	//TODO this
+	private static UserInterface instance;
+
+	private UserInterface() {
+		
+	}
 	private Menu menu = new DefaultMenu();
 
 	private final Scanner scanner = new Scanner(System.in);
@@ -18,8 +25,9 @@ public class UserInterface {
 	public void run() {
 		try {
 			runApplication();
-			System.out.println("Good buy");
-		} catch (Throwable t) {
+			System.out.println("Good bye");
+		} catch (Exception t) {
+			System.out.println(t.getMessage());
 			t.printStackTrace();
 			Logger.getGlobal().severe(t.getMessage() + " " + t.getStackTrace());
 			System.out.println("Internal server error! Application will terminate. Sorry :(");
@@ -28,18 +36,94 @@ public class UserInterface {
 		}
 	}
 
-	public void runApplication() throws IllegalInputException {
+	public void runApplication() {
 		while (menu != null) {
 			final String presentation = menu.presnet();
 			System.out.println(presentation);
-
+           while(true){
 			final String input = scanner.nextLine();
-			menu = menu.process(input);
+			try {
+				menu = menu.process(input);
+				break;
+			} catch (IllegalInputException e) {
+				System.out.println(e.getMessage());
+				if(checkForYesOrNo()){
+					break;
+				}else{
+					return;
+				}
+			}
+		}}
+	}
+
+
+
+public boolean checkForYesOrNo() {
+	
+	System.out.println("DO YOU WANT TRY AGAIN!\nENTER [YES] or [NO]");
+
+	while (true) {
+		String choice = new Scanner(System.in).next();
+		switch (choice) {
+		case "no":
+			return false;
+		case "yes":
+			return true;
+		default: {
+			System.out.println("INCORRECT INPUT!ENTER AGAIN!");
+			continue;
+		}
 		}
 	}
 }
 
+public static UserInterface getInstance() {
+	if(instance == null){
+		instance = new UserInterface();
+	}
+	return instance;
+}
 
+public void printVideos(List<Video> videos) {
+	if(videos == null||videos.isEmpty()){
+		System.out.println("VIDEOS NOT FOUND!");
+	}else{
+		System.out.println("VIDEO ID\tVIDEO TITLE");
+		for(Video video : videos){
+			
+			System.out.println(video.getVideoId()+"\t\t"+video.getTitle());
+		}
+	}
+	
+}
+
+public void showVideo(Video video) {
+
+System.out.println("_____________VIDEO______________ ");
+System.out.println("url:"+video.getUrl());
+System.out.println("title: "+video.getTitle());
+System.out.println("description:"+video.getDescription());
+System.out.println("likes: "+video.getCountOfLikes());
+System.out.println("dislikes: "+video.getCountOfDislikes());
+System.out.println("channel: "+video.getChannel().getUser().getUserName());
+System.out.println("----------------------------------------");
+
+	
+}
+
+public void printComments(List<Comment> comments) {
+		for(Comment comment : comments){
+			System.out.println("Channel :"+comment.getChannel().getUser().getUserName());
+			System.out.println("Comment ID : "+comment.getCommentId());
+			System.out.println("Comment content : "+comment.getContent());
+			System.out.println("Likes: "+comment.getLikes());
+			System.out.println("Dislikes: "+comment.getDislikes());
+			System.out.println("Date: "+comment.getPublicationDate());
+			System.out.println("--------------------------------");
+		}
+	}
+	
+}
 
 /*
 

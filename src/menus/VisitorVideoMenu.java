@@ -39,7 +39,7 @@ public class VisitorVideoMenu extends Menu{
 			Menu searchMenu = videoController.search(tags, sortBy); 
 			return searchMenu;
 		case "openauthorschannel":
-			Menu visitorChannelMenu = videoController.openAuthorsChannel(title);
+			Menu visitorChannelMenu = videoController.openAuthorsChannel();
 			return visitorChannelMenu;
 		case "showcomments":
 			Menu visitorCommentMenu = videoController.showVideoComments(title);
@@ -52,10 +52,9 @@ public class VisitorVideoMenu extends Menu{
 			return exitMenu;
 		
 		default:
-			//TODO throw new IllegalInputException();
-			break;
+	         throw new IllegalInputException("INVALID INPUT !");
+			
 		}
 
-		return null;
 	}
 }

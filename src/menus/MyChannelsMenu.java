@@ -24,6 +24,7 @@ public class MyChannelsMenu extends Menu {
 		builder.append(">Homepage\n");
 		return builder.toString();
 	}
+	
 
 	@Override
 	public Menu process(String input) throws IllegalInputException {
@@ -58,10 +59,9 @@ public class MyChannelsMenu extends Menu {
 			return exitMenu;
 
 		default:
-			//TODO throw new IllegalInputException();
-			break;
+	      throw new IllegalInputException("INVALID INPUT !");
+			
 		}
 
-		return null;
 	}
 }

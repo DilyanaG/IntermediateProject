@@ -13,7 +13,7 @@ public class AbstractParser {
          
 		Map<String, String> argsMap = new HashMap<String, String>();
 		for (int i = 1; i < args.length; i++) {
-			final String[] keyValuePair = args[i].split("=");
+			final String[] keyValuePair = args[i].split("\\s*=\\s*");
 
 			if (keyValuePair.length != 2) {
 				throw new IllegalInputException();

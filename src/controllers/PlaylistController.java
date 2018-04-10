@@ -7,7 +7,7 @@ import dataclasses.Playlist;
 import dataclasses.Video;
 import enums.SortPlaylistBy;
 import enums.SortVideoBy;
-import exceptions.IllegalChannelArgumentException;
+
 import exceptions.IllegalInputException;
 import menus.Menu;
 import menus.MyPlaylistsMenu;

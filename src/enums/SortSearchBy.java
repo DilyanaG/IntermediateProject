@@ -13,7 +13,7 @@ public enum SortSearchBy {
 			switch (sortBy) {
 			case "newest":
 				return SortSearchBy.DATE;
-			case "oldest":
+			case "views":
 				return SortSearchBy.VIEWS;
 			case "likes":
 				return SortSearchBy.LIKES;
