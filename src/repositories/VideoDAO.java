@@ -290,8 +290,11 @@ public class VideoDAO {
 		
 	}
 
-	public void deleteChannelVideos(Channel channel) {
-		// TODO Auto-generated method stub
+	public void deleteChannelVideos(Channel channel) throws SQLException, IllegalInputException {
+		List<Video> videos = this.getVideosForChannelBy(channel);
+		for(Video video :videos){
+			this.deleteVideo(video.getTitle());
+		}
 		
 	}
 

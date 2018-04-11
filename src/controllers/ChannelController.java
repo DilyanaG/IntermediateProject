@@ -13,6 +13,7 @@ import menus.MyChannelsMenu;
 import menus.MyPlaylistsMenu;
 import menus.MyVideosMenu;
 import menus.SettingsMenu;
+import menus.VisitorChannelMenu;
 import services.ChannelService;
 import services.UserServices;
 import ui.UserInterface;
@@ -53,11 +54,14 @@ public class ChannelController {
 
 
 	public Menu myPlaylists() {
+		
+		
 		return new MyPlaylistsMenu();
 	}
 
 	public Menu myChannels() {
-		return new MyPlaylistsMenu();
+		
+		return new MyChannelsMenu();
 	}
 
 	public Menu settings() {
@@ -87,8 +91,12 @@ public class ChannelController {
 
 	// TODO if(super.getUser() == null) return visitorChannelMenu;
 	public Menu showVideos() throws IllegalInputException {
-		List<Video> channelVideos = channelService.showVideos();
-		return new ChannelMenu(this.getLoginChannel().getUser().getUserName());
+		Channel channel = VideoController.getInstance().getOpenedVideo().getChannel();
+		List<Video> channelVideos = VideoController.getInstance().
+				getVideosToChannel(channel);
+		UserInterface.getInstance().printVideos(channelVideos);
+		return new ChannelMenu(channel.getUser().getUserName());
+		
 	}
 
 	// TODO if(super.getUser() == null) return visitorChannelMenu;

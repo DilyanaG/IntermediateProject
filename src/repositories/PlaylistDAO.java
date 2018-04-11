@@ -40,14 +40,13 @@ public class PlaylistDAO {
 			"UPDATE playlists SET name = ? WHERE playlist_id = ?; ";
 	//insert
 	private static final String CREATE_NEW_PLAYLIST = 
-			" INSERT INTO playlists (channel_id, name, create_date, last_video_add_date) VALUES (?,'?',now(),now());";
+			"INSERT INTO playlists (channel_id, name, create_date, last_video_add_date) VALUES (?,?,now(),now());";
 	
 	//delete
 	private static final String DELETE_FROM_PLAYLIST_HAS_VIDEOS_TABLE = 
-			"DELETE FROM playlists_has_videos WHERE playlist_id in ( "+
-	                             "SELECT playlist_id FROM playlists WHERE playlist_name = '?';";
+			"DELETE FROM playlists_has_videos WHERE playlist_id = ?;"; 
 	private static final String DELETE_PLAYLIST =
-			"DELETE FROM playlists WHERE playlist_name = '?';";
+			"DELETE FROM playlists WHERE name = ?;";
 	
 	
 	private static PlaylistDAO instance;
@@ -108,16 +107,17 @@ public class PlaylistDAO {
 	}
 
 	public void deletePlaylist(String playlist_name) throws SQLException{
-		this.deletePlaylistFromTable(playlist_name);
+	   Playlist playlist =	this.getPlaylistByName(playlist_name);
+		this.deletePlaylistFromTable(playlist.getId());
 		PreparedStatement st = connection.prepareStatement(DELETE_PLAYLIST);
 		st.setString(1, playlist_name);
 		st.executeUpdate();
 		st.close();
 	}
 
-	private void deletePlaylistFromTable(String playlist_name) throws SQLException {
+	private void deletePlaylistFromTable(int id) throws SQLException {
 		PreparedStatement st = connection.prepareStatement(DELETE_FROM_PLAYLIST_HAS_VIDEOS_TABLE);
-		st.setString(1, playlist_name);
+		st.setInt(1, id);
 		st.executeUpdate();
 		st.close();
 	}

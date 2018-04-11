@@ -48,7 +48,7 @@ public class ChannelService {
     //Parametar username, channel, channel id , video id ???
 	
 public void  followChannel(String channelName) throws IllegalInputException{
-	    if(!checkForLoginChannel()){
+	    if(checkForLoginChannel()){
 	    	try {
 	    	Channel followedChannel = channelDAO.getChannelByUserName(channelName);
 			
@@ -75,6 +75,7 @@ public void  followChannel(String channelName) throws IllegalInputException{
 			}
 			try {
 				this.loginChannel=channelDAO.getChannelByUserName(onlineUser.getUserName());
+				return true;
 			} catch (SQLException e) {
 				e.getMessage();
 				throw new IllegalInputException("DATABASE ERROR!");
@@ -99,14 +100,16 @@ public Channel openChannel(String channelName) throws IllegalInputException {
 }
 public void unfollowChannel(String channelName) throws IllegalInputException {
 	Channel channel;
+	 if(checkForLoginChannel()){
 	try {
-		channel = channelDAO.getChannelByUserName(channelName);
+		   channel = channelDAO.getChannelByUserName(channelName);
 			channelDAO.unfollowChannel(this.loginChannel, channel);
 		
 	} catch (SQLException e) {
 		throw new IllegalInputException("DATABASE PROBLEM");
 		//e.printStackTrace();
 	} 
+	 }
 	
 	
 }

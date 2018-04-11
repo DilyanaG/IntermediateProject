@@ -131,7 +131,7 @@ public class UserServices {
 			userDAO.updatePassword(onlineUser, newPassword);
 		} catch (SQLException e) {
 			// System.out.println(e.getMessage());
-			throw new IllegalInputException("DATABASE PROBLEM ");
+			throw new IllegalInputException(e.getMessage()+"DATABASE PROBLEM ");
 		}
 
 	}
@@ -143,7 +143,7 @@ public class UserServices {
 		try {
 			this.userDAO.deleteUser(onlineUser);
 		} catch (SQLException e) {
-			throw new IllegalInputException("DATEBASE PROBLEM!");
+			throw new IllegalInputException(e.getMessage()+"DATEBASE PROBLEM!");
 			// System.out.println(e.getMessage());
 		}
 		this.logout(onlineUser.getUserName());

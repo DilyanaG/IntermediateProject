@@ -114,11 +114,14 @@ public class VideoController {
 		List<Comment> comments=  videoServices.showVideoComments(title);
 		if(comments==null||comments.isEmpty()){
 	            System.out.println("NO COMMENTS!");
-	         return new DefaultMenu();   
+	            if(ChannelController.getInstance().isLogin()){
+	    	       	return new VideoMenu();
+	    		}
+	            return new VisitorVideoMenu();
 		}
 		UserInterface.getInstance().printComments(comments);
 		if(ChannelController.getInstance().isLogin()){
-		return new CommentMenu();
+	       	return new CommentMenu();
 		}
 		return new VisitorCommentMenu();
 	}

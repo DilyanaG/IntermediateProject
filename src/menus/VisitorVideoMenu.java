@@ -13,10 +13,11 @@ public class VisitorVideoMenu extends Menu{
 	private VideoController videoController = VideoController.getInstance();
 	
 	private GenericParser genericParser = GenericParser.getInstance();
-
+ 
 	@Override
 	protected String specialPresent() {
 		final StringBuilder builder = new StringBuilder();
+	
 		builder.append(">OpenAuthorsChannel\n");
 		builder.append(">ShowComments\n");
 		builder.append(">Homepage\n");

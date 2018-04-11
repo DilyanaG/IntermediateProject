@@ -73,7 +73,7 @@ public class ChannelMenu extends Menu{
 			Menu searchMenu = videoController.search(tags, sortSearchBy); 
 			return searchMenu;
 		case "follow":
-			channelMenu = channelController.followChannel(channelName);
+			channelMenu = channelController.followChannel(this.channelName);
 			return channelMenu;
 		case "showvideos":
 			channelMenu = channelController.showVideos();

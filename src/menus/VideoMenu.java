@@ -22,9 +22,9 @@ public class VideoMenu extends Menu{
 		final StringBuilder builder = new StringBuilder();
 		builder.append(">LikeDislikeVideo -like=true_or_false\n"); // more than one like per person?
 		builder.append(">RemoveLikeDislike -like=true_or_false\n"); // remove like you did not give?
-		builder.append(">OpenAuthorsChannel\n");
 		builder.append(">AddToPlaylist -playlistname=playlistname_here\n");
-		builder.append(">ShowComments\n");
+		builder.append(">OpenAuthorsChannel\n");
+	     builder.append(">ShowComments\n");
 		builder.append(">Homepage\n");
 		return builder.toString();
 	}

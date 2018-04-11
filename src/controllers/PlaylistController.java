@@ -13,6 +13,7 @@ import menus.Menu;
 import menus.MyPlaylistsMenu;
 import menus.PlaylistMenu;
 import services.PlaylistService;
+import ui.UserInterface;
 
 public class PlaylistController {
 	private static PlaylistController playlistController;
@@ -51,6 +52,7 @@ public class PlaylistController {
 	// TODO if(super.getUser() == null) return visitorPlaylistMenu;
 	public Menu openPlaylist(String playlist_name) throws IllegalInputException {
 		List<Video> playlistVideos = playlistServices.openPlaylist(playlist_name);
+		UserInterface.getInstance().printVideos(playlistVideos);
 		return new PlaylistMenu();
 	}
 

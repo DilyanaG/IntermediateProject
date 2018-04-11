@@ -84,7 +84,6 @@ public class CommentService {
 	}
 
 	public void openAuthorsChannel(int commentid) {
-		// TODO Auto-generated method stub
 		
 	}
 

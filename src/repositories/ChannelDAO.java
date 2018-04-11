@@ -177,7 +177,7 @@ public class ChannelDAO {
 		st.close();
 	}
 
-	public void deleteChannel(Channel channel) throws SQLException{
+	public void deleteChannel(Channel channel) throws SQLException, IllegalInputException{
 		this.deleteChannelFromFolowerTable(channel,DELETE_FOLLOWERS );
 		this.deleteChannelFromFolowerTable(channel,DELETE_FOLLOWEDS );
 		CommentDAO.getInstance().deleteChannelComments(channel);
