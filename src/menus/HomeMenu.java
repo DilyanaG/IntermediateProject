@@ -7,6 +7,7 @@ import controllers.UserController;
 import controllers.VideoController;
 import dataclasses.Video;
 import enums.SortSearchBy;
+import exceptions.DataBaseException;
 import exceptions.IllegalInputException;
 import parsers.GenericParser;
 import parsers.VideoParser;
@@ -34,7 +35,7 @@ public class HomeMenu extends Menu {
 	}
 
 	@Override
-	public Menu process(String input) throws IllegalInputException {
+	public Menu process(String input) throws IllegalInputException, DataBaseException {
 		final String command = input.split(" ")[0].toLowerCase();// read first word from input
 		final String args = input.substring(command.length()); // remove command
 

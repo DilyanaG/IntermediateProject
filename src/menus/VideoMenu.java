@@ -3,10 +3,14 @@ package menus;
 import java.util.Map;
 
 import controllers.ChannelController;
+import controllers.CommentController;
 import controllers.VideoController;
+import dataclasses.Comment;
 import dataclasses.Playlist;
 import enums.SortSearchBy;
+import exceptions.DataBaseException;
 import exceptions.IllegalInputException;
+import parsers.CommentParser;
 import parsers.GenericParser;
 import parsers.PlaylistParser;
 
@@ -24,13 +28,14 @@ public class VideoMenu extends Menu{
 		builder.append(">RemoveLikeDislike -like=true_or_false\n"); // remove like you did not give?
 		builder.append(">AddToPlaylist -playlistname=playlistname_here\n");
 		builder.append(">OpenAuthorsChannel\n");
-	     builder.append(">ShowComments\n");
+		builder.append(">AddComment -content=comment_content_here\n");
+	    builder.append(">ShowComments\n");
 		builder.append(">Homepage\n");
 		return builder.toString();
 	}
 
 	@Override
-	public Menu process(String input) throws IllegalInputException {
+	public Menu process(String input) throws IllegalInputException, DataBaseException {
 		final String command = input.split(" ")[0].toLowerCase();// read first word from input
 		final String args = input.substring(command.length()); // remove command
 
@@ -60,11 +65,15 @@ public class VideoMenu extends Menu{
 			return channelMenu;
 		case "addtoplaylist":
 			final Playlist playlist = playlistParser.parse(argsMap);
-			videoMenu = videoController.addVideoToPlaylist(title, playlist.getPlaylistName());
+			videoMenu = videoController.addVideoToPlaylist(playlist.getPlaylistName());
 			return videoMenu;
-		case "showcomments":
-			Menu commentMenu = videoController.showVideoComments(title);
+		case "addcomment":
+			final Comment comment = CommentParser.getInstance().parse(argsMap);
+			Menu commentMenu = CommentController.getInstance().addComment(comment.getContent());
 			return commentMenu;
+		case "showcomments":
+			Menu commentsMenu = videoController.showVideoComments(title);
+			return commentsMenu;
 		case "homepage":
 			Menu homeMenu = channelController.homepage();
 			return homeMenu;

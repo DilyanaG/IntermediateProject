@@ -5,6 +5,7 @@ import java.util.Map;
 import controllers.ChannelController;
 import controllers.VideoController;
 import enums.SortSearchBy;
+import exceptions.DataBaseException;
 import exceptions.IllegalInputException;
 import parsers.GenericParser;
 
@@ -27,7 +28,7 @@ public class MyChannelsMenu extends Menu {
 	
 
 	@Override
-	public Menu process(String input) throws IllegalInputException {
+	public Menu process(String input) throws IllegalInputException, DataBaseException {
 		final String command = input.split(" ")[0].toLowerCase();// read first
 																	// word from
 																	// input

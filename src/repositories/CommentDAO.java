@@ -10,12 +10,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import controllers.ChannelController;
 import dataclasses.Channel;
 import dataclasses.Comment;
 import dataclasses.Playlist;
 import dataclasses.Video;
 import exceptions.IllegalInputException;
-import exceptions.InvalidDataException;
+
 
 public class CommentDAO {
 	//selects
@@ -25,10 +26,11 @@ public class CommentDAO {
 			"SELECT comment_id,video_id, content, date, likes, dislikes,  FROM comments WHERE channel_id = ?;"; 
 	private static final String SELECT_ALL_ = 
 			"SELECT comment_id,video_id,channel_id, content, date, likes, dislikes,  FROM comments WHERE channel_id = ?;";
-			
+	private static final String BY_ID =
+			"SELECT comment_id,channel_id,video_id, content, date, likes, dislikes FROM comments WHERE comment_id = ?;";		
 	//insert
 	private static final String CREATE_NEW_PLAYLIST = 
-			" INSERT INTO comments (channel_id, video_id , content , date, likes , dislikes ) VALUES (?,?,'?',now(),?,?);";
+			" INSERT INTO comments (channel_id, video_id , content , date, likes , dislikes ) VALUES (?,?,?,now(),?,?);";
 	//update
 	private static final String UPDATE_CONTENT = 
 			"UPDATE comments SET content = ? WHERE comment_id = ? ;";
@@ -95,8 +97,8 @@ public class CommentDAO {
 		st.setInt(1, channel.getChannelId());
 		st.setInt(2,video.getVideoId());
 		st.setString(3,comment);
-		st.setInt(2,0);
-		st.setInt(2,0);
+		st.setInt(4,0);
+		st.setInt(5,0);
 		st.executeUpdate();
 		st.close();
 	}
@@ -151,7 +153,7 @@ public class CommentDAO {
 		
 	}
 	
-	public List<Comment> voidGetAllCommentsForChannel(Channel channel) throws SQLException{
+	public List<Comment> voidGetAllCommentsForChannel(Channel channel) throws SQLException, IllegalInputException{
 
 		  List<Comment> comments = new  ArrayList<Comment>();
 			PreparedStatement st = connection.prepareStatement(SELECT_ALL_BY_CHANNEL_ID);
@@ -162,7 +164,7 @@ public class CommentDAO {
 			while (rezultSet.next()) {
 				
 				Comment comment = new Comment(rezultSet.getInt("comment_id"),
-						VideoDAO.getInstance().getVideoById(rezultSet.getInt("video_id")),
+                 VideoDAO.getInstance().getVideoById(rezultSet.getInt("video_id")),
 						                         channel,
 												rezultSet.getString("content"),
 												rezultSet.getDate("date"),
@@ -195,6 +197,28 @@ public class CommentDAO {
 	public void deleteChannelComments(Channel channel) throws SQLException {
 		deleteCommentBy(channel.getChannelId(),DELETE_ALL_BY_CHANNEL);
 		
+	}
+
+	public Comment getCommentById(int commentid) throws SQLException, IllegalInputException {
+		  //System.out.println(commentid);
+		  List<Comment> comments = new  ArrayList<Comment>();
+			PreparedStatement st = connection.prepareStatement(BY_ID);
+			st.setInt(1,commentid);
+			ResultSet rezultSet= st.executeQuery();
+			rezultSet.next();
+				//System.out.println("assdfg");
+				Channel channel = ChannelDAO.getInstance().getChannelById(rezultSet.getInt("channel_id"));
+				Comment comment = new Comment(rezultSet.getInt("comment_id"),
+               VideoDAO.getInstance().getVideoById(rezultSet.getInt("video_id")),
+						                        channel,
+												rezultSet.getString("content"),
+												rezultSet.getDate("date"),
+												rezultSet.getInt("likes"),
+												rezultSet.getInt("dislikes"));
+				
+			rezultSet.close();
+			st.close();
+      return comment;
 	}
 
 }

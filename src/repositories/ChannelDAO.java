@@ -13,7 +13,6 @@ import java.util.Set;
 import dataclasses.Channel;
 import dataclasses.User;
 import exceptions.IllegalInputException;
-import exceptions.InvalidDataException;
 
 public class ChannelDAO {
 	//for DB
@@ -148,9 +147,6 @@ public class ChannelDAO {
 		List<Channel> list = createChannelsFromRezultSet(channelRS);
 		channelRS.close();
 		channelSt.close();
-		if(list.isEmpty()){
-			throw new IllegalInputException("CHANNEL WITH THIS USERNAME NOT FOUND!");
-		}
 		return list;
 	}
   

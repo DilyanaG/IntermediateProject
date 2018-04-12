@@ -2,23 +2,27 @@ package enums;
 
 import java.util.Map;
 
+import exceptions.IllegalInputException;
+
 public enum SortPlaylistBy {
-	NEWEST, OLDEST, VIDEOS;
+	NAME, CREATEDATE, LASTADDEDVIDEODATE;
 
-	public static SortPlaylistBy resolve(Map<String, String> argsMap) {
+	public static SortPlaylistBy resolve(Map<String, String> argsMap) throws IllegalInputException {
 		final String sortplaylistby = "sortplaylistby";
-
+      if(argsMap==null||argsMap.isEmpty()){
+    	  throw new IllegalInputException("INCORRECT INPUT!");
+      }
 		if (argsMap.containsKey(sortplaylistby)) {
 			String sortBy = argsMap.get(sortplaylistby);
 			switch (sortBy) {
-			case "newest":
-				return SortPlaylistBy.NEWEST;
-			case "oldest":
-				return SortPlaylistBy.OLDEST;
-			case "likes":
-				return SortPlaylistBy.VIDEOS;
+			case "name":
+				return SortPlaylistBy.NAME;
+			case "createdate":
+				return SortPlaylistBy.CREATEDATE;
+			case "lastaddedvideodate":
+				return SortPlaylistBy.LASTADDEDVIDEODATE;
 			default:
-				break;
+				throw new IllegalInputException("INCORRECT INPUT!");
 			}
 		}
 		return null;

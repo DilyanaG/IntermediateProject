@@ -23,15 +23,9 @@ public class PlaylistDAO {
 			"SELECT playlist_id, name, last_video_add_date, create_date  FROM playlists WHERE channel_id = ?;";
 	private static final String ALL_PLAYLISTS = 
 			"SELECT playlist_id,name, create_date,last_video_add_date  from playlists ;";
-	private static final String BY_LAST_ADDED_VIDEO_DATE =
+	private static final String ALL_PLAYLISTS_SORTED_FOR_CHANNEL =
 			" SELECT playlist_id,name, create_date,last_video_add_date  FROM playlists WHERE channel_id =?;" +
-                             "ORDER BY last_video_add_date DESC;";
-	private static final String BY_CREATE_DATE =
-			" SELECT playlist_id,name, create_date,last_video_add_date  FROM playlists WHERE channel_id =?;" +
-                             "ORDER BY create_date DESC;";
-	private static final String BY_NAME =
-			" SELECT playlist_id,name, create_date,last_video_add_date  FROM playlists WHERE channel_id =?" +
-                             "ORDER BY name ;";
+                             "ORDER BY ? DESC;";
 	
   //updates
 	private static final String UPDATE_LAST_VIDEO_ADDING_DATE = 
@@ -47,6 +41,8 @@ public class PlaylistDAO {
 			"DELETE FROM playlists_has_videos WHERE playlist_id = ?;"; 
 	private static final String DELETE_PLAYLIST =
 			"DELETE FROM playlists WHERE name = ?;";
+
+	
 	
 	
 	private static PlaylistDAO instance;
@@ -129,36 +125,35 @@ public class PlaylistDAO {
 		st.executeUpdate();
 		st.close();
 	}
-	
-	//TODO SortPlaylist   ?
-	
+
 	public List<Playlist> getSortedPlaylistForChannelBy(Channel channel,SortPlaylistBy sortBy) throws SQLException{
 		
 		String sort ="";
 		switch(sortBy){
-		case NEWEST:{
+		case NAME:{
+			sort="name";
 			
 		}
-		case OLDEST:{
-			
+		case LASTADDEDVIDEODATE:{
+			sort="last_video_add_date";
 		}
-		case VIDEOS: {
-			
+		default : {
+			sort="create_date";
 		}
 		}
 		
         
 		List<Playlist> playlists =new  ArrayList<>();
-		PreparedStatement st = connection.prepareStatement(sort);
+		PreparedStatement st = connection.prepareStatement(ALL_PLAYLISTS_SORTED_FOR_CHANNEL);
 		st.setInt(1, channel.getChannelId());
+		st.setString(2, sort);
 		ResultSet rezultSet= st.executeQuery();
-		// get all playlist for channel
 		playlists = createPlaylistsFromRezultSet(rezultSet);
 		rezultSet.close();
 		st.close();
 
         return Collections.unmodifiableList(playlists);
-		
+	
 	}
 	
 	public List<Playlist>  getAllPlaylists() throws SQLException{

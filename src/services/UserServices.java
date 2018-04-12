@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import dataclasses.User;
+import exceptions.DataBaseException;
 import exceptions.IllegalInputException;
 import repositories.UserDAO;
-
 
 public class UserServices {
 
@@ -26,7 +26,7 @@ public class UserServices {
 		userDAO = UserDAO.getInstance();
 	}
 
-	public boolean register(User user) throws IllegalInputException {
+	public boolean register(User user) throws IllegalInputException, DataBaseException {
 		if (user.getUserName() == null || user.getUserName().length() < 4)
 			throw new IllegalInputException("INCORRECT NAME!");
 		// check for valid user registration data
@@ -42,14 +42,13 @@ public class UserServices {
 			this.onlineUser = user;
 			return true;
 		} catch (SQLException e) {
-			//e.printStackTrace();
-			System.out.println(e.getMessage());
-			return false;
-		}
+			// e.printStackTrace();
+			throw new DataBaseException(e.getMessage());
 
+		}
 	}
 
-	public boolean login(String username, String password) throws IllegalInputException {
+	public boolean login(String username, String password) throws IllegalInputException, DataBaseException {
 		if (username == null || username.length() < 4)
 			throw new IllegalInputException("INCORRECT NAME!");
 		if (password == null)
@@ -61,28 +60,25 @@ public class UserServices {
 			}
 
 			user = userDAO.getUserByUserName(username);
-		//	System.out.println(user.getPassword());
+			// System.out.println(user.getPassword());
 			if (!user.getPassword().equals(password)) {
 				throw new IllegalInputException("INCORRECT PASSWORD!");
 			}
 			this.onlineUser = user;
-
+			return true;
 		} catch (SQLException e) {
-			e.getMessage();
-			throw new IllegalInputException("PROBLEM WITH CONNECTION!");
-			}
-	
+			
+			throw new DataBaseException(e.getMessage());
 
-		return true;
-
+		}
 	}
 
-	private boolean checkForUser(String username) throws IllegalInputException {
+	private boolean checkForUser(String username) throws IllegalInputException, DataBaseException {
 		Boolean chechker = false;
 		try {
 			chechker = userDAO.getAllUsers().containsKey(username);
 		} catch (SQLException e) {
-             throw new IllegalInputException("DATABASE PROBLEM!");
+			throw new DataBaseException(e.getMessage());
 		}
 		return chechker;
 	}
@@ -123,7 +119,7 @@ public class UserServices {
 		this.onlineUser = null;
 	}
 
-	public void changePassword(String newPassword) throws IllegalInputException {
+	public void changePassword(String newPassword) throws IllegalInputException, DataBaseException {
 		if (!checkForPassword(newPassword)) {
 			throw new IllegalInputException("NEW PASSWORD IS NOT CORRECT!");
 		}
@@ -131,22 +127,23 @@ public class UserServices {
 			userDAO.updatePassword(onlineUser, newPassword);
 		} catch (SQLException e) {
 			// System.out.println(e.getMessage());
-			throw new IllegalInputException(e.getMessage()+"DATABASE PROBLEM ");
+			throw new DataBaseException(e.getMessage());
 		}
 
 	}
 
-	public void deleteAccount(String password) throws IllegalInputException {
+	public void deleteAccount(String password) throws IllegalInputException, DataBaseException {
 		if (!this.onlineUser.getPassword().equals(password)) {
 			throw new IllegalInputException("WRONG PASSWORD !");
 		}
 		try {
 			this.userDAO.deleteUser(onlineUser);
+			this.logout(onlineUser.getUserName());
 		} catch (SQLException e) {
-			throw new IllegalInputException(e.getMessage()+"DATEBASE PROBLEM!");
+			throw new DataBaseException(e.getMessage());
 			// System.out.println(e.getMessage());
 		}
-		this.logout(onlineUser.getUserName());
+		
 
 	}
 
