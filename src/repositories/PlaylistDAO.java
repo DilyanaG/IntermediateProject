@@ -40,7 +40,7 @@ public class PlaylistDAO {
 			"UPDATE playlists SET name = ? WHERE playlist_id = ?; ";
 	//insert
 	private static final String CREATE_NEW_PLAYLIST = 
-			" INSERT INTO playlists (channel_id, name, create_date, last_video_add_date) VALUES (?,'?',now(),now());";
+			"INSERT INTO playlists (channel_id, name, create_date, last_video_add_date) VALUES (?,?,now(),now());";
 	
 	//delete
 	private static final String DELETE_FROM_PLAYLIST_HAS_VIDEOS_TABLE = 
