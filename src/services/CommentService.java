@@ -8,6 +8,7 @@ import controllers.VideoController;
 import dataclasses.Channel;
 import dataclasses.Comment;
 import dataclasses.Video;
+import exceptions.DataBaseException;
 import exceptions.IllegalInputException;
 import repositories.CommentDAO;
 
@@ -26,67 +27,87 @@ public class CommentService {
 		return commentService;
 	}
 
-	public void addComment(Comment comment, Video video) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void removeComment(Comment comment, Video video) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void addLikeDislikeToComment(boolean isLike, Comment comment) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void removeLikeDislikeFromComment(boolean isLike, Comment comment) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public List<Comment> showVideoComments(Video video) {
-		return null;
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void addResponseToComment(Comment response, Comment comment) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void removeResponseFromComment(Comment response, Comment comment) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void addComment(String commentContent) throws IllegalInputException {
+	public void addComment(String commentContent) throws IllegalInputException, DataBaseException {
 		Channel channel = ChannelController.getInstance().getLoginChannel();
 		Video video = VideoController.getInstance().getOpenedVideo();
 		try {
 			commentDAO.addNewCommentForVideo(video,channel, commentContent);
 		} catch (SQLException e) {
-			throw new IllegalInputException(e.getMessage()+"DATABASE ERROR!");
+			e.printStackTrace();
+			throw new DataBaseException(e.getMessage());
 		}
 		
 	}
 
-	public void removeComment(int commentid, String title) {
-		// TODO Auto-generated method stub
+	public List<Comment> getCommentForVideo(Video video) throws IllegalInputException, DataBaseException {
+		 List<Comment> comments=null;
+		try {
+			comments = commentDAO.getCommentsForVideo(video);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DataBaseException(e.getMessage());
+		} 
+		return comments;
+	}
+     public Channel openAuthorsChannel(int commentid) throws DataBaseException, IllegalInputException {
+    	 Comment comment;
+		try {
+			comment = commentDAO.getCommentById(commentid);
+		} catch (SQLException e) {
+			throw new DataBaseException(e.getMessage());
+		} 
+    	 
+		return comment.getChannel();
 		
 	}
 
+
+
+	public void removeComment(int commentid) throws IllegalInputException, DataBaseException {
+		Video video = VideoController.getInstance().getOpenedVideo();
+		Channel channel= ChannelController.getInstance().getLoginChannel();
+		Comment comment;
+		try {
+			comment = commentDAO.getCommentById(commentid);
+		
+//		
+//		if(video.getChannel().equals(channel)||
+//				comment.getChannel().equals(channel)){
+			commentDAO.deleteComment(comment);
+//		}else{
+//			throw new IllegalInputException("You have no right to change this comment !");
+//		}
+		} catch (SQLException e) {
+			throw new DataBaseException(e.getMessage());
+		}
+		
+	}
+
+	public void changeComment(int commentid, String commentContent) throws IllegalInputException, DataBaseException {
+		Video video = VideoController.getInstance().getOpenedVideo();
+		Channel channel= ChannelController.getInstance().getLoginChannel();
+		Comment comment;
+		try {
+			comment = commentDAO.getCommentById(commentid);
+		
+		
+//		if(video.getChannel().equals(ChannelController.getInstance().getLoginChannel())||
+//				comment.getChannel().equals(ChannelController.getInstance().getLoginChannel())){
+			commentDAO.updateToCommentContent(comment,commentContent);
+//		}else{
+//			throw new IllegalInputException("You have no right to change this comment !");
+//		}
+		} catch (SQLException e) {
+			throw new DataBaseException(e.getMessage());
+		}
+		
+	}
 	public void addLikeDislikeToComment(boolean isLike, Integer commentid) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void openAuthorsChannel(int commentid) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	public void removeResponseFromComment(int commentid, String title) {
 		// TODO Auto-generated method stub
@@ -98,10 +119,7 @@ public class CommentService {
 		
 	}
 
-	public void changeComment(int commentid, String commentContent) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	public void removeLikeDislikeFromComment(boolean isLike, Integer commentid) {
 		// TODO Auto-generated method stub
@@ -113,13 +131,5 @@ public class CommentService {
 		
 	}
 
-	public List<Comment> getCommentForVideo(Video video) throws IllegalInputException {
-		 List<Comment> comments=null;
-		try {
-			comments = commentDAO.getCommentsForVideo(video);
-		} catch (SQLException e) {
-			throw new IllegalInputException("DATABASE ERROR!\n"+e.getMessage());
-		} 
-		return comments;
-	}
+	
 }

@@ -2,14 +2,18 @@ package enums;
 
 import java.util.Map;
 
+import exceptions.IllegalInputException;
+
 public enum SortVideoBy {
 	NEWEST, OLDEST, LIKES;
 	
-	public static SortVideoBy resolve(Map<String, String> argsMap) {
+	public static SortVideoBy resolve(Map<String, String> argsMap) throws IllegalInputException {
 		final String sortvideoby = "sortvideoby";
-
+		 if(argsMap==null||argsMap.isEmpty()){
+	    	  throw new IllegalInputException("INCORRECT INPUT!");
+	      }
 		if (argsMap.containsKey(sortvideoby)) {
-			String sortBy = argsMap.get(sortvideoby);
+			String sortBy = argsMap.get(sortvideoby).toLowerCase();
 			switch (sortBy) {
 			case "newest":
 				return SortVideoBy.NEWEST;
@@ -18,7 +22,7 @@ public enum SortVideoBy {
 			case "likes":
 				return SortVideoBy.LIKES;
 			default:
-				break;
+				throw new IllegalInputException("INCORRECT INPUT!");
 			}
 		}
 		return null;

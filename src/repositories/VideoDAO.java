@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import javax.management.Query;
+
 import dataclasses.Channel;
 import dataclasses.Comment;
 import dataclasses.Playlist;
@@ -21,7 +23,7 @@ import dataclasses.Video;
 import enums.SortSearchBy;
 import enums.SortVideoBy;
 import exceptions.IllegalInputException;
-import exceptions.InvalidDataException;
+
 
 //data na kacvane , vieew >, likes 
 
@@ -29,16 +31,24 @@ public class VideoDAO {
 	
 	//selects
 	private static final String SELECT_ALL_VIDEOS_BY_CHANNEL_ID =
-			"SELECT video_id,channel_id, url, title, date,description,  views, likes, dislikes FROM videos WHERE channel_id = ?";
+			"SELECT video_id,channel_id, url, title, date,description,"
+			+ " views, likes, dislikes FROM videos WHERE channel_id = ?;";
+			
+	private static final String SELECT_ALL_VIDEOS_BY_CHANNEL_SORTED =
+			"SELECT video_id,channel_id, url, title, date,description, views,"
+			+ " likes, dislikes FROM videos WHERE channel_id = ? "
+			+ "ORDER BY ?;";
     private static final String SEARCH_VIDEOS_BY_TAGS = 
     	 "SELECT v.video_id,v.channel_id, v.url, v.title, v.date, v.description,  v.views, v.likes, v.dislikes "+
                 "FROM videos v JOIN videos_has_tags h ON"+
                        " (v.video_id = h.video_id) WHERE h.tag_id IN ( SELECT tag_id FROM tags t WHERE content = ?)"+
     			              " ORDER BY  ? DESC;";
-    private static final String SELECT_VIDEO_BY_TITLE =
+    private static final String GET_VIDEO_BY_TITLE =
 			"SELECT video_id, channel_id, title, url, date, description, views, likes, dislikes FROM videos "
 			+ " WHERE title = ?;";
-   
+    private static final String GET_VIDEO_BY_ID =
+			"SELECT video_id, channel_id, title, url, date, description, views, likes, dislikes FROM videos "
+			+ " WHERE video_id = ?;";
     private static final String SELECT_ALL_VIDEOS_BY_PLAYLIST_ID =
 			"SELECT  v.video_id,v.channel_id, v.url, v.title, v.date,v.description, v.views, v.likes, v.dislikes FROM videos v"+
                  "JOIN  playlists_has_videos p ON(v.video_id = p.video_id)  WHERE p.playlist_id = ?;";
@@ -63,14 +73,17 @@ public class VideoDAO {
 	private static final String INSERT_VIDEO_IN_PLAYLIST =
 			"INSERT INTO playlists_has_videos (video_id,playlist_id) VALUES (?,?)";
     //UPDATES
-    
+
     //DELETE
 	private static final String DELETE_VIDEO = 
 			"DELETE FROM videos WHERE title = ?;";
-	private static final String DELETE_VIDEO_FROM_PLAYLIST =
+	private static final String DELETE_VIDEO_FROM_ALL_PLAYLIST =
 			"DELETE FROM playlists_has_videos WHERE video_id = ?;";
 	private static final String DELETE_VIDEO_FROM_TAGS_TABLE = 
 			"DELETE FROM videos_has_tags WHERE video_id = ?;";
+	private static final String DELETE_VIDEO_FROM__PLAYLIST = 
+			"DELETE FROM playlists_has_videos WHERE playlist_id = ? AND video_id IN("
+			+ "SELECT video_id FROM videos WHERE title = ?);";
     
 	private static VideoDAO instance;
 	private Connection connection;
@@ -102,7 +115,7 @@ public class VideoDAO {
 
 	private  List<Video> createVideosFromRezultSet( ResultSet rezultSet)
 			throws SQLException,IllegalInputException {
-		List<Video> videos = new ArrayList<Video>();
+		List<Video> videos = new ArrayList();
 		while (rezultSet.next()) {
 			Channel channel = ChannelDAO.getInstance().getChannelById(rezultSet.getInt("channel_id"));
 		//
@@ -126,11 +139,9 @@ public class VideoDAO {
 		return videos;
 	}
 
-
-
 	public  List<Video> getAllVideosForPlaylist(Playlist playlist) throws SQLException, IllegalInputException {
 		  List<Video> videos =new ArrayList<Video>();
-			PreparedStatement st = connection.prepareStatement(SELECT_ALL_VIDEOS_BY_CHANNEL_ID);
+			PreparedStatement st = connection.prepareStatement(SELECT_ALL_VIDEOS_BY_PLAYLIST_ID);
 			st.setInt(1, playlist.getId());
 			ResultSet rezultSet= st.executeQuery();
 			videos.addAll(createVideosFromRezultSet(rezultSet));
@@ -163,8 +174,6 @@ public class VideoDAO {
 		st.close();
 		return videos;
 	}
-   
-	
 
 	public void addVideoToChannel(Video video, Channel channel) throws SQLException{
 		PreparedStatement st = connection.prepareStatement(ADD_VIDEO_TO_CHANNEL);
@@ -176,7 +185,7 @@ public class VideoDAO {
 		st.setInt(6,0);
 		st.setInt(7,0);
 		st.executeUpdate();
-		PreparedStatement videoSt = connection.prepareStatement(SELECT_VIDEO_BY_TITLE);
+		PreparedStatement videoSt = connection.prepareStatement(GET_VIDEO_BY_TITLE);
 		videoSt.setString(1,video.getTitle());
 		ResultSet res = videoSt.executeQuery();
 		res.next();
@@ -187,6 +196,7 @@ public class VideoDAO {
 		videoSt.close();
 		st.close();
 	}
+	
 	private void writeInVideosHasTagsTable(String videoTags, int video_id) throws SQLException {
 		String[] tags = videoTags.split("\\s+");
 		for(String tag: tags){
@@ -199,7 +209,7 @@ public class VideoDAO {
 	private void insertVideoTag(String tag, int video_id) throws SQLException {
 		 int countOfTag =this.checkForTag(tag);
 		 int tagId = 0;
-		if(tagId==0){
+		if(countOfTag==0){
 			tagId=this.insertTagAndGetId(tag);
 		}else{
 			tagId=this.getTagId(tag);
@@ -216,7 +226,7 @@ public class VideoDAO {
 		st.setString(1,tag);
 	    ResultSet res = st.executeQuery();
 		res.next();
-		int tag_id = res.getInt(1);
+		int tag_id = res.getInt("tag_id");
 		res.close();
 		st.close();
 		return tag_id;
@@ -226,13 +236,7 @@ public class VideoDAO {
 		PreparedStatement st = connection.prepareStatement(INSERT_TAG);
 		st.setString(1,tag);
 	    st.executeUpdate();
-	    PreparedStatement tagST= connection.prepareStatement(GET_TAG_ID);
-	     tagST.setString(1, tag);
-	    ResultSet res = tagST.executeQuery();
-		res.next();
-		int tag_id = res.getInt("tag_id");
-		res.close();
-		tagST.close();
+		int tag_id = getTagId(tag);
 		st.close();
 		return tag_id;
 	}
@@ -247,9 +251,6 @@ public class VideoDAO {
 		st.close();
 		return count;
 	}
-
-	//maybe this method should be in the playlist, but no problem 
-	//because have a third table that keeps it
 	
 	public void addVideoToPlaylist(Video video,Playlist playlist) throws SQLException{
 		PreparedStatement st = connection.prepareStatement(INSERT_VIDEO_IN_PLAYLIST);
@@ -257,7 +258,7 @@ public class VideoDAO {
 		st.setInt(2,playlist.getId());
 	    st.executeUpdate();
 	}
-	//TODO
+
 	public void deleteVideo(String videoTitle) throws SQLException, IllegalInputException{
 		Video video = getVideoByTitle(videoTitle);
 		CommentDAO.getInstance().deleteAllCommentsForVideo(video);
@@ -275,34 +276,44 @@ public class VideoDAO {
 	}
 
 	private void deleteVideoFromPlaylistHasVideos(Video video) throws SQLException {
-		PreparedStatement st = connection.prepareStatement(DELETE_VIDEO_FROM_PLAYLIST);
+		PreparedStatement st = connection.prepareStatement(DELETE_VIDEO_FROM_ALL_PLAYLIST);
 		st.setInt(1,video.getVideoId());
 	    st.executeUpdate();
 		
 	}
 
-	//TODO
-	public void deleteVideoFromPlaylist(String videoTitle,Playlist playlist){
-		
-	}
-	//video service convert title and description to set of tags add give here 
-	public void setTagsForVideo(Video video, Set<String> tags){
-		
-	}
-
-	public void deleteChannelVideos(Channel channel) {
-		// TODO Auto-generated method stub
+	public void deleteChannelVideos(Channel channel) throws SQLException, IllegalInputException {
+		List<Video> videos = this.getVideosForChannelBy(channel);
+		for(Video video :videos){
+			this.deleteVideo(video.getTitle());
+		}
 		
 	}
 
-	public Video getVideoById(int video_id) {
+	public void deleteVideoFromPlaylist(String videoTitle, Playlist playlist) throws SQLException {
 		
-		return null;
+		PreparedStatement st = connection.prepareStatement(DELETE_VIDEO_FROM__PLAYLIST);
+		st.setInt(1,playlist.getId());
+		st.setString(2, videoTitle);
+	    st.executeUpdate();
+		
+	}
+
+	public Video getVideoById(int video_id) throws SQLException, IllegalInputException {
+		  List<Video> videos =new ArrayList<Video>();
+			PreparedStatement st = connection.prepareStatement(GET_VIDEO_BY_ID);
+			st.setInt(1, video_id);
+			ResultSet rezultSet= st.executeQuery();
+			videos.addAll(createVideosFromRezultSet(rezultSet));
+			rezultSet.close();
+			st.close();
+			return videos.get(0);
+	    
 	}
 
 	public Video getVideoByTitle(String videoname) throws SQLException, IllegalInputException {
 		  List<Video> videos =new ArrayList<Video>();
-			PreparedStatement st = connection.prepareStatement(SELECT_VIDEO_BY_TITLE);
+			PreparedStatement st = connection.prepareStatement(GET_VIDEO_BY_TITLE);
 			st.setString(1, videoname);
 			ResultSet rezultSet= st.executeQuery();
 			videos.addAll(createVideosFromRezultSet(rezultSet));
@@ -310,6 +321,35 @@ public class VideoDAO {
 			st.close();
 			return videos.get(0);
 	}
+
+	
+	public List<Video> getSortedVideosForChannel(SortVideoBy sort, Channel channel) throws SQLException, IllegalInputException {
+		String sortType = "";
+		switch (sort) {
+		case LIKES:
+			sortType = "likes";
+			break;
+        case OLDEST:
+			sortType ="date DESC";
+			break;
+		default:
+			sortType ="date";
+			break;
+		}
+		List<Video> videos =new ArrayList<Video>();
+		PreparedStatement st = connection.prepareStatement(SELECT_ALL_VIDEOS_BY_CHANNEL_SORTED);
+		st.setInt(1,channel.getChannelId());
+		st.setString(2, sortType);
+		ResultSet rezultSet= st.executeQuery();
+		videos.addAll(createVideosFromRezultSet(rezultSet));
+		rezultSet.close();
+		st.close();
+		return videos;
+	}
+
+
+	
+	
 }
 
  

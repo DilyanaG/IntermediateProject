@@ -10,10 +10,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import dataclasses.User;
 import exceptions.IllegalInputException;
-import exceptions.InvalidDataException;
 
 public class UserDAO{
 	// DB
@@ -29,7 +27,7 @@ public class UserDAO{
 			"SELECT user_id,user_name,email,password FROM users WHERE user_id = ?";
 	//update
 	private static final String UPDATE_USER_PASSWORD =
-			"UPDATE users SET user_password = ? WHERE user_id = ?;";
+			"UPDATE users SET password = ? WHERE user_id = ?;";
 	//delete
 	private static final String DELETE_USER = 
 			"DELETE FROM users WHERE user_id = ?;";
@@ -142,10 +140,11 @@ public class UserDAO{
 	}
    
     public void deleteUser(User user) throws SQLException, IllegalInputException{
+    	ChannelDAO.getInstance().deleteChannelByUsername(user.getUserName());
     	PreparedStatement st = connection.prepareStatement(DELETE_USER);
 		st.setInt(1, user.getUserId());
 		st.executeUpdate(); 
-		ChannelDAO.getInstance().deleteChannelByUsername(user.getUserName());
+		
      }
 
     

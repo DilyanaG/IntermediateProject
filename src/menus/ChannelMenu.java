@@ -9,6 +9,7 @@ import dataclasses.Playlist;
 import enums.SortPlaylistBy;
 import enums.SortSearchBy;
 import enums.SortVideoBy;
+import exceptions.DataBaseException;
 import exceptions.IllegalInputException;
 import parsers.GenericParser;
 import parsers.PlaylistParser;
@@ -52,9 +53,9 @@ public class ChannelMenu extends Menu{
 	}
 
 	@Override
-	public Menu process(String input) throws IllegalInputException {
+	public Menu process(String input) throws IllegalInputException, DataBaseException {
 		final String command = input.split(" ")[0].toLowerCase();// read first word from input
-		final String args = input.substring(command.length()); // remove command
+		final String args = input.substring(command.length()); //
 
 		final Map<String, String> argsMap = parseToMap(args);
 		final String keyChannelName = "channelname";
@@ -73,7 +74,7 @@ public class ChannelMenu extends Menu{
 			Menu searchMenu = videoController.search(tags, sortSearchBy); 
 			return searchMenu;
 		case "follow":
-			channelMenu = channelController.followChannel(channelName);
+			channelMenu = channelController.followChannel(this.channelName);
 			return channelMenu;
 		case "showvideos":
 			channelMenu = channelController.showVideos();

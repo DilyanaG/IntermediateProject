@@ -2,6 +2,7 @@ package menus;
 
 import java.util.Map;
 
+import exceptions.DataBaseException;
 import exceptions.IllegalInputException;
 import parsers.AbstractParser;
 
@@ -26,10 +27,10 @@ public abstract class Menu {
 
 	protected abstract String specialPresent();
 
-	public abstract Menu process(String input) throws IllegalInputException;
+	public abstract Menu process(String input) throws IllegalInputException,DataBaseException;
 
 	// Input without command
-	protected Map<String, String> parseToMap(String input) throws IllegalInputException { 
+	protected Map<String, String> parseToMap(String input) throws IllegalInputException,DataBaseException { 
 		return AbstractParser.splitParameters(input);
 	}
 

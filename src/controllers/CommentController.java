@@ -2,13 +2,18 @@ package controllers;
 
 import java.util.List;
 
+import dataclasses.Channel;
 import dataclasses.Comment;
 import dataclasses.Video;
+import exceptions.DataBaseException;
 import exceptions.IllegalInputException;
 import menus.ChannelMenu;
 import menus.CommentMenu;
+import menus.HomeMenu;
 import menus.Menu;
+import menus.VisitorChannelMenu;
 import services.CommentService;
+import services.VideoServices;
 
 public class CommentController {
 	private static CommentController commentController;
@@ -24,18 +29,23 @@ public class CommentController {
 		return commentController;
 	}
 
-	public Menu addComment(String commentContent) throws IllegalInputException    {
+	public Menu addComment(String commentContent) throws IllegalInputException, DataBaseException    {
 		commentService.addComment(commentContent);
+		System.out.println("COMMENT ADDED!");
 		return new CommentMenu();
 	}
 
-	public Menu removeComment(int commentid, String title) {
-		commentService.removeComment(commentid, title);
+	public Menu removeComment(int commentid) throws IllegalInputException, DataBaseException {
+		
+		commentService.removeComment(commentid);
+		System.out.println("Comment Deleted!");
 		return new CommentMenu();
 	}
 	
-	public Menu changeComment(int commentid, String commentContent) {
+	public Menu changeComment(int commentid, String commentContent) throws IllegalInputException, DataBaseException {
+		//System.out.println(commentid+"ccS");
 		commentService.changeComment(commentid, commentContent);
+		System.out.println("Comment content changed!");
 		return new CommentMenu();
 	}
 
@@ -65,12 +75,21 @@ public class CommentController {
 	}
 	
 	// TODO if(super.getUser() == null) return visitorChannelMenu;
-	public Menu openAuthorsChannel(int commentid) {
-		commentService.openAuthorsChannel(commentid);
-		return new ChannelMenu(null);
+	public Menu openAuthorsChannel(int commentid) throws IllegalInputException, DataBaseException {
+		Channel channel = commentService.openAuthorsChannel(commentid);
+		if(ChannelController.getInstance().isLogin()){
+			
+			if(VideoServices.getInstance().getCurrentVideo().getChannel().getUser().getUserName().equals(
+					channel.getUser().getUserName())){
+				return new HomeMenu();
+			}
+		   return new ChannelMenu(channel.getUser().getUserName());
+		}
+		return new VisitorChannelMenu(channel.getUser().getUserName());
 	}
+	
 
-	public List<Comment> getCommentsForVideo(Video video) throws IllegalInputException {
+	public List<Comment> getCommentsForVideo(Video video) throws IllegalInputException, DataBaseException {
 		List<Comment> comments = commentService.getCommentForVideo(video);
 		return comments;
 	}

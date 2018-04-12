@@ -7,6 +7,7 @@ import controllers.CommentController;
 import controllers.VideoController;
 import dataclasses.Comment;
 import enums.SortSearchBy;
+import exceptions.DataBaseException;
 import exceptions.IllegalInputException;
 import parsers.CommentParser;
 import parsers.GenericParser;
@@ -36,7 +37,7 @@ public class CommentMenu extends Menu {
 	}
 
 	@Override
-	public Menu process(String input) throws IllegalInputException {
+	public Menu process(String input) throws IllegalInputException, DataBaseException {
 		final String command = input.split(" ")[0].toLowerCase();// read first word from input
 		final String args = input.substring(command.length()); // remove command
 
@@ -64,10 +65,10 @@ public class CommentMenu extends Menu {
 			commentMenu = commentController.addComment(comment.getContent());
 			return commentMenu;
 		case "removecomment":
-			commentMenu = commentController.removeComment(commentid, title);
+			commentMenu = commentController.removeComment(commentid);
 			return commentMenu;
 		case "changecomment":
-			commentMenu = commentController.changeComment(comment.getCommentId(), comment.getContent());
+			commentMenu = commentController.changeComment(commentid, comment.getContent());
 			return commentMenu;
 		case "addresponsetocomment":
 			commentMenu = commentController.addResponseToComment(commentid, comment.getContent());

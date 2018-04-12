@@ -9,6 +9,7 @@ import dataclasses.Playlist;
 import enums.SortPlaylistBy;
 import enums.SortSearchBy;
 import enums.SortVideoBy;
+import exceptions.DataBaseException;
 import exceptions.IllegalInputException;
 import parsers.GenericParser;
 import parsers.PlaylistParser;
@@ -46,7 +47,7 @@ public class VisitorChannelMenu extends Menu{
 	}
 
 	@Override
-	public Menu process(String input) throws IllegalInputException {
+	public Menu process(String input) throws IllegalInputException, DataBaseException {
 		final String command = input.split(" ")[0].toLowerCase();// read first word from input
 		final String args = input.substring(command.length()); // remove command
 

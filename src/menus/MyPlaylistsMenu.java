@@ -8,6 +8,7 @@ import controllers.VideoController;
 import dataclasses.Playlist;
 import enums.SortPlaylistBy;
 import enums.SortSearchBy;
+import exceptions.DataBaseException;
 import exceptions.IllegalInputException;
 import parsers.GenericParser;
 import parsers.PlaylistParser;
@@ -33,7 +34,7 @@ public class MyPlaylistsMenu extends Menu {
 	}
 
 	@Override
-	public Menu process(String input) throws IllegalInputException {
+	public Menu process(String input) throws IllegalInputException, DataBaseException {
 		final String command = input.split(" ")[0].toLowerCase();// read first word from input
 		final String args = input.substring(command.length()); // remove command
 
@@ -52,6 +53,8 @@ public class MyPlaylistsMenu extends Menu {
 			return searchMenu;
 		case "sortplaylists":
 			final SortPlaylistBy sortPlaylistBy = SortPlaylistBy.resolve(argsMap);
+			
+			System.out.println("----"+sortPlaylistBy);
 			myPlaylistsMenu = playlistController.sortPlaylists(sortPlaylistBy);
 			return myPlaylistsMenu;
 		case "openplaylist":

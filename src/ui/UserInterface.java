@@ -4,11 +4,15 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
+import dataclasses.Channel;
 import dataclasses.Comment;
+import dataclasses.Playlist;
 import dataclasses.Video;
+import exceptions.DataBaseException;
 import exceptions.IllegalInputException;
 import menus.DefaultMenu;
 import menus.Menu;
+import sun.net.www.content.text.plain;
 
 
 public class UserInterface {
@@ -26,17 +30,22 @@ public class UserInterface {
 		try {
 			runApplication();
 			System.out.println("Good bye");
-		} catch (Exception t) {
-			System.out.println(t.getMessage());
-			t.printStackTrace();
-			Logger.getGlobal().severe(t.getMessage() + " " + t.getStackTrace());
+		
+		
+		} catch (Exception e) {
+			if(e instanceof DataBaseException){
+				System.out.println("DATABASE PROBLEM!");
+			}
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			Logger.getGlobal().severe(e.getMessage() + " " + e.getStackTrace());
 			System.out.println("Internal server error! Application will terminate. Sorry :(");
 		} finally {
 			scanner.close();
 		}
 	}
 
-	public void runApplication() {
+	public void runApplication() throws DataBaseException {
 		while (menu != null) {
 			final String presentation = menu.presnet();
 			System.out.println(presentation);
@@ -88,13 +97,13 @@ public void printVideos(List<Video> videos) {
 	if(videos == null||videos.isEmpty()){
 		System.out.println("VIDEOS NOT FOUND!");
 	}else{
-		System.out.println("VIDEO ID\tVIDEO TITLE");
+		System.out.println("VIDEO ID\t\t TITLE\tDATE\tLIKES");
 		for(Video video : videos){
 			
-			System.out.println(video.getVideoId()+"\t\t"+video.getTitle());
+			System.out.println(video.getVideoId()+"\t\t"+video.getTitle()+"\t"+video.getUploadDate()+"\t\t"+video.getCountOfLikes());
 		}
 	}
-	
+	System.out.println("----------------------------------------");
 }
 
 public void showVideo(Video video) {
@@ -105,6 +114,8 @@ System.out.println("title: "+video.getTitle());
 System.out.println("description:"+video.getDescription());
 System.out.println("likes: "+video.getCountOfLikes());
 System.out.println("dislikes: "+video.getCountOfDislikes());
+System.out.println("views: "+video.getViews());
+System.out.println("upload date: "+video.getUploadDate());
 System.out.println("channel: "+video.getChannel().getUser().getUserName());
 System.out.println("----------------------------------------");
 
@@ -113,15 +124,38 @@ System.out.println("----------------------------------------");
 
 public void printComments(List<Comment> comments) {
 		for(Comment comment : comments){
+			System.out.println("____________COMMENT__________");
 			System.out.println("Channel :"+comment.getChannel().getUser().getUserName());
 			System.out.println("Comment ID : "+comment.getCommentId());
 			System.out.println("Comment content : "+comment.getContent());
 			System.out.println("Likes: "+comment.getLikes());
 			System.out.println("Dislikes: "+comment.getDislikes());
 			System.out.println("Date: "+comment.getPublicationDate());
-			System.out.println("--------------------------------");
+			
 		}
+		System.out.println("--------------------------------");
 	}
+
+public void printPlaylist(List<Playlist> channelPlaylists) {
+	for(Playlist playlist :channelPlaylists){
+	System.out.println("____________Playlist_____________");
+	System.out.println("name: "+playlist.getPlaylistName());
+	System.out.println("create date: "+playlist.getCreationDateTime());
+	System.out.println("last video add date: "+playlist.getLastVideoUploaded());
+	
+	
+	}
+	System.out.println("------------------------------------------");
+}
+
+public void printChannels(List<Channel> channelChannels) {
+	for(Channel channel:channelChannels){
+		System.out.println("_____________Channel_______________");
+		System.out.println("name: "+channel.getUser().getUserName());
+	}
+	System.out.println("----------------------------------------");
+	
+}
 	
 }
 

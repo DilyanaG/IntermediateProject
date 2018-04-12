@@ -5,6 +5,7 @@ import java.util.Map;
 import controllers.ChannelController;
 import controllers.VideoController;
 import enums.SortSearchBy;
+import exceptions.DataBaseException;
 import exceptions.IllegalInputException;
 import parsers.GenericParser;
 
@@ -13,10 +14,11 @@ public class VisitorVideoMenu extends Menu{
 	private VideoController videoController = VideoController.getInstance();
 	
 	private GenericParser genericParser = GenericParser.getInstance();
-
+ 
 	@Override
 	protected String specialPresent() {
 		final StringBuilder builder = new StringBuilder();
+	
 		builder.append(">OpenAuthorsChannel\n");
 		builder.append(">ShowComments\n");
 		builder.append(">Homepage\n");
@@ -24,7 +26,7 @@ public class VisitorVideoMenu extends Menu{
 	}
 
 	@Override
-	public Menu process(String input) throws IllegalInputException {
+	public Menu process(String input) throws IllegalInputException, DataBaseException {
 		final String command = input.split(" ")[0].toLowerCase();// read first word from input
 		 final String args = input.substring(command.length()); // remove command
 

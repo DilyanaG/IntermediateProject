@@ -38,8 +38,12 @@ public class GenericParser {
 	}
 	
 	public Integer parseToInteger(Map<String, String> argsMap, String key) {
+		Integer x=0;
 		if (argsMap.containsKey(key)) {
-			//TODO return argsMap.get(key) // toInteger
+			x= Integer.parseInt(argsMap.get(key));
+		//	System.out.println(x);
+			return x;
+			
 		}
 		
 		return null;
